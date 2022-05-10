@@ -37,7 +37,7 @@ function Drawer() {
             <span className="material-icons-outlined">notifications</span>
             <Text fontSize="1rem">Notifications</Text>
           </HStack>
-          <Button borderRadius="2xl" w="full">
+          <Button borderRadius="2xl" w="full" _focus={{ border: 'none' }}>
             Add a post
           </Button>
         </VStack>
