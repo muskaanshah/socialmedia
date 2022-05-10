@@ -11,7 +11,7 @@ const config = {
 
 const colors = {
   gray: {
-    900: '#1E1F21',
+    900: '#0c0c0d',
     800: '#393A3C',
     700: '#555658',
     600: '#707173',
@@ -28,6 +28,12 @@ const fonts = {
   body: `Roboto, ${base.fonts?.body}`,
 };
 
+const textStyles = {
+  logo: {
+    fontFamily: 'Abel',
+  },
+};
+
 const styles = {
   global: props => ({
     'html, body': {
@@ -42,6 +48,7 @@ export const theme = extendTheme(
     fonts,
     config,
     styles,
+    textStyles,
   },
   withDefaultColorScheme({
     colorScheme: 'blue',

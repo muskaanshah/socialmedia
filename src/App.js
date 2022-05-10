@@ -6,10 +6,10 @@ import { BottomBar, Drawer, SideBar } from './components';
 
 function App() {
   return (
-    <Box p={{ base: 0, lg: 6 }}>
-      <ColorModeSwitcher />
+    <Box px={{ base: 0, lg: 6 }} maxW="7xl" mx="auto">
+      {/* <ColorModeSwitcher /> */}
       <BottomBar />
-      <Flex width="100%" h="calc(100vh - 3rem)">
+      <Flex width="100%" minH="100vh">
         <Drawer />
         <Outlet />
         <SideBar />

@@ -4,15 +4,19 @@ import {
   Button,
   Divider,
   HStack,
+  Image,
   Text,
   VStack,
+  useColorModeValue,
 } from '@chakra-ui/react';
+import { logo } from '../../assets';
 
 function Drawer() {
+  const logoColor = useColorModeValue('blue.500', 'blue.200');
   return (
     <Box
       bg="inherit"
-      p={3}
+      pl={3}
       display={{ base: 'none', md: 'flex' }}
       w="15rem"
       position="sticky"
@@ -20,7 +24,13 @@ function Drawer() {
       justifyContent="space-between"
     >
       <VStack justifyContent="space-between" w="full">
-        <VStack align="flex-start" spacing={6} w="full" pr="8">
+        <VStack align="flex-start" spacing={6} w="full" pr="8" pt={4}>
+          <HStack>
+            <Image boxSize="50px" objectFit="cover" src={logo} alt="Medioso" />
+            <Text fontSize="3xl" textStyle="logo" color={logoColor}>
+              Medioso
+            </Text>
+          </HStack>
           <HStack>
             <span className="material-icons-outlined">home</span>
             <Text fontSize="1rem">Home</Text>

@@ -15,15 +15,15 @@ function SideBar() {
   return (
     <Box
       bg="inherit"
-      p={3}
-      display={{ base: 'none', md: 'flex' }}
+      pr={3}
+      display={{ base: 'none', lg: 'flex' }}
       w="20rem"
       position="sticky"
       top="0"
       gap="1rem"
     >
       <Divider orientation="vertical" />
-      <VStack align="flex-start" spacing={6} w="full">
+      <VStack align="flex-start" spacing={6} w="full" pt={4}>
         <InputGroup>
           <InputLeftElement
             pointerEvents="none"
