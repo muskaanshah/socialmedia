@@ -1,11 +1,11 @@
-import { ChakraProvider, ColorModeScript } from '@chakra-ui/react';
 import React, { StrictMode } from 'react';
-import { theme } from './styles/theme';
 import ReactDOM from 'react-dom';
-import './index.css';
-import 'material-icons/iconfont/material-icons.css';
 import { BrowserRouter } from 'react-router-dom';
+import { ChakraProvider, ColorModeScript } from '@chakra-ui/react';
+import 'material-icons/iconfont/material-icons.css';
 import { Routes } from './Routes';
+import './index.css';
+import { theme } from './styles/theme';
 
 ReactDOM.render(
   <StrictMode>

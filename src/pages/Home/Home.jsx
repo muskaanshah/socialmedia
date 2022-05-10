@@ -1,10 +1,7 @@
+import { Box } from '@chakra-ui/react';
+
 function Home() {
-  return (
-    <div>
-      Home component fvmkrvnjfknvjnvjnjgbng n jfgj gfb mgkmkgmb kmb m bmg g bgb
-      mb kgmbkmbkbkngnbjn
-    </div>
-  );
+  return <Box sx={{ flexGrow: '1' }}>Home</Box>;
 }
 
 export { Home };

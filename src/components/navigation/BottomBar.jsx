@@ -1,7 +1,7 @@
-import { Avatar, Box, HStack } from '@chakra-ui/react';
 import { AiOutlineHome, AiOutlineSearch } from 'react-icons/ai';
 import { BsBookmark } from 'react-icons/bs';
 import { MdNotificationsNone } from 'react-icons/md';
+import { Avatar, Box, HStack } from '@chakra-ui/react';
 
 function BottomBar() {
   return (
