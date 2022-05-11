@@ -1,6 +1,3 @@
-import { AiOutlineHome, AiOutlineSearch } from 'react-icons/ai';
-import { BsBookmark } from 'react-icons/bs';
-import { MdNotificationsNone } from 'react-icons/md';
 import { Avatar, Box, HStack } from '@chakra-ui/react';
 
 function BottomBar() {
@@ -15,10 +12,10 @@ function BottomBar() {
       zIndex={2}
     >
       <HStack justify={['space-between', 'space-evenly']}>
-        <AiOutlineHome size="2em" />
-        <AiOutlineSearch size="2em" />
-        <BsBookmark size="2em" />
-        <MdNotificationsNone size="2em" />
+        <span className="material-icons-outlined">home</span>
+        <span class="material-icons-outlined">search</span>
+        <span className="material-icons-outlined">bookmark_border</span>
+        <span className="material-icons-outlined">notifications</span>
         <Avatar
           name="Dan Abrahmov"
           src="https://bit.ly/dan-abramov"
