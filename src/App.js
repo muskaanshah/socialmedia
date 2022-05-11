@@ -1,25 +1,20 @@
 import React from 'react';
-import {
-  ChakraProvider,
-  Box,
-  Text,
-  Link,
-  VStack,
-  Code,
-  Grid,
-  theme,
-} from '@chakra-ui/react';
+import { Outlet } from 'react-router-dom';
+import { Box, Flex } from '@chakra-ui/react';
 import { ColorModeSwitcher } from './ColorModeSwitcher';
+import { BottomBar, Drawer, SideBar } from './components';
 
 function App() {
   return (
-    <ChakraProvider theme={theme}>
-      <Box textAlign="center" fontSize="xl">
-        <Grid minH="100vh" p={3}>
-          <ColorModeSwitcher justifySelf="flex-end" />
-        </Grid>
-      </Box>
-    </ChakraProvider>
+    <Box px={{ base: 0, lg: 6 }} maxW="7xl" mx="auto">
+      {/* <ColorModeSwitcher /> */}
+      <BottomBar />
+      <Flex width="100%" minH="100vh">
+        <Drawer />
+        <Outlet />
+        <SideBar />
+      </Flex>
+    </Box>
   );
 }
 

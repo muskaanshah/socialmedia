@@ -2,5 +2,14 @@
   "arrowParens": "avoid",
   "trailingComma": "es5",
   "singleQuote": true,
-  "semi": true
+  "semi": true,
+  "importOrderSeparation": false,
+  "importOrder": [
+    "^(^react$|@react|react|^recoil$)",
+    "^@chakra/(.*)$",
+    "<THIRD_PARTY_MODULES>",
+    "^@/(.*)$",
+    "^[./]"
+  ],
+  "importOrderSortSpecifiers": true
 }
