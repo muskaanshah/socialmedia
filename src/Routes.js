@@ -1,6 +1,14 @@
 import { Route, Routes as RoutesContainer } from 'react-router-dom';
 import App from './App';
-import { Explore, Home, Notifications, Profile, Saved, Signin } from './pages';
+import {
+  Explore,
+  Home,
+  Notifications,
+  Profile,
+  Saved,
+  Signin,
+  Signup,
+} from './pages';
 import { PrivateRoute } from './utils';
 
 function Routes() {
@@ -17,6 +25,7 @@ function Routes() {
       {/* </Route> */}
       <Route element={<PrivateRoute authRoute />}>
         <Route path="/" element={<Signin />} />
+        <Route path="/signup" element={<Signup />} />
       </Route>
     </RoutesContainer>
   );

@@ -10,7 +10,7 @@ import {
 } from '@chakra-ui/react';
 import { CommonHeader } from './components/CommonHeader';
 
-function Signin() {
+function Signup() {
   return (
     <Box position={'relative'}>
       <Container
@@ -34,13 +34,35 @@ function Signin() {
               lineHeight={1.1}
               fontSize={{ base: '2xl', sm: '3xl', md: '4xl' }}
             >
-              Sign In!
+              Sign Up!
             </Heading>
           </Stack>
           <Box as={'form'} mt={10}>
             <Stack spacing={4}>
               <Input
-                type={'email'}
+                type="text"
+                placeholder="Full Name"
+                bg={'gray.100'}
+                border={0}
+                color={'gray.800'}
+                _placeholder={{
+                  color: 'gray.800',
+                }}
+                required
+              />
+              <Input
+                type="text"
+                placeholder="Username"
+                bg={'gray.100'}
+                border={0}
+                color={'gray.800'}
+                _placeholder={{
+                  color: 'gray.800',
+                }}
+                required
+              />
+              <Input
+                type="email"
                 placeholder="Email"
                 bg={'gray.100'}
                 border={0}
@@ -76,11 +98,11 @@ function Signin() {
                 boxShadow: 'xl',
               }}
             >
-              Login
+              Create an account
             </Button>
           </Box>
-          <Link to="/signup" className="text-underline">
-            Don't have an account yet?
+          <Link to="/" className="text-underline">
+            Already have an account?
           </Link>
         </Stack>
       </Container>
@@ -88,4 +110,4 @@ function Signin() {
   );
 }
 
-export { Signin };
+export { Signup };
