@@ -8,6 +8,7 @@ import {
   Saved,
   Signin,
   Signup,
+  SinglePost,
 } from './pages';
 import { PrivateRoute } from './utils';
 
@@ -21,6 +22,7 @@ function Routes() {
         <Route path="/saved" element={<Saved />} />
         <Route path="/notifications" element={<Notifications />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/singlepost" element={<SinglePost />} />
       </Route>
       {/* </Route> */}
       <Route element={<PrivateRoute authRoute />}>

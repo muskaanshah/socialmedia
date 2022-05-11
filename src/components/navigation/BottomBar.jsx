@@ -14,7 +14,7 @@ function BottomBar() {
     >
       <HStack justify={['space-between', 'space-evenly']}>
         <span className="material-icons-outlined">home</span>
-        <span class="material-icons-outlined">search</span>
+        <span className="material-icons-outlined">search</span>
         <span className="material-icons-outlined">bookmark_border</span>
         <span className="material-icons-outlined">notifications</span>
         <Avatar

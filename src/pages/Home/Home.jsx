@@ -1,4 +1,4 @@
-import { Box } from '@chakra-ui/react';
+import { Box, Divider } from '@chakra-ui/react';
 import { FeedPost } from '../../components';
 import { TopBar } from './components/TopBar';
 
@@ -7,8 +7,11 @@ function Home() {
     <Box sx={{ flexGrow: '1' }}>
       <TopBar />
       <FeedPost />
+      <Divider />
       <FeedPost />
+      <Divider />
       <FeedPost />
+      <Divider />
     </Box>
   );
 }

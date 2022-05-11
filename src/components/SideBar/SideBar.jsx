@@ -17,7 +17,7 @@ function SideBar() {
       bg="inherit"
       pr={3}
       display={{ base: 'none', lg: 'flex' }}
-      w="20rem"
+      w="27rem"
       position="sticky"
       top="0"
       gap="1rem"
@@ -28,7 +28,7 @@ function SideBar() {
         <InputGroup>
           <InputLeftElement
             pointerEvents="none"
-            children={<span class="material-icons-outlined">search</span>}
+            children={<span className="material-icons-outlined">search</span>}
           />
           <Input variant="filled" placeholder="Search" />
         </InputGroup>
