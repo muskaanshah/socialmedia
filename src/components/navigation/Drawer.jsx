@@ -23,8 +23,8 @@ function Drawer() {
       top="0"
       justifyContent="space-between"
     >
-      <VStack justifyContent="space-between" w="full">
-        <VStack align="flex-start" spacing={6} w="full" pr="8" pt={4}>
+      <VStack justifyContent="space-between" w="full" py={4}>
+        <VStack align="flex-start" spacing={6} w="full" pr="8">
           <HStack>
             <Image boxSize="50px" objectFit="cover" src={logo} alt="Medioso" />
             <Text fontSize="3xl" textStyle="logo" color={logoColor}>
