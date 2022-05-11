@@ -21,6 +21,7 @@ function SideBar() {
       position="sticky"
       top="0"
       gap="1rem"
+      maxH="100vh"
     >
       <Divider orientation="vertical" />
       <VStack align="flex-start" spacing={6} w="full" pt={4}>

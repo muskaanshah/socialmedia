@@ -22,6 +22,7 @@ function Drawer() {
       position="sticky"
       top="0"
       justifyContent="space-between"
+      maxH="100vh"
     >
       <VStack justifyContent="space-between" w="full" py={4}>
         <VStack align="flex-start" spacing={6} w="full" pr="8">

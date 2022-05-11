@@ -11,6 +11,7 @@ function TopBar() {
       bgColor={bgCol}
       backdropFilter="auto"
       backdropBlur="8px"
+      zIndex="docked"
     >
       <Image
         boxSize="40px"
