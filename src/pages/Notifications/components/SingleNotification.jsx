@@ -3,7 +3,7 @@ import { Avatar, Box, Divider, HStack, Text } from '@chakra-ui/react';
 function SingleNotification() {
   return (
     <>
-      <Box p={2}>
+      <Box p={{ base: 2, md: 4 }}>
         <HStack spacing={3} w="full">
           <Avatar
             name="Dan Abrahmov"

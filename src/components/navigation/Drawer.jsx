@@ -8,11 +8,14 @@ import {
   Text,
   VStack,
   useColorModeValue,
+  useDisclosure,
 } from '@chakra-ui/react';
 import { logo } from '../../assets';
+import { AddPostModal } from '../AddPostModal';
 
 function Drawer() {
   const logoColor = useColorModeValue('blue.500', 'blue.200');
+  const { isOpen, onOpen, onClose } = useDisclosure();
   return (
     <Box
       bg="inherit"
@@ -47,7 +50,12 @@ function Drawer() {
             <span className="material-icons-outlined">notifications</span>
             <Text fontSize="1rem">Notifications</Text>
           </HStack>
-          <Button borderRadius="2xl" w="full" _focus={{ border: 'none' }}>
+          <Button
+            borderRadius="2xl"
+            w="full"
+            _focus={{ border: 'none' }}
+            onClick={onOpen}
+          >
             Add a post
           </Button>
         </VStack>
@@ -66,6 +74,7 @@ function Drawer() {
         </HStack>
       </VStack>
       <Divider orientation="vertical" />
+      <AddPostModal isOpen={isOpen} onClose={onClose} />
     </Box>
   );
 }

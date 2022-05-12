@@ -7,3 +7,4 @@ export { AddComment } from './AddComment/AddComment';
 export { ProfileHeader } from './ProfileHeader/ProfileHeader';
 export { UserFollowStack } from './UserFollowStack/UserFollowStack';
 export { LikesModal } from './LikesModal/LikesModal';
+export { AddPostModal } from './AddPostModal';
