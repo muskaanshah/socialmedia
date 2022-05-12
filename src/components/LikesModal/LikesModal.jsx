@@ -13,21 +13,19 @@ function LikesModal({ isOpen, onClose }) {
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
-      <ModalContent height={'80vh'} overflow="auto">
+      <ModalContent
+        height={'80vh'}
+        overflow="auto"
+        sx={{
+          '&::-webkit-scrollbar': {
+            width: '0',
+          },
+        }}
+      >
         <ModalHeader>Liked by</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
           <VStack>
-            <UserFollowStack />
-            <UserFollowStack />
-            <UserFollowStack />
-            <UserFollowStack />
-            <UserFollowStack />
-            <UserFollowStack />
-            <UserFollowStack />
-            <UserFollowStack />
-            <UserFollowStack />
-            <UserFollowStack />
             <UserFollowStack />
             <UserFollowStack />
             <UserFollowStack />
