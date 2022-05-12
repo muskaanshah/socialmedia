@@ -1,5 +1,12 @@
+import { Box } from '@chakra-ui/react';
+import { TopBar } from './components/TopBar';
+
 function Profile() {
-  return <div>Profile</div>;
+  return (
+    <Box sx={{ flexGrow: '1' }}>
+      <TopBar />
+    </Box>
+  );
 }
 
 export { Profile };

@@ -77,7 +77,7 @@ function AddPostModal({ isOpen, onClose }) {
                   setImgUrl('');
                 }}
               >
-                <span class="material-icons-outlined sm">close</span>
+                <span className="material-icons-outlined sm">close</span>
               </Button>
             </Box>
           )}
