@@ -18,7 +18,6 @@ function Drawer() {
       bg="inherit"
       pl={3}
       display={{ base: 'none', md: 'flex' }}
-      w="25rem"
       position="sticky"
       top="0"
       justifyContent="space-between"

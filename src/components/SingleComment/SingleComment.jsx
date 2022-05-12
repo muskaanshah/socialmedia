@@ -10,8 +10,8 @@ function SingleComment() {
           size="md"
         />
         <Text>
-          <Text as={'span'} fontWeight="500" mr={2}>
-            Username
+          <Text as={'span'} fontWeight="500">
+            {`Username `}
           </Text>
           Here is the comment - Lorem ipsum dolor sit amet consectetur
           adipisicing elit. Sit nihil pariatur natus autem quia officia soluta

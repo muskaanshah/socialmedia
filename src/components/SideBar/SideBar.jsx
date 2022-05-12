@@ -15,7 +15,6 @@ function SideBar() {
       bg="inherit"
       pr={3}
       display={{ base: 'none', lg: 'flex' }}
-      w="27rem"
       position="sticky"
       top="0"
       gap="1rem"
