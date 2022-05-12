@@ -8,3 +8,5 @@ export { ProfileHeader } from './ProfileHeader/ProfileHeader';
 export { UserFollowStack } from './UserFollowStack/UserFollowStack';
 export { LikesModal } from './LikesModal/LikesModal';
 export { AddPostModal } from './AddPostModal';
+export { FollowersList } from './FollowersList';
+export { FollowingList } from './FollowingList';

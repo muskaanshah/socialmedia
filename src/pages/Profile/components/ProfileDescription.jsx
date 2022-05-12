@@ -9,6 +9,7 @@ import {
   useBreakpointValue,
   useDisclosure,
 } from '@chakra-ui/react';
+import { FollowersList, FollowingList } from '../../../components';
 import { EditProfile } from './EditProfile';
 import { SettingsModal } from './SettingsModal';
 
@@ -29,6 +30,16 @@ function ProfileDescription() {
     isOpen: settingsIsOpen,
     onOpen: settingsOnOpen,
     onClose: settingsOnClose,
+  } = useDisclosure();
+  const {
+    isOpen: followersListIsOpen,
+    onOpen: followersListOnOpen,
+    onClose: followersListOnClose,
+  } = useDisclosure();
+  const {
+    isOpen: followingListIsOpen,
+    onOpen: followingListOnOpen,
+    onClose: followingListOnClose,
   } = useDisclosure();
   return (
     <>
@@ -95,13 +106,13 @@ function ProfileDescription() {
                 Posts
               </Text>
             </Text>
-            <Text>
+            <Text cursor="pointer" onClick={followersListOnOpen}>
               293{' '}
               <Text as={'span'} fontWeight="300">
                 Followers
               </Text>
             </Text>
-            <Text>
+            <Text cursor="pointer" onClick={followingListOnOpen}>
               415{' '}
               <Text as={'span'} fontWeight="300">
                 Following
@@ -112,6 +123,14 @@ function ProfileDescription() {
       </HStack>
       <EditProfile isOpen={editProfileIsOpen} onClose={editProfileOnClose} />
       <SettingsModal isOpen={settingsIsOpen} onClose={settingsOnClose} />
+      <FollowersList
+        isOpen={followersListIsOpen}
+        onClose={followersListOnClose}
+      />
+      <FollowingList
+        isOpen={followingListIsOpen}
+        onClose={followingListOnClose}
+      />
     </>
   );
 }
