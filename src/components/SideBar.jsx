@@ -7,7 +7,7 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import { UserFollowStack } from '../UserFollowStack/UserFollowStack';
+import { UserFollowStack } from './UserFollowStack';
 
 function SideBar() {
   return (

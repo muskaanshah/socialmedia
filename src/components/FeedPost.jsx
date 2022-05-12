@@ -7,10 +7,10 @@ import {
   Text,
   useDisclosure,
 } from '@chakra-ui/react';
-import { AddComment } from '../AddComment/AddComment';
-import { LikesModal } from '../LikesModal/LikesModal';
-import { ProfileHeader } from '../ProfileHeader/ProfileHeader';
-import { SingleComment } from '../SingleComment/SingleComment';
+import { AddComment } from './AddComment';
+import { LikesModal } from './LikesModal';
+import { ProfileHeader } from './ProfileHeader';
+import { SingleComment } from './SingleComment';
 
 function FeedPost() {
   const { isOpen, onOpen, onClose } = useDisclosure();

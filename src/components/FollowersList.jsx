@@ -7,7 +7,7 @@ import {
   ModalOverlay,
   VStack,
 } from '@chakra-ui/react';
-import { UserFollowStack } from './UserFollowStack/UserFollowStack';
+import { UserFollowStack } from './UserFollowStack';
 
 function FollowersList({ isOpen, onClose }) {
   return (

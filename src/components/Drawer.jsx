@@ -10,8 +10,8 @@ import {
   useColorModeValue,
   useDisclosure,
 } from '@chakra-ui/react';
-import { logo } from '../../assets';
-import { AddPostModal } from '../AddPostModal';
+import { logo } from '../assets';
+import { AddPostModal } from './AddPostModal';
 
 function Drawer() {
   const logoColor = useColorModeValue('blue.500', 'blue.200');
