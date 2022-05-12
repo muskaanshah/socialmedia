@@ -13,14 +13,14 @@ import { FollowersList, FollowingList } from '../../../components';
 import { EditProfile } from './EditProfile';
 import { SettingsModal } from './SettingsModal';
 
+const buttonStyles = {
+  py: '0',
+  h: '8',
+  w: '28',
+  _focus: { border: 'none' },
+  fontWeight: '400',
+};
 function ProfileDescription() {
-  const buttonStyles = {
-    py: '0',
-    h: '8',
-    w: '28',
-    _focus: { border: 'none' },
-    fontWeight: '400',
-  };
   const {
     isOpen: editProfileIsOpen,
     onOpen: editProfileOnOpen,

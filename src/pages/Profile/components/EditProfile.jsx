@@ -21,6 +21,17 @@ import {
   VStack,
 } from '@chakra-ui/react';
 
+const UploadButton = {
+  color: 'inherit',
+  _focus: { border: 'none' },
+};
+const FormLabelStyles = {
+  _focus: { border: 'none' },
+  className: 'custom-file-upload',
+  m: '0',
+  cursor: 'pointer',
+};
+
 function EditProfile({ isOpen, onClose }) {
   const [bannerUrl, setBannerUrl] = useState('https://picsum.photos/300');
   const [avatarUrl, setAvatarUrl] = useState('https://bit.ly/dan-abramov');
@@ -35,16 +46,6 @@ function EditProfile({ isOpen, onClose }) {
     if (e.target.files && e.target.files.length > 0) {
       setAvatarUrl(URL.createObjectURL(e.target.files[0]));
     }
-  };
-  const UploadButton = {
-    color: 'inherit',
-    _focus: { border: 'none' },
-  };
-  const FormLabelStyles = {
-    _focus: { border: 'none' },
-    className: 'custom-file-upload',
-    m: '0',
-    cursor: 'pointer',
   };
   return (
     <Modal isOpen={isOpen} onClose={onClose} scrollBehavior="inside">
