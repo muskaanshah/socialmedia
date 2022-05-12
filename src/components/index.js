@@ -5,3 +5,5 @@ export { FeedPost } from './FeedPost/FeedPost';
 export { SingleComment } from './SingleComment/SingleComment';
 export { AddComment } from './AddComment/AddComment';
 export { ProfileHeader } from './ProfileHeader/ProfileHeader';
+export { UserFollowStack } from './UserFollowStack/UserFollowStack';
+export { LikesModal } from './LikesModal/LikesModal';

@@ -34,6 +34,16 @@ const textStyles = {
   },
 };
 
+export const components = {
+  Button: {
+    baseStyle: {
+      _focus: {
+        border: 'none',
+      },
+    },
+  },
+};
+
 const styles = {
   global: props => ({
     'html, body': {
@@ -49,6 +59,7 @@ export const theme = extendTheme(
     config,
     styles,
     textStyles,
+    components,
   },
   withDefaultColorScheme({
     colorScheme: 'blue',

@@ -1,15 +1,13 @@
 import {
-  Avatar,
   Box,
-  Button,
   Divider,
-  HStack,
   Input,
   InputGroup,
   InputLeftElement,
   Text,
   VStack,
 } from '@chakra-ui/react';
+import { UserFollowStack } from '../UserFollowStack/UserFollowStack';
 
 function SideBar() {
   return (
@@ -33,54 +31,9 @@ function SideBar() {
           <Input variant="filled" placeholder="Search" />
         </InputGroup>
         <Text fontWeight="500">Suggested for you</Text>
-        <HStack justifyContent="space-between" w="full">
-          <HStack spacing={3} flexGrow="1">
-            <Avatar
-              name="Dan Abrahmov"
-              src="https://bit.ly/dan-abramov"
-              size="md"
-            />
-            <VStack align="flex-start">
-              <Text fontSize="1rem">Profile</Text>
-              <Text fontSize="1rem" className="mt-0" color="gray.500">
-                Username
-              </Text>
-            </VStack>
-          </HStack>
-          <Button variant="link">Follow</Button>
-        </HStack>
-        <HStack justifyContent="space-between" w="full">
-          <HStack spacing={3}>
-            <Avatar
-              name="Dan Abrahmov"
-              src="https://bit.ly/dan-abramov"
-              size="md"
-            />
-            <VStack align="flex-start">
-              <Text fontSize="1rem">Profile</Text>
-              <Text fontSize="1rem" className="mt-0" color="gray.500">
-                Username
-              </Text>
-            </VStack>
-          </HStack>
-          <Button variant="link">Follow</Button>
-        </HStack>
-        <HStack justifyContent="space-between" w="full">
-          <HStack spacing={3}>
-            <Avatar
-              name="Dan Abrahmov"
-              src="https://bit.ly/dan-abramov"
-              size="md"
-            />
-            <VStack align="flex-start">
-              <Text fontSize="1rem">Profile</Text>
-              <Text fontSize="1rem" className="mt-0" color="gray.500">
-                Username
-              </Text>
-            </VStack>
-          </HStack>
-          <Button variant="link">Follow</Button>
-        </HStack>
+        <UserFollowStack />
+        <UserFollowStack />
+        <UserFollowStack />
       </VStack>
     </Box>
   );
