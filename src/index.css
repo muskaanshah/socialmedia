@@ -13,6 +13,10 @@ body {
   margin-top: 0!important;
 }
 
+.mt-1 {
+  margin-top: 1rem!important;
+}
+
 .text-underline {
   text-decoration: underline;
 }

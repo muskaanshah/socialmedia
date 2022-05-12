@@ -1,5 +1,6 @@
 import {
   Avatar,
+  Box,
   Button,
   HStack,
   Image,
@@ -9,6 +10,7 @@ import {
   useDisclosure,
 } from '@chakra-ui/react';
 import { EditProfile } from './EditProfile';
+import { SettingsModal } from './SettingsModal';
 
 function ProfileDescription() {
   const buttonStyles = {
@@ -18,7 +20,16 @@ function ProfileDescription() {
     _focus: { border: 'none' },
     fontWeight: '400',
   };
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const {
+    isOpen: editProfileIsOpen,
+    onOpen: editProfileOnOpen,
+    onClose: editProfileOnClose,
+  } = useDisclosure();
+  const {
+    isOpen: settingsIsOpen,
+    onOpen: settingsOnOpen,
+    onClose: settingsOnClose,
+  } = useDisclosure();
   return (
     <>
       <Image
@@ -53,9 +64,22 @@ function ProfileDescription() {
               <Button sx={buttonStyles} variant="outline">
                 Unfollow
               </Button>
-              <Button sx={buttonStyles} variant="outline" onClick={onOpen}>
-                Edit Profile
-              </Button>
+              <HStack spacing={4}>
+                <Button
+                  sx={buttonStyles}
+                  variant="outline"
+                  onClick={editProfileOnOpen}
+                >
+                  Edit Profile
+                </Button>
+                <Box
+                  display="inline-block"
+                  cursor="pointer"
+                  onClick={settingsOnOpen}
+                >
+                  <span className="material-icons-outlined">settings</span>
+                </Box>
+              </HStack>
               <Button sx={buttonStyles}>Follow</Button>
             </>
           </HStack>
@@ -86,7 +110,8 @@ function ProfileDescription() {
           </HStack>
         </VStack>
       </HStack>
-      <EditProfile isOpen={isOpen} onClose={onClose} />
+      <EditProfile isOpen={editProfileIsOpen} onClose={editProfileOnClose} />
+      <SettingsModal isOpen={settingsIsOpen} onClose={settingsOnClose} />
     </>
   );
 }
