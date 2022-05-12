@@ -1,9 +1,12 @@
+import { useRef, useState } from 'react';
 import ResizeTextarea from 'react-textarea-autosize';
 import {
   Avatar,
+  Box,
   Button,
   FormLabel,
   HStack,
+  Image,
   Input,
   Modal,
   ModalBody,
@@ -16,6 +19,14 @@ import {
 } from '@chakra-ui/react';
 
 function AddPostModal({ isOpen, onClose }) {
+  const [imgUrl, setImgUrl] = useState('');
+  const file = useRef();
+  const imageChange = e => {
+    if (e.target.files && e.target.files.length > 0) {
+      setImgUrl(URL.createObjectURL(e.target.files[0]));
+    }
+  };
+
   return (
     <Modal closeOnOverlayClick={false} isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
@@ -36,12 +47,40 @@ function AddPostModal({ isOpen, onClose }) {
               resize="none"
               minRows={8}
               maxRows={8}
-              maxlength="1000"
+              maxLength="1000"
               as={ResizeTextarea}
               _placeholder={{ fontWeight: '400', color: 'gray.500' }}
               _focus={{ border: 'none' }}
+              autoFocus
             />
           </HStack>
+          {imgUrl.length > 0 && (
+            <Box pos="relative" display="inline-block" mt={4}>
+              <Image id="thumbnail" src={imgUrl} alt="selected" maxW="100px" />
+              <Button
+                variant="ghost"
+                pos="absolute"
+                top={0}
+                right={0}
+                w="20px"
+                minW="20px"
+                h="20px"
+                minH="20px"
+                size="sm"
+                color="white"
+                p={0}
+                borderRadius="full"
+                backgroundColor={'blackAlpha.500'}
+                _focus={{ border: 'none' }}
+                onClick={() => {
+                  file.value = '';
+                  setImgUrl('');
+                }}
+              >
+                <span class="material-icons-outlined sm">close</span>
+              </Button>
+            </Box>
+          )}
         </ModalBody>
         <ModalFooter justifyContent={'space-between'}>
           <Button variant={'ghost'} _focus={{ border: 'none' }}>
@@ -50,8 +89,13 @@ function AddPostModal({ isOpen, onClose }) {
               className="custom-file-upload"
               m={0}
             >
-              <Input type="file" accept="image/*" />
-              <span class="material-icons-outlined">image</span>
+              <Input
+                type="file"
+                accept="image/*"
+                ref={file}
+                onChange={imageChange}
+              />
+              <span className="material-icons-outlined">image</span>
             </FormLabel>
           </Button>
           <Button mr={3} onClick={onClose} _focus={{ border: 'none' }}>
