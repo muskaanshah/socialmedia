@@ -8,12 +8,12 @@ function App() {
   return (
     <Box px={{ base: 0, lg: 6 }} maxW="8xl" mx="auto">
       {/* <ColorModeSwitcher /> */}
-      <BottomBar />
       <Flex width="100%" minH="100vh">
         <Drawer />
         <Outlet />
-        {/* <SideBar /> */}
+        <SideBar />
       </Flex>
+      <BottomBar />
     </Box>
   );
 }

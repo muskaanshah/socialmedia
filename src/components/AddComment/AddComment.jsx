@@ -1,21 +1,20 @@
-import {
-  Input,
-  InputGroup,
-  InputRightAddon,
-  useColorModeValue,
-} from '@chakra-ui/react';
+import ResizeTextarea from 'react-textarea-autosize';
+import { Button, HStack, Textarea } from '@chakra-ui/react';
 
 function AddComment() {
-  const color = useColorModeValue('blue.300', 'blue.500');
   return (
-    <InputGroup size="sm">
-      <Input placeholder="Add a comment" _focus={{ borderColor: 'none' }} />
-      <InputRightAddon
-        children={<span className="material-icons-outlined">send</span>}
-        color={color}
-        bgColor="transparent"
+    <HStack>
+      <Textarea
+        minH="unset"
+        placeholder="Add a comment"
+        w="100%"
+        resize="none"
+        minRows={1}
+        maxRows={4}
+        as={ResizeTextarea}
       />
-    </InputGroup>
+      <Button _focus={{ border: 'none' }}>Send</Button>
+    </HStack>
   );
 }
 

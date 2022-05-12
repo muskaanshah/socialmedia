@@ -7,7 +7,7 @@ function BottomBar() {
       bg={bgColor}
       p={3}
       display={{ base: 'block', md: 'none' }}
-      pos="fixed"
+      pos="stikcy"
       bottom="0"
       w="100%"
       zIndex="docked"
