@@ -17,6 +17,7 @@ import {
   ModalOverlay,
   Textarea,
 } from '@chakra-ui/react';
+import { CloseButtonBlack } from '../styles/globalStyles';
 
 function AddPostModal({ isOpen, onClose }) {
   const [imgUrl, setImgUrl] = useState('');
@@ -58,20 +59,7 @@ function AddPostModal({ isOpen, onClose }) {
             <Box pos="relative" display="inline-block" mt={4}>
               <Image id="thumbnail" src={imgUrl} alt="selected" maxW="100px" />
               <Button
-                variant="ghost"
-                pos="absolute"
-                top={0}
-                right={0}
-                w="20px"
-                minW="20px"
-                h="20px"
-                minH="20px"
-                size="sm"
-                color="white"
-                p={0}
-                borderRadius="full"
-                backgroundColor={'blackAlpha.500'}
-                _focus={{ border: 'none' }}
+                sx={CloseButtonBlack}
                 onClick={() => {
                   file.value = '';
                   setImgUrl('');

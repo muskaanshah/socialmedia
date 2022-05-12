@@ -11,17 +11,9 @@ import { UserFollowStack } from '../UserFollowStack/UserFollowStack';
 
 function LikesModal({ isOpen, onClose }) {
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
+    <Modal isOpen={isOpen} onClose={onClose} scrollBehavior="inside">
       <ModalOverlay />
-      <ModalContent
-        height={'80vh'}
-        overflow="auto"
-        sx={{
-          '&::-webkit-scrollbar': {
-            width: '0',
-          },
-        }}
-      >
+      <ModalContent>
         <ModalHeader>Liked by</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
