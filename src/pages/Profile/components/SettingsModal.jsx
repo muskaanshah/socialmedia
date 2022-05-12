@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FaMoon, FaSun } from 'react-icons/fa';
 import {
   Button,
@@ -28,6 +28,12 @@ function SettingsModal({ isOpen, onClose }) {
   const text = useColorModeValue('light', 'dark');
   const [changePasswordDivToggle, setChangePasswordDivToggle] = useState(false);
   const [changeThemeDivToggle, setChangeThemeDivToggle] = useState(false);
+  // useEffect(() => {
+  //   return () => {
+  //     setChangePasswordDivToggle(false)
+  //     setChangeThemeDivToggle(false)
+  //   }
+  // }, [])
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
