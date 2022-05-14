@@ -3,6 +3,7 @@ import App from './App';
 import {
   Explore,
   Home,
+  NotFound,
   Notifications,
   Profile,
   Saved,
@@ -25,6 +26,7 @@ function Routes() {
         <Route path="/singlepost" element={<SinglePost />} />
       </Route>
       {/* </Route> */}
+      <Route path="*" element={<NotFound />} />
       <Route element={<PrivateRoute authRoute />}>
         <Route path="/" element={<Signin />} />
         <Route path="/signup" element={<Signup />} />

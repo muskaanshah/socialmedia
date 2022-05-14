@@ -6,3 +6,4 @@ export { Saved } from './Saved/Saved';
 export { Signin } from './authentication/Signin';
 export { Signup } from './authentication/Signup';
 export { SinglePost } from './SinglePost/SinglePost';
+export { NotFound } from './NotFound/NotFound';
