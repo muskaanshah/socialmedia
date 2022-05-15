@@ -1,3 +1,5 @@
+import { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import {
   Box,
@@ -8,9 +10,28 @@ import {
   SimpleGrid,
   Stack,
 } from '@chakra-ui/react';
+import { AuthInputStyles } from '../../styles/globalStyles';
+import { signUpUser } from './authSlice';
 import { CommonHeader } from './components/CommonHeader';
 
 function Signup() {
+  const [userDetails, setUserDetails] = useState({
+    name: '',
+    email: '',
+    password: '',
+    username: '',
+  });
+
+  const dispatch = useDispatch();
+
+  const formInputHandler = (field, value) => {
+    setUserDetails({ ...userDetails, [field]: value });
+  };
+
+  const signUpFormHandler = e => {
+    e.preventDefault();
+    dispatch(signUpUser(userDetails));
+  };
   return (
     <Box position={'relative'}>
       <Container
@@ -37,50 +58,50 @@ function Signup() {
               Sign Up!
             </Heading>
           </Stack>
-          <Box as={'form'} mt={10}>
+          <Box as={'form'} mt={10} onSubmit={signUpFormHandler}>
             <Stack spacing={4}>
               <Input
                 type="text"
                 placeholder="Full Name"
-                bg={'gray.100'}
-                border={0}
-                color={'gray.800'}
+                sx={AuthInputStyles}
                 _placeholder={{
                   color: 'gray.800',
                 }}
+                value={userDetails.name}
+                onChange={e => formInputHandler('name', e.target.value)}
                 required
               />
               <Input
                 type="text"
                 placeholder="Username"
-                bg={'gray.100'}
-                border={0}
-                color={'gray.800'}
+                sx={AuthInputStyles}
                 _placeholder={{
                   color: 'gray.800',
                 }}
+                value={userDetails.username}
+                onChange={e => formInputHandler('username', e.target.value)}
                 required
               />
               <Input
                 type="email"
                 placeholder="Email"
-                bg={'gray.100'}
-                border={0}
-                color={'gray.800'}
+                sx={AuthInputStyles}
                 _placeholder={{
                   color: 'gray.800',
                 }}
+                value={userDetails.email}
+                onChange={e => formInputHandler('email', e.target.value)}
                 required
               />
               <Input
                 type="password"
                 placeholder="Password"
-                bg={'gray.100'}
-                border={0}
-                color={'gray.800'}
+                sx={AuthInputStyles}
                 _placeholder={{
                   color: 'gray.800',
                 }}
+                value={userDetails.password}
+                onChange={e => formInputHandler('password', e.target.value)}
                 required
               />
             </Stack>

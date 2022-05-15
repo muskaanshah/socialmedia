@@ -27,10 +27,10 @@ function Routes() {
       </Route>
       {/* </Route> */}
       <Route path="*" element={<NotFound />} />
-      <Route element={<PrivateRoute authRoute />}>
-        <Route path="/" element={<Signin />} />
-        <Route path="/signup" element={<Signup />} />
-      </Route>
+      {/* <Route element={<PrivateRoute authRoute />}> */}
+      <Route path="/" element={<Signin />} />
+      <Route path="/signup" element={<Signup />} />
+      {/* </Route> */}
     </RoutesContainer>
   );
 }
