@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FaMoon, FaSun } from 'react-icons/fa';
 import { useDispatch } from 'react-redux';
 import {
@@ -31,6 +31,13 @@ function SettingsModal({ isOpen, onClose }) {
   const [changePasswordDivToggle, setChangePasswordDivToggle] = useState(false);
   const [changeThemeDivToggle, setChangeThemeDivToggle] = useState(false);
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    return () => {
+      setChangePasswordDivToggle(false);
+      setChangeThemeDivToggle(false);
+    };
+  }, [isOpen]);
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
