@@ -25,7 +25,7 @@ function Signup() {
     username: '',
   });
 
-  const status = useSelector(state => state.auth.status);
+  const { status } = useSelector(state => state.auth);
   const dispatch = useDispatch();
 
   const formInputHandler = (field, value) => {
