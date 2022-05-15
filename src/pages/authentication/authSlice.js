@@ -38,7 +38,6 @@ export const signUpUser = createAsyncThunk(
       setDoc(userRef, {
         ...userDetails,
       });
-      console.log(response);
       return JSON.parse(JSON.stringify(response.user));
     } catch (err) {
       console.error(err);
@@ -51,7 +50,6 @@ export const signInUser = createAsyncThunk(
   async ({ email, password }, thunkAPI) => {
     try {
       const response = await signInWithEmailAndPassword(auth, email, password);
-      console.log(response);
       return JSON.parse(JSON.stringify(response.user));
     } catch (err) {
       console.error(err);

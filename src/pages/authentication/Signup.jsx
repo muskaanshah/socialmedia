@@ -8,7 +8,6 @@ import {
   Heading,
   Input,
   SimpleGrid,
-  Spinner,
   Stack,
 } from '@chakra-ui/react';
 import { onAuthStateChanged } from 'firebase/auth';
