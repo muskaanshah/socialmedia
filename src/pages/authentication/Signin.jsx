@@ -1,3 +1,5 @@
+import { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import {
   Box,
@@ -8,9 +10,46 @@ import {
   SimpleGrid,
   Stack,
 } from '@chakra-ui/react';
+import { onAuthStateChanged } from 'firebase/auth';
+import { doc, getDoc } from 'firebase/firestore';
+import { auth, db } from '../../firebase';
+import { AuthInputStyles } from '../../styles/globalStyles';
+import { setCurrentUserData, signInUser } from './authSlice';
 import { CommonHeader } from './components/CommonHeader';
 
 function Signin() {
+  const [userDetails, setUserDetails] = useState({
+    email: '',
+    password: '',
+  });
+
+  const dispatch = useDispatch();
+
+  const formInputHandler = (field, value) => {
+    setUserDetails({ ...userDetails, [field]: value });
+  };
+
+  const signInFormHandler = e => {
+    e.preventDefault();
+    dispatch(signInUser(userDetails));
+  };
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, async user => {
+      if (user) {
+        const userObj = await getDoc(doc(db, `users/${user.uid}`));
+        const data = userObj.data();
+        console.log(data, 'data');
+        if (data) dispatch(setCurrentUserData(data));
+      } else {
+        dispatch(setCurrentUserData(null));
+      }
+    });
+    return () => {
+      unsubscribe();
+    };
+  }, [dispatch]);
+
   return (
     <Box position={'relative'}>
       <Container
@@ -37,28 +76,28 @@ function Signin() {
               Sign In!
             </Heading>
           </Stack>
-          <Box as={'form'} mt={10}>
+          <Box as={'form'} mt={10} onSubmit={signInFormHandler}>
             <Stack spacing={4}>
               <Input
                 type={'email'}
                 placeholder="Email"
-                bg={'gray.100'}
-                border={0}
-                color={'gray.800'}
+                sx={AuthInputStyles}
                 _placeholder={{
                   color: 'gray.800',
                 }}
+                value={userDetails.email}
+                onChange={e => formInputHandler('email', e.target.value)}
                 required
               />
               <Input
                 type="password"
                 placeholder="Password"
-                bg={'gray.100'}
-                border={0}
-                color={'gray.800'}
+                sx={AuthInputStyles}
                 _placeholder={{
                   color: 'gray.800',
                 }}
+                value={userDetails.password}
+                onChange={e => formInputHandler('password', e.target.value)}
                 required
               />
             </Stack>

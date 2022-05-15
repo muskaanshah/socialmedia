@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import {
   Box,
@@ -10,8 +10,11 @@ import {
   SimpleGrid,
   Stack,
 } from '@chakra-ui/react';
+import { onAuthStateChanged } from 'firebase/auth';
+import { doc, getDoc } from 'firebase/firestore';
+import { auth, db } from '../../firebase';
 import { AuthInputStyles } from '../../styles/globalStyles';
-import { signUpUser } from './authSlice';
+import { setCurrentUserData, signUpUser } from './authSlice';
 import { CommonHeader } from './components/CommonHeader';
 
 function Signup() {
@@ -32,6 +35,21 @@ function Signup() {
     e.preventDefault();
     dispatch(signUpUser(userDetails));
   };
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, async user => {
+      if (user) {
+        const userObj = await getDoc(doc(db, `users/${user.uid}`));
+        const data = userObj.data();
+        if (data) dispatch(setCurrentUserData(data));
+      } else {
+        dispatch(setCurrentUserData(null));
+      }
+    });
+    return () => {
+      unsubscribe();
+    };
+  }, [dispatch]);
   return (
     <Box position={'relative'}>
       <Container
