@@ -34,4 +34,11 @@ const AuthInputStyles = {
   color: 'gray.800',
 };
 
-export { TopBarStyles, CloseButtonBlack, AuthInputStyles };
+const submitButtonStyles = {
+  mt: '8',
+  w: 'full',
+  bgColor: 'gray.100',
+  color: 'gray.900',
+};
+
+export { TopBarStyles, CloseButtonBlack, AuthInputStyles, submitButtonStyles };

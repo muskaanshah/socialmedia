@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import {
   Box,
@@ -13,7 +13,7 @@ import {
 import { onAuthStateChanged } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore';
 import { auth, db } from '../../firebase';
-import { AuthInputStyles } from '../../styles/globalStyles';
+import { AuthInputStyles, submitButtonStyles } from '../../styles/globalStyles';
 import { setCurrentUserData, signInUser } from './authSlice';
 import { CommonHeader } from './components/CommonHeader';
 
@@ -23,6 +23,7 @@ function Signin() {
     password: '',
   });
 
+  const status = useSelector(state => state.auth.status);
   const dispatch = useDispatch();
 
   const formInputHandler = (field, value) => {
@@ -39,7 +40,6 @@ function Signin() {
       if (user) {
         const userObj = await getDoc(doc(db, `users/${user.uid}`));
         const data = userObj.data();
-        console.log(data, 'data');
         if (data) dispatch(setCurrentUserData(data));
       } else {
         dispatch(setCurrentUserData(null));
@@ -101,22 +101,30 @@ function Signin() {
                 required
               />
             </Stack>
-            <Button
-              type="submit"
-              fontFamily={'heading'}
-              mt={8}
-              w={'full'}
-              bgColor={'gray.100'}
-              color={'gray.900'}
-              _hover={{
-                boxShadow: 'xl',
-              }}
-              _active={{
-                boxShadow: 'xl',
-              }}
-            >
-              Login
-            </Button>
+            {status === 'loading' ? (
+              <Button
+                isLoading
+                loadingText="Loading"
+                sx={submitButtonStyles}
+                spinnerPlacement="start"
+              >
+                Submit
+              </Button>
+            ) : (
+              <Button
+                type="submit"
+                fontFamily={'heading'}
+                sx={submitButtonStyles}
+                _hover={{
+                  boxShadow: 'xl',
+                }}
+                _active={{
+                  boxShadow: 'xl',
+                }}
+              >
+                Login
+              </Button>
+            )}
           </Box>
           <Link to="/signup" className="text-underline">
             Don't have an account yet?

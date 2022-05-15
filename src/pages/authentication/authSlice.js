@@ -2,12 +2,14 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
+  signOut,
 } from 'firebase/auth';
 import { collection, doc, setDoc } from 'firebase/firestore';
 import { auth, db } from '../../firebase';
 
 const initialState = {
   currentUser: null,
+  status: 'idle',
 };
 
 export const signUpUser = createAsyncThunk(
@@ -57,21 +59,37 @@ export const signInUser = createAsyncThunk(
   }
 );
 
+export const signOutUser = createAsyncThunk('auth/signOutUser', async () => {
+  await signOut(auth).catch(error => {
+    console.error('Failed to signout user, ', error);
+  });
+  console.log('Logged out');
+});
+
 export const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
     setCurrentUserData: (state, action) => {
       state.currentUser = action.payload;
-      console.log(action, 'action');
     },
   },
   extraReducers: {
+    [signInUser.pending]: (state, action) => {
+      state.currentUser = action.payload;
+      state.status = 'loading';
+    },
+    [signUpUser.pending]: (state, action) => {
+      state.currentUser = action.payload;
+      state.status = 'loading';
+    },
     [signInUser.fulfilled]: (state, action) => {
       state.currentUser = action.payload;
+      state.status = 'fulfilled';
     },
     [signUpUser.fulfilled]: (state, action) => {
       state.currentUser = action.payload;
+      state.status = 'fulfilled';
     },
   },
 });

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import {
   Box,
@@ -8,12 +8,13 @@ import {
   Heading,
   Input,
   SimpleGrid,
+  Spinner,
   Stack,
 } from '@chakra-ui/react';
 import { onAuthStateChanged } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore';
 import { auth, db } from '../../firebase';
-import { AuthInputStyles } from '../../styles/globalStyles';
+import { AuthInputStyles, submitButtonStyles } from '../../styles/globalStyles';
 import { setCurrentUserData, signUpUser } from './authSlice';
 import { CommonHeader } from './components/CommonHeader';
 
@@ -25,6 +26,7 @@ function Signup() {
     username: '',
   });
 
+  const status = useSelector(state => state.auth.status);
   const dispatch = useDispatch();
 
   const formInputHandler = (field, value) => {
@@ -123,22 +125,29 @@ function Signup() {
                 required
               />
             </Stack>
-            <Button
-              type="submit"
-              fontFamily={'heading'}
-              mt={8}
-              w={'full'}
-              bgColor={'gray.100'}
-              color={'gray.900'}
-              _hover={{
-                boxShadow: 'xl',
-              }}
-              _active={{
-                boxShadow: 'xl',
-              }}
-            >
-              Create an account
-            </Button>
+            {status === 'loading' ? (
+              <Button
+                isLoading
+                loadingText="Loading"
+                sx={submitButtonStyles}
+                spinnerPlacement="start"
+              >
+                Submit
+              </Button>
+            ) : (
+              <Button
+                type="submit"
+                sx={submitButtonStyles}
+                _hover={{
+                  boxShadow: 'xl',
+                }}
+                _active={{
+                  boxShadow: 'xl',
+                }}
+              >
+                Create an account
+              </Button>
+            )}
           </Box>
           <Link to="/" className="text-underline">
             Already have an account?

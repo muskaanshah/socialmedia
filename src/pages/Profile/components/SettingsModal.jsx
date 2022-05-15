@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { FaMoon, FaSun } from 'react-icons/fa';
+import { useDispatch } from 'react-redux';
 import {
   Button,
   HStack,
@@ -16,6 +17,7 @@ import {
   useColorMode,
   useColorModeValue,
 } from '@chakra-ui/react';
+import { signOutUser } from '../../authentication/authSlice';
 
 const LinkButtonStyles = {
   _focus: { border: 'none' },
@@ -28,12 +30,7 @@ function SettingsModal({ isOpen, onClose }) {
   const text = useColorModeValue('light', 'dark');
   const [changePasswordDivToggle, setChangePasswordDivToggle] = useState(false);
   const [changeThemeDivToggle, setChangeThemeDivToggle] = useState(false);
-  // useEffect(() => {
-  //   return () => {
-  //     setChangePasswordDivToggle(false)
-  //     setChangeThemeDivToggle(false)
-  //   }
-  // }, [])
+  const dispatch = useDispatch();
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
@@ -103,7 +100,15 @@ function SettingsModal({ isOpen, onClose }) {
                 </Button>
               </HStack>
             )}
-            <Button _focus={{ border: 'none' }} color="red.500" variant="link">
+            <Button
+              _focus={{ border: 'none' }}
+              color="red.500"
+              variant="link"
+              onClick={() => {
+                dispatch(signOutUser());
+                onClose();
+              }}
+            >
               Logout
             </Button>
           </VStack>
