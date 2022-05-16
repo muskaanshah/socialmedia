@@ -19,9 +19,7 @@ function Profile() {
       <ProfileDescription />
       <Divider />
       {userPosts.length > 0 &&
-        userPosts.map(post => (
-          <FeedPost post={post} key={post.uid} userID={currentUser.uid} />
-        ))}
+        userPosts.map(post => <FeedPost post={post} key={post.uid} />)}
     </Box>
   );
 }

@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { FaRegBookmark, FaRegComment, FaRegHeart } from 'react-icons/fa';
 import {
   Box,
@@ -7,6 +8,7 @@ import {
   Text,
   useDisclosure,
 } from '@chakra-ui/react';
+import { getUserDetailsById } from '../services';
 import { AddComment } from './AddComment';
 import { LikesModal } from './LikesModal';
 import { ProfileHeader } from './ProfileHeader';
@@ -14,10 +16,19 @@ import { SingleComment } from './SingleComment';
 
 function FeedPost({ post }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const [userDetails, setUserDetails] = useState({
+    name: '',
+    photoURL: '',
+    id: '',
+    username: '',
+  });
+  useEffect(() => {
+    getUserDetailsById(post.userID, setUserDetails);
+  }, [post.userID]);
   return (
     <>
       <Box maxW="full" p={4} mx={{ base: 'auto', sm: 8 }}>
-        <ProfileHeader />
+        <ProfileHeader userDetails={userDetails} />
         <Image src="https://bit.ly/2Z4KKcF" alt="post" my={4} />
         <HStack w="full">
           <HStack spacing={6} grow={1} w="full">
