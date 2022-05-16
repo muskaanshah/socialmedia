@@ -23,7 +23,7 @@ function Profile() {
   return (
     <Box sx={{ flexGrow: '1' }}>
       <TopBar />
-      <ProfileDescription />
+      <ProfileDescription currentUser={currentUser} />
       <Divider />
       {postsFeed.length > 0 &&
         postsFeed.map(post => <FeedPost post={post} key={post.uid} />)}
