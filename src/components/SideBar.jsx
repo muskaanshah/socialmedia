@@ -1,3 +1,4 @@
+import { useSelector } from 'react-redux';
 import {
   Box,
   Divider,
@@ -10,6 +11,8 @@ import {
 import { UserFollowStack } from './UserFollowStack';
 
 function SideBar() {
+  const { users } = useSelector(state => state.user);
+  const { currentUser } = useSelector(state => state.auth);
   return (
     <Box
       bg="inherit"
@@ -30,9 +33,12 @@ function SideBar() {
           <Input variant="filled" placeholder="Search" />
         </InputGroup>
         <Text fontWeight="500">Suggested for you</Text>
-        <UserFollowStack />
-        <UserFollowStack />
-        <UserFollowStack />
+        {users
+          .filter(user => user.uid !== currentUser.uid)
+          .filter((_, index) => index < 5)
+          .map(user => (
+            <UserFollowStack user={user} />
+          ))}
       </VStack>
     </Box>
   );

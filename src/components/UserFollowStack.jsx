@@ -1,18 +1,14 @@
 import { Avatar, Button, HStack, Text, VStack } from '@chakra-ui/react';
 
-function UserFollowStack() {
+function UserFollowStack({ user }) {
   return (
     <HStack justifyContent="space-between" w="full">
       <HStack spacing={3} flexGrow="1">
-        <Avatar
-          name="Dan Abrahmov"
-          src="https://bit.ly/dan-abramov"
-          size="md"
-        />
+        <Avatar name={user.name} src={user.photoURL} size="md" />
         <VStack align="flex-start">
-          <Text fontSize="1rem">Profile</Text>
+          <Text fontSize="1rem">{user.name}</Text>
           <Text fontSize="1rem" className="mt-0" color="gray.500">
-            Username
+            @{user.username}
           </Text>
         </VStack>
       </HStack>
