@@ -50,8 +50,8 @@ function FeedPost({ post }) {
             color={'gray.500'}
           >{`View all ${post.comments.length} comments`}</Text>
         )}
-        <SingleComment />
-        <AddComment />
+        <SingleComment comment={post.comments[post.comments.length - 1]} />
+        <AddComment postID={post.uid} />
         <LikesModal isOpen={isOpen} onClose={onClose} />
       </Box>
       <Divider />

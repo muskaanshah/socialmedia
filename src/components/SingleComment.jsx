@@ -1,21 +1,31 @@
+import { useEffect, useState } from 'react';
 import { Avatar, Box, HStack, Text } from '@chakra-ui/react';
+import { getComments } from '../services';
 
-function SingleComment() {
+function SingleComment({ comment }) {
+  const [userDetails, setUserDetails] = useState({
+    name: '',
+    photoURL: '',
+    id: '',
+    username: '',
+  });
+  const [commentDetails, setCommentDetails] = useState({
+    comment: '',
+    uploadDate: '',
+    userID: '',
+  });
+  useEffect(() => {
+    getComments(comment, setCommentDetails, setUserDetails);
+  }, [comment]);
   return (
     <Box my={2}>
       <HStack alignItems="flex-start">
-        <Avatar
-          name="Dan Abrahmov"
-          src="https://bit.ly/dan-abramov"
-          size="md"
-        />
+        <Avatar name={userDetails.name} src={userDetails.photoURL} size="md" />
         <Text>
           <Text as={'span'} fontWeight="500">
-            {`Username `}
+            {`${userDetails.username} `}
           </Text>
-          Here is the comment - Lorem ipsum dolor sit amet consectetur
-          adipisicing elit. Sit nihil pariatur natus autem quia officia soluta
-          tempore architecto fugit nulla dolor maxime doloribus saepe
+          {commentDetails.comment}
         </Text>
       </HStack>
     </Box>

@@ -1,7 +1,15 @@
+import { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import ResizeTextarea from 'react-textarea-autosize';
 import { Button, HStack, Textarea } from '@chakra-ui/react';
+import { addComment } from '../pages/Home/postSlice';
+import { getDateTime } from '../utils';
 
-function AddComment() {
+function AddComment({ postID }) {
+  const [commentInput, setCommentInput] = useState('');
+  const { currentUser } = useSelector(state => state.auth);
+  const { commentStatus } = useSelector(state => state.post);
+  const dispatch = useDispatch();
   return (
     <HStack>
       <Textarea
@@ -12,8 +20,30 @@ function AddComment() {
         minRows={1}
         maxRows={4}
         as={ResizeTextarea}
+        value={commentInput}
+        onChange={e => setCommentInput(e.target.value)}
       />
-      <Button _focus={{ border: 'none' }}>Send</Button>
+      {commentStatus === 'loading' ? (
+        <Button isLoading variant="solid">
+          Send
+        </Button>
+      ) : (
+        <Button
+          _focus={{ border: 'none' }}
+          onClick={() =>
+            dispatch(
+              addComment({
+                comment: commentInput,
+                postID: postID,
+                uploadDate: getDateTime(new Date()),
+                userID: currentUser.uid,
+              })
+            )
+          }
+        >
+          Send
+        </Button>
+      )}
     </HStack>
   );
 }
