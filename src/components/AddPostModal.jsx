@@ -63,8 +63,8 @@ function AddPostModal({ isOpen, onClose }) {
         <ModalBody>
           <HStack alignItems={'flex-start'}>
             <Avatar
-              name="Dan Abrahmov"
-              src="https://bit.ly/dan-abramov"
+              name={currentUser.name}
+              src={currentUser.photoURL}
               size="md"
             />
             <Textarea

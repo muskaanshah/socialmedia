@@ -25,7 +25,7 @@ function Profile() {
       <TopBar />
       <ProfileDescription currentUser={currentUser} />
       <Divider />
-      {postsFeed.length > 0 &&
+      {postsFeed?.length > 0 &&
         postsFeed.map(post => <FeedPost post={post} key={post.uid} />)}
     </Box>
   );

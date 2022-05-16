@@ -51,8 +51,8 @@ function ProfileDescription({ currentUser }) {
       />
       <HStack p={4} spacing={4} align="flex-start">
         <Avatar
-          name={currentUser.name}
-          src={currentUser.photoURL}
+          name={currentUser?.name}
+          src={currentUser?.photoURL}
           size={useBreakpointValue({
             base: 'md',
             sm: 'lg',
@@ -64,10 +64,10 @@ function ProfileDescription({ currentUser }) {
           <HStack w="full" justify="space-between">
             <VStack align="flex-start">
               <Text fontWeight="500" fontSize="xl">
-                {currentUser.name}
+                {currentUser?.name}
               </Text>
               <Text color="gray.500" fontSize="sm" className="mt-0">
-                @{currentUser.username}
+                @{currentUser?.username}
               </Text>
             </VStack>
             <>
@@ -94,22 +94,22 @@ function ProfileDescription({ currentUser }) {
               <Button sx={buttonStyles}>Follow</Button>
             </>
           </HStack>
-          <Text fontSize="sm">{currentUser.bio}</Text>
+          <Text fontSize="sm">{currentUser?.bio}</Text>
           <HStack spacing={8} w="full">
             <Text>
-              {`${currentUser.posts.length} `}
+              {`${currentUser?.posts?.length} `}
               <Text as={'span'} fontWeight="300">
                 Posts
               </Text>
             </Text>
             <Text cursor="pointer" onClick={followersListOnOpen}>
-              {`${currentUser.followers.length} `}
+              {`${currentUser?.followers?.length} `}
               <Text as={'span'} fontWeight="300">
                 Followers
               </Text>
             </Text>
             <Text cursor="pointer" onClick={followingListOnOpen}>
-              {`${currentUser.following.length} `}
+              {`${currentUser?.following?.length} `}
               <Text as={'span'} fontWeight="300">
                 Following
               </Text>
