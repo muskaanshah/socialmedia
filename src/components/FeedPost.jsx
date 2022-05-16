@@ -29,15 +29,15 @@ function FeedPost({ post }) {
     <>
       <Box maxW="full" p={4} mx={{ base: 'auto', sm: 8 }}>
         <ProfileHeader userDetails={userDetails} />
-        <Image src="https://bit.ly/2Z4KKcF" alt="post" my={4} />
-        <HStack w="full">
+        <Text my={4}>{post.description}</Text>
+        {post.photoURL && <Image src={post.photoURL} alt="post" my={4} />}
+        <HStack w="full" my={4}>
           <HStack spacing={6} grow={1} w="full">
             <FaRegHeart size="1.5em" />
             <FaRegComment size="1.5em" />
           </HStack>
           <FaRegBookmark size="1.5em" />
         </HStack>
-        <Text mt={4}>{post.description}</Text>
         {post.likes.length > 0 && (
           <Text my={2} onClick={onOpen} cursor="pointer">
             {`${post.likes.length} ${
@@ -45,7 +45,11 @@ function FeedPost({ post }) {
             }`}
           </Text>
         )}
-        <Text color={'gray.500'}>View all 32 comments</Text>
+        {post.comments.length > 1 && (
+          <Text
+            color={'gray.500'}
+          >{`View all ${post.comments.length} comments`}</Text>
+        )}
         <SingleComment />
         <AddComment />
         <LikesModal isOpen={isOpen} onClose={onClose} />
