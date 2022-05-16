@@ -31,6 +31,9 @@ function FeedPost({ post }) {
         <ProfileHeader userDetails={userDetails} />
         <Text my={4}>{post.description}</Text>
         {post.photoURL && <Image src={post.photoURL} alt="post" my={4} />}
+        <Text color="gray.500" fontSize="xs">
+          {post.uploadDate}
+        </Text>
         <HStack w="full" my={4}>
           <HStack spacing={6} grow={1} w="full">
             <FaRegHeart size="1.5em" />
@@ -50,7 +53,9 @@ function FeedPost({ post }) {
             color={'gray.500'}
           >{`View all ${post.comments.length} comments`}</Text>
         )}
-        <SingleComment comment={post.comments[post.comments.length - 1]} />
+        {post.comments.length > 0 && (
+          <SingleComment comment={post.comments[post.comments.length - 1]} />
+        )}
         <AddComment postID={post.uid} />
         <LikesModal isOpen={isOpen} onClose={onClose} />
       </Box>

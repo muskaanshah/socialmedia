@@ -30,7 +30,7 @@ function AddComment({ postID }) {
       ) : (
         <Button
           _focus={{ border: 'none' }}
-          onClick={() =>
+          onClick={() => {
             dispatch(
               addComment({
                 comment: commentInput,
@@ -38,8 +38,9 @@ function AddComment({ postID }) {
                 uploadDate: getDateTime(new Date()),
                 userID: currentUser.uid,
               })
-            )
-          }
+            );
+            setCommentInput('');
+          }}
         >
           Send
         </Button>

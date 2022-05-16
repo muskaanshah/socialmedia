@@ -30,11 +30,21 @@ export const addPost = createAsyncThunk(
       photo: photoURL,
     };
     const postRef = doc(collection(db, 'posts'), postObj.uid);
-    console.log(postRef);
     await setDoc(postRef, {
       ...postObj,
     });
-    console.log('Added');
+    const usersDoc = await getDoc(doc(db, 'users', id));
+    const user = usersDoc?.data();
+    // Add post to user's posts:
+    const userRef = doc(collection(db, 'users'), id);
+    await updateDoc(
+      userRef,
+      {
+        posts: [...user.posts, postObj.uid],
+      },
+      { merge: true }
+    );
+    return postObj;
   }
 );
 
@@ -83,6 +93,9 @@ export const postSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers: {
+    [addPost.fulfilled]: (state, action) => {
+      state.userPosts = [...state.userPosts, action.payload];
+    },
     [getPostById.fulfilled]: (state, action) => {
       action.payload.forEach(doc => {
         const postExists = state.userPosts.find(
@@ -90,7 +103,6 @@ export const postSlice = createSlice({
         );
         !postExists && state.userPosts.push(doc.data());
       });
-      console.log(current(state.userPosts));
     },
     [addComment.pending]: state => {
       state.commentStatus = 'loading';

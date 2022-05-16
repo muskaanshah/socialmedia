@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Avatar, Box, HStack, Text } from '@chakra-ui/react';
+import { Avatar, Box, HStack, Text, VStack } from '@chakra-ui/react';
 import { getComments } from '../services';
 
 function SingleComment({ comment }) {
@@ -21,12 +21,17 @@ function SingleComment({ comment }) {
     <Box my={2}>
       <HStack alignItems="flex-start">
         <Avatar name={userDetails.name} src={userDetails.photoURL} size="md" />
-        <Text>
-          <Text as={'span'} fontWeight="500">
-            {`${userDetails.username} `}
+        <VStack align="flex-start" w="full">
+          <Text>
+            <Text as={'span'} fontWeight="500">
+              {`${userDetails.username} `}
+            </Text>
+            {commentDetails.comment}
           </Text>
-          {commentDetails.comment}
-        </Text>
+          <Text color="gray.500" fontSize="xs">
+            {commentDetails.uploadDate}
+          </Text>
+        </VStack>
       </HStack>
     </Box>
   );
