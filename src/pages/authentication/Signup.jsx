@@ -1,3 +1,5 @@
+import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import {
   Box,
@@ -8,9 +10,47 @@ import {
   SimpleGrid,
   Stack,
 } from '@chakra-ui/react';
+import { onAuthStateChanged } from 'firebase/auth';
+import { doc, getDoc } from 'firebase/firestore';
+import { auth, db } from '../../firebase';
+import { AuthInputStyles, submitButtonStyles } from '../../styles/globalStyles';
+import { setCurrentUserData, signUpUser } from './authSlice';
 import { CommonHeader } from './components/CommonHeader';
 
 function Signup() {
+  const [userDetails, setUserDetails] = useState({
+    name: '',
+    email: '',
+    password: '',
+    username: '',
+  });
+
+  const { status } = useSelector(state => state.auth);
+  const dispatch = useDispatch();
+
+  const formInputHandler = (field, value) => {
+    setUserDetails({ ...userDetails, [field]: value });
+  };
+
+  const signUpFormHandler = e => {
+    e.preventDefault();
+    dispatch(signUpUser(userDetails));
+  };
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, async user => {
+      if (user) {
+        const userObj = await getDoc(doc(db, `users/${user.uid}`));
+        const data = userObj.data();
+        if (data) dispatch(setCurrentUserData(data));
+      } else {
+        dispatch(setCurrentUserData(null));
+      }
+    });
+    return () => {
+      unsubscribe();
+    };
+  }, [dispatch]);
   return (
     <Box position={'relative'}>
       <Container
@@ -37,69 +77,76 @@ function Signup() {
               Sign Up!
             </Heading>
           </Stack>
-          <Box as={'form'} mt={10}>
+          <Box as={'form'} mt={10} onSubmit={signUpFormHandler}>
             <Stack spacing={4}>
               <Input
                 type="text"
                 placeholder="Full Name"
-                bg={'gray.100'}
-                border={0}
-                color={'gray.800'}
+                sx={AuthInputStyles}
                 _placeholder={{
                   color: 'gray.800',
                 }}
+                value={userDetails.name}
+                onChange={e => formInputHandler('name', e.target.value)}
                 required
               />
               <Input
                 type="text"
                 placeholder="Username"
-                bg={'gray.100'}
-                border={0}
-                color={'gray.800'}
+                sx={AuthInputStyles}
                 _placeholder={{
                   color: 'gray.800',
                 }}
+                value={userDetails.username}
+                onChange={e => formInputHandler('username', e.target.value)}
                 required
               />
               <Input
                 type="email"
                 placeholder="Email"
-                bg={'gray.100'}
-                border={0}
-                color={'gray.800'}
+                sx={AuthInputStyles}
                 _placeholder={{
                   color: 'gray.800',
                 }}
+                value={userDetails.email}
+                onChange={e => formInputHandler('email', e.target.value)}
                 required
               />
               <Input
                 type="password"
                 placeholder="Password"
-                bg={'gray.100'}
-                border={0}
-                color={'gray.800'}
+                sx={AuthInputStyles}
                 _placeholder={{
                   color: 'gray.800',
                 }}
+                value={userDetails.password}
+                onChange={e => formInputHandler('password', e.target.value)}
                 required
               />
             </Stack>
-            <Button
-              type="submit"
-              fontFamily={'heading'}
-              mt={8}
-              w={'full'}
-              bgColor={'gray.100'}
-              color={'gray.900'}
-              _hover={{
-                boxShadow: 'xl',
-              }}
-              _active={{
-                boxShadow: 'xl',
-              }}
-            >
-              Create an account
-            </Button>
+            {status === 'loading' ? (
+              <Button
+                isLoading
+                loadingText="Loading"
+                sx={submitButtonStyles}
+                spinnerPlacement="start"
+              >
+                Submit
+              </Button>
+            ) : (
+              <Button
+                type="submit"
+                sx={submitButtonStyles}
+                _hover={{
+                  boxShadow: 'xl',
+                }}
+                _active={{
+                  boxShadow: 'xl',
+                }}
+              >
+                Create an account
+              </Button>
+            )}
           </Box>
           <Link to="/" className="text-underline">
             Already have an account?

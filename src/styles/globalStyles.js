@@ -28,4 +28,17 @@ const CloseButtonBlack = {
   _focus: { border: 'none' },
 };
 
-export { TopBarStyles, CloseButtonBlack };
+const AuthInputStyles = {
+  bg: 'gray.100',
+  border: '0',
+  color: 'gray.800',
+};
+
+const submitButtonStyles = {
+  mt: '8',
+  w: 'full',
+  bgColor: 'gray.100',
+  color: 'gray.900',
+};
+
+export { TopBarStyles, CloseButtonBlack, AuthInputStyles, submitButtonStyles };

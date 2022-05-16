@@ -1,11 +1,12 @@
+import { useSelector } from 'react-redux';
 import { Navigate, Outlet } from 'react-router-dom';
 
 const PrivateRoute = ({ authRoute = false }) => {
-  const token = localStorage.getItem('encodedToken');
+  const user = useSelector(state => state.auth);
   if (authRoute) {
-    return token ? <Navigate replace to={'/home'} /> : <Outlet />;
+    return user.currentUser ? <Navigate replace to={'/home'} /> : <Outlet />;
   }
-  return token ? <Outlet /> : <Navigate to="/" />;
+  return user.currentUser ? <Outlet /> : <Navigate to="/" />;
 };
 
 export { PrivateRoute };
