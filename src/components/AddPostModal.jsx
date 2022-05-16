@@ -1,4 +1,5 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import ResizeTextarea from 'react-textarea-autosize';
 import {
   Avatar,
@@ -17,16 +18,41 @@ import {
   ModalOverlay,
   Textarea,
 } from '@chakra-ui/react';
+import { addPost } from '../pages/Home/postSlice';
 import { CloseButtonBlack } from '../styles/globalStyles';
+import { getDateTime } from '../utils';
 
 function AddPostModal({ isOpen, onClose }) {
   const [imgUrl, setImgUrl] = useState('');
+  const [postDescription, setPostDescription] = useState('');
+  const { currentUser } = useSelector(state => state.auth);
+  const dispatch = useDispatch();
   const file = useRef();
   const imageChange = e => {
     if (e.target.files && e.target.files.length > 0) {
       setImgUrl(URL.createObjectURL(e.target.files[0]));
     }
   };
+
+  const addPostHandler = () => {
+    const tempDate = getDateTime(new Date());
+    dispatch(
+      addPost({
+        description: postDescription,
+        photoURL: imgUrl,
+        uploadDate: tempDate,
+        id: currentUser.uid,
+      })
+    );
+    onClose();
+  };
+
+  useEffect(() => {
+    return () => {
+      setImgUrl('');
+      setPostDescription('');
+    };
+  }, [isOpen]);
 
   return (
     <Modal closeOnOverlayClick={false} isOpen={isOpen} onClose={onClose}>
@@ -52,6 +78,8 @@ function AddPostModal({ isOpen, onClose }) {
               as={ResizeTextarea}
               _placeholder={{ fontWeight: '400', color: 'gray.500' }}
               _focus={{ border: 'none' }}
+              value={postDescription}
+              onChange={e => setPostDescription(e.target.value)}
               autoFocus
             />
           </HStack>
@@ -86,7 +114,7 @@ function AddPostModal({ isOpen, onClose }) {
               <span className="material-icons-outlined">image</span>
             </FormLabel>
           </Button>
-          <Button mr={3} onClick={onClose} _focus={{ border: 'none' }}>
+          <Button mr={3} _focus={{ border: 'none' }} onClick={addPostHandler}>
             POST
           </Button>
         </ModalFooter>

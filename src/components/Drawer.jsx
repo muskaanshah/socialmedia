@@ -1,3 +1,4 @@
+import { useSelector } from 'react-redux';
 import { NavLink } from 'react-router-dom';
 import {
   Avatar,
@@ -18,6 +19,7 @@ import { AddPostModal } from './AddPostModal';
 function Drawer() {
   const logoColor = useColorModeValue('blue.500', 'blue.200');
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const { currentUser } = useSelector(state => state.auth);
   return (
     <Box
       bg="inherit"
@@ -109,14 +111,14 @@ function Drawer() {
         >
           <HStack spacing={3} w="full">
             <Avatar
-              name="Dan Abrahmov"
-              src="https://bit.ly/dan-abramov"
+              name={currentUser.name}
+              src={currentUser.photoURL}
               size="md"
             />
             <VStack align="flex-start">
-              <Text fontSize="1rem">Profile</Text>
+              <Text fontSize="1rem">{currentUser.name}</Text>
               <Text fontSize="1rem" className="mt-0" color="gray.500">
-                Username
+                {currentUser.username}
               </Text>
             </VStack>
           </HStack>

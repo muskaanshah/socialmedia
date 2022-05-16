@@ -35,7 +35,7 @@ export const signUpUser = createAsyncThunk(
         bookmarked: [],
       };
       const userRef = doc(collection(db, 'users'), response.user.uid);
-      setDoc(userRef, {
+      await setDoc(userRef, {
         ...userDetails,
       });
       return JSON.parse(JSON.stringify(response.user));

@@ -20,7 +20,7 @@ const buttonStyles = {
   _focus: { border: 'none' },
   fontWeight: '400',
 };
-function ProfileDescription() {
+function ProfileDescription({ currentUser }) {
   const {
     isOpen: editProfileIsOpen,
     onOpen: editProfileOnOpen,
@@ -51,8 +51,8 @@ function ProfileDescription() {
       />
       <HStack p={4} spacing={4} align="flex-start">
         <Avatar
-          name="Dan Abrahmov"
-          src="https://bit.ly/dan-abramov"
+          name={currentUser.name}
+          src={currentUser.photoURL}
           size={useBreakpointValue({
             base: 'md',
             sm: 'lg',
@@ -64,10 +64,10 @@ function ProfileDescription() {
           <HStack w="full" justify="space-between">
             <VStack align="flex-start">
               <Text fontWeight="500" fontSize="xl">
-                Muskaan Shah
+                {currentUser.name}
               </Text>
               <Text color="gray.500" fontSize="sm" className="mt-0">
-                @muskaan__shah
+                @{currentUser.username}
               </Text>
             </VStack>
             <>
@@ -94,26 +94,22 @@ function ProfileDescription() {
               <Button sx={buttonStyles}>Follow</Button>
             </>
           </HStack>
-          <Text fontSize="sm">
-            Here's my short description, Lorem ipsum dolor sit amet consectetur
-            adipisicing elit. Placeat quisquam possimus qui cumque reprehenderit
-            molestias unde? Reiciendis assumenda, repellat asperiores tempo
-          </Text>
+          <Text fontSize="sm">{currentUser.bio}</Text>
           <HStack spacing={8} w="full">
             <Text>
-              53{' '}
+              {`${currentUser.posts.length} `}
               <Text as={'span'} fontWeight="300">
                 Posts
               </Text>
             </Text>
             <Text cursor="pointer" onClick={followersListOnOpen}>
-              293{' '}
+              {`${currentUser.followers.length} `}
               <Text as={'span'} fontWeight="300">
                 Followers
               </Text>
             </Text>
             <Text cursor="pointer" onClick={followingListOnOpen}>
-              415{' '}
+              {`${currentUser.following.length} `}
               <Text as={'span'} fontWeight="300">
                 Following
               </Text>

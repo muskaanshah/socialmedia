@@ -6,9 +6,6 @@ function Home() {
   return (
     <Box sx={{ flexGrow: '1' }}>
       <TopBar />
-      <FeedPost />
-      <FeedPost />
-      <FeedPost />
     </Box>
   );
 }
