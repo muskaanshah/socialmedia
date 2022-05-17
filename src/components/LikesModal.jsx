@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Modal,
   ModalBody,
@@ -13,6 +14,7 @@ import { UserFollowStack } from './UserFollowStack';
 
 function LikesModal({ isOpen, onClose, likes }) {
   const [userObjectArray, setUserObjectArray] = useState([]);
+  const navigate = useNavigate();
   useEffect(() => {
     likes?.length > 0 && getUserObjectsInArray(likes, setUserObjectArray);
   }, [likes]);
@@ -30,6 +32,10 @@ function LikesModal({ isOpen, onClose, likes }) {
                 user={user}
                 userList={likes}
                 setUserObjectArray={setUserObjectArray}
+                onClick={() => {
+                  onClose();
+                  navigate(`/profile/${user.uid}`);
+                }}
               />
             ))}
           </VStack>

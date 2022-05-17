@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Modal,
   ModalBody,
@@ -13,13 +14,11 @@ import { UserFollowStack } from './UserFollowStack';
 
 function FollowingList({ isOpen, onClose, following }) {
   const [userObjectArray, setUserObjectArray] = useState([]);
+  const navigate = useNavigate();
   useEffect(() => {
     following?.length > 0 &&
       getUserObjectsInArray(following, setUserObjectArray);
   }, [following]);
-  // useEffect(() => {
-  //   return () => onClose();
-  // }, [onClose]);
   return (
     <Modal isOpen={isOpen} onClose={onClose} scrollBehavior="inside">
       <ModalOverlay />
@@ -34,6 +33,10 @@ function FollowingList({ isOpen, onClose, following }) {
                 user={user}
                 userList={following}
                 setUserObjectArray={setUserObjectArray}
+                onClick={() => {
+                  onClose();
+                  navigate(`/profile/${user.uid}`);
+                }}
               />
             ))}
           </VStack>

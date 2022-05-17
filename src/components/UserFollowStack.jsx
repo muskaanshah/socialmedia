@@ -16,7 +16,7 @@ import {
 } from '../pages/Home/userSlice';
 import { getUserObjectsInArray } from '../services';
 
-function UserFollowStack({ user, setUserObjectArray, userList }) {
+function UserFollowStack({ user, setUserObjectArray, userList, onClick }) {
   const { currentUser } = useSelector(state => state.auth);
   const { followUnfollowStatus } = useSelector(state => state.user);
   const navigate = useNavigate();
@@ -46,12 +46,7 @@ function UserFollowStack({ user, setUserObjectArray, userList }) {
   };
   return (
     <HStack justifyContent="space-between" w="full">
-      <HStack
-        spacing={3}
-        flexGrow="1"
-        cursor="pointer"
-        onClick={() => navigate(`/profile/${user.uid}`)}
-      >
+      <HStack spacing={3} flexGrow="1" cursor="pointer" onClick={onClick}>
         <Avatar name={user.name} src={user.photoURL} size="md" />
         <VStack align="flex-start">
           <Text fontSize="1rem">{user.name}</Text>
