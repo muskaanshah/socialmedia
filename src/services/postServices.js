@@ -52,4 +52,18 @@ const getPostByPostId = async (feedArray, setFeedPosts) => {
   }
 };
 
+// const getExplorePostByPostId = async (feedArray, setExplorePosts) => {
+//   let tempArray = [];
+//   const q = query(collection(db, 'posts'), where('uid', 'in', feedArray));
+//   try {
+//     const querySnapshot = await getDocs(q);
+//     querySnapshot.forEach(doc => {
+//       tempArray = [...tempArray, doc.data()];
+//     });
+//     setFeedPosts(tempArray);
+//   } catch (err) {
+//     console.error(err);
+//   }
+// };
+
 export { getComments, getPostByPostId };
