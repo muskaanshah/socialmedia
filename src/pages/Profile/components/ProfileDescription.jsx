@@ -51,6 +51,28 @@ function ProfileDescription() {
   const { currentUser } = useSelector(state => state.auth);
   const { singleUser } = useSelector(state => state.user);
   const dispatch = useDispatch();
+
+  const unFollowUserHandler = async () => {
+    await dispatch(
+      unFollowUser({
+        currentUserID: currentUser?.uid,
+        unFollowedUserID: singleUser?.uid,
+      })
+    ).unwrap();
+    dispatch(getAllUsers());
+    dispatch(getSingleUser(singleUser.uid));
+  };
+
+  const followUserHandler = async () => {
+    await dispatch(
+      followUser({
+        currentUserID: currentUser?.uid,
+        followedUserID: singleUser?.uid,
+      })
+    ).unwrap();
+    dispatch(getAllUsers());
+    dispatch(getSingleUser(singleUser.uid));
+  };
   return (
     <>
       <Image
@@ -105,33 +127,12 @@ function ProfileDescription() {
                     <Button
                       sx={buttonStyles}
                       variant="outline"
-                      onClick={async () => {
-                        await dispatch(
-                          unFollowUser({
-                            currentUserID: currentUser?.uid,
-                            unFollowedUserID: singleUser?.uid,
-                          })
-                        ).unwrap();
-                        dispatch(getAllUsers());
-                        dispatch(getSingleUser(singleUser.uid));
-                      }}
+                      onClick={unFollowUserHandler}
                     >
                       Unfollow
                     </Button>
                   ) : (
-                    <Button
-                      sx={buttonStyles}
-                      onClick={async () => {
-                        await dispatch(
-                          followUser({
-                            currentUserID: currentUser?.uid,
-                            followedUserID: singleUser?.uid,
-                          })
-                        ).unwrap();
-                        dispatch(getAllUsers());
-                        dispatch(getSingleUser(singleUser.uid));
-                      }}
-                    >
+                    <Button sx={buttonStyles} onClick={followUserHandler}>
                       Follow
                     </Button>
                   )}
