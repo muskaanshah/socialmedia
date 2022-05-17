@@ -1,20 +1,15 @@
 import { useEffect } from 'react';
 import { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { Box, Center, Text } from '@chakra-ui/react';
 import { FeedPost } from '../../components';
 import { getPostByPostId } from '../../services';
 import { TopBar } from './components/TopBar';
-import { getAllUsers } from './userSlice';
 
 function Home() {
   const [feedPosts, setFeedPosts] = useState([]);
   const { users } = useSelector(state => state.user);
   const { currentUser } = useSelector(state => state.auth);
-  const dispatch = useDispatch();
-  useEffect(() => {
-    dispatch(getAllUsers());
-  }, [dispatch]);
   useEffect(() => {
     let feedArray = [];
     const curUser = users.find(user => user.uid === currentUser.uid);

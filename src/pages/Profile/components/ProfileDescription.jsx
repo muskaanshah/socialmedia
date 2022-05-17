@@ -11,7 +11,12 @@ import {
   useDisclosure,
 } from '@chakra-ui/react';
 import { FollowersList, FollowingList } from '../../../components';
-import { followUser, getAllUsers } from '../../Home/userSlice';
+import {
+  followUser,
+  getAllUsers,
+  getSingleUser,
+  unFollowUser,
+} from '../../Home/userSlice';
 import { EditProfile } from './EditProfile';
 import { SettingsModal } from './SettingsModal';
 
@@ -97,7 +102,20 @@ function ProfileDescription() {
               ) : (
                 <>
                   {singleUser?.followers?.includes(currentUser?.uid) ? (
-                    <Button sx={buttonStyles} variant="outline">
+                    <Button
+                      sx={buttonStyles}
+                      variant="outline"
+                      onClick={async () => {
+                        await dispatch(
+                          unFollowUser({
+                            currentUserID: currentUser?.uid,
+                            unFollowedUserID: singleUser?.uid,
+                          })
+                        ).unwrap();
+                        dispatch(getAllUsers());
+                        dispatch(getSingleUser(singleUser.uid));
+                      }}
+                    >
                       Unfollow
                     </Button>
                   ) : (
@@ -111,6 +129,7 @@ function ProfileDescription() {
                           })
                         ).unwrap();
                         dispatch(getAllUsers());
+                        dispatch(getSingleUser(singleUser.uid));
                       }}
                     >
                       Follow

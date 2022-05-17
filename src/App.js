@@ -1,9 +1,15 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 import { Outlet } from 'react-router-dom';
 import { Box, Grid } from '@chakra-ui/react';
 import { BottomBar, Drawer, SideBar } from './components';
+import { getAllUsers } from './pages/Home/userSlice';
 
 function App() {
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(getAllUsers());
+  }, [dispatch]);
   return (
     <Box px={{ base: 0, lg: 6 }} maxW="8xl" mx="auto">
       <Grid

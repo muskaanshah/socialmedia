@@ -53,22 +53,22 @@ export const followUser = createAsyncThunk(
 );
 
 export const unFollowUser = createAsyncThunk(
-  'user/followUser',
-  async ({ currentUserID, followedUserID }, thunkAPI) => {
+  'user/unFollowUser',
+  async ({ currentUserID, unFollowedUserID }, thunkAPI) => {
     try {
       const currentUserDocs = await getDoc(doc(db, 'users', currentUserID));
       const currentUser = currentUserDocs?.data();
-      // Add user to current user's followings list:
+      // Remove user from current user's followings list:
       const currentUserRef = doc(collection(db, 'users'), currentUserID);
       await updateDoc(currentUserRef, {
-        following: [...currentUser.following, followedUserID],
+        following: currentUser.following.filter(id => id !== unFollowedUserID),
       });
-      const followedUserDocs = await getDoc(doc(db, 'users', followedUserID));
+      const followedUserDocs = await getDoc(doc(db, 'users', unFollowedUserID));
       const followedUser = followedUserDocs?.data();
-      // Add user to followed user's followings list:
-      const followedUserRef = doc(collection(db, 'users'), followedUserID);
+      // Remove user from other user's followers list:
+      const followedUserRef = doc(collection(db, 'users'), unFollowedUserID);
       await updateDoc(followedUserRef, {
-        followers: [...followedUser.followers, currentUserID],
+        followers: followedUser.followers.filter(id => id !== currentUserID),
       });
     } catch (error) {
       return thunkAPI.rejectWithValue(error);
