@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import {
   Avatar,
   Box,
@@ -19,7 +19,6 @@ import { getUserObjectsInArray } from '../services';
 function UserFollowStack({ user, setUserObjectArray, userList, onClick }) {
   const { currentUser } = useSelector(state => state.auth);
   const { followUnfollowStatus } = useSelector(state => state.user);
-  const navigate = useNavigate();
   const dispatch = useDispatch();
   const { userID } = useParams();
 
