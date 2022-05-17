@@ -18,7 +18,7 @@ import {
   ModalOverlay,
   Textarea,
 } from '@chakra-ui/react';
-import { addPost, getPostById } from '../pages/Home/postSlice';
+import { addPost, getPostByUserId } from '../pages/Home/postSlice';
 import { getAllUsers } from '../pages/Home/userSlice';
 import { CloseButtonBlack } from '../styles/globalStyles';
 import { getDateTime } from '../utils';
@@ -46,7 +46,7 @@ function AddPostModal({ isOpen, onClose }) {
         id: currentUser.uid,
       })
     ).unwrap();
-    await dispatch(getPostById(currentUser.uid)).unwrap();
+    await dispatch(getPostByUserId(currentUser.uid)).unwrap();
     dispatch(getAllUsers());
   };
 

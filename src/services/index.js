@@ -1,2 +1,2 @@
 export { getUserDetailsById } from './userServices';
-export { getComments } from './postServices';
+export { getComments, getPostByPostId } from './postServices';

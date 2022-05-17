@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Box, Divider } from '@chakra-ui/react';
 import { FeedPost } from '../../components';
-import { getPostById } from '../Home/postSlice';
+import { getPostByUserId } from '../Home/postSlice';
 import { ProfileDescription } from './components/ProfileDescription';
 import { TopBar } from './components/TopBar';
 
@@ -15,7 +15,7 @@ function Profile() {
   const curUser = users.find(user => user.uid === currentUser.uid);
 
   useEffect(() => {
-    dispatch(getPostById(currentUser.uid));
+    dispatch(getPostByUserId(currentUser.uid));
   }, [dispatch, currentUser]);
   useEffect(() => {
     const tempPosts = [...userPosts].sort((a, b) => {

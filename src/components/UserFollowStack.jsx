@@ -26,7 +26,6 @@ function UserFollowStack({ user }) {
               followedUserID: user.uid,
             })
           ).unwrap();
-          console.log(res, 'res');
           dispatch(getAllUsers());
         }}
       >
