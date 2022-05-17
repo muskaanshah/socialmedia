@@ -13,6 +13,7 @@ import { UserFollowStack } from './UserFollowStack';
 function SideBar() {
   const { users } = useSelector(state => state.user);
   const { currentUser } = useSelector(state => state.auth);
+  const curUser = users.find(user => user.uid === currentUser.uid);
   return (
     <Box
       bg="inherit"
@@ -34,10 +35,14 @@ function SideBar() {
         </InputGroup>
         <Text fontWeight="500">Suggested for you</Text>
         {users
-          .filter(user => user.uid !== currentUser.uid)
+          .filter(
+            user =>
+              user.uid !== currentUser.uid &&
+              !curUser.following.includes(user.uid)
+          )
           .filter((_, index) => index < 5)
           .map(user => (
-            <UserFollowStack user={user} />
+            <UserFollowStack key={user.uid} user={user} />
           ))}
       </VStack>
     </Box>

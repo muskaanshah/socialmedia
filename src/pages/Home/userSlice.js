@@ -5,9 +5,7 @@ import {
   getDoc,
   getDocs,
   query,
-  setDoc,
   updateDoc,
-  where,
 } from 'firebase/firestore';
 import { db } from '../../firebase';
 
@@ -15,11 +13,44 @@ const initialState = {
   users: [],
 };
 
-export const getAllUsers = createAsyncThunk('post/getAllUsers', async id => {
+export const getAllUsers = createAsyncThunk('user/getAllUsers', async () => {
   const q = query(collection(db, 'users'));
   const querySnapshot = await getDocs(q);
+  console.log('inside');
   return querySnapshot;
 });
+
+export const followUser = createAsyncThunk(
+  'user/followUser',
+  async ({ currentUserID, followedUserID }, thunkAPI) => {
+    try {
+      const currentUserDocs = await getDoc(doc(db, 'users', currentUserID));
+      const currentUser = currentUserDocs?.data();
+      // Add user to current user's followings list:
+      const currentUserRef = doc(collection(db, 'users'), currentUserID);
+      await updateDoc(
+        currentUserRef,
+        {
+          following: [...currentUser.following, followedUserID],
+        },
+        { merge: true }
+      );
+      const followedUserDocs = await getDoc(doc(db, 'users', followedUserID));
+      const followedUser = followedUserDocs?.data();
+      // Add user to followed user's followings list:
+      const followedUserRef = doc(collection(db, 'users'), followedUserID);
+      await updateDoc(
+        followedUserRef,
+        {
+          followers: [...followedUser.followers, currentUserID],
+        },
+        { merge: true }
+      );
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+);
 
 export const userSlice = createSlice({
   name: 'user',
@@ -27,10 +58,15 @@ export const userSlice = createSlice({
   reducers: {},
   extraReducers: {
     [getAllUsers.fulfilled]: (state, action) => {
+      state.users = [];
+      console.log('first', current(state));
       action.payload.forEach(doc => {
         state.users.push(doc.data());
       });
-      console.log(current(state));
+      console.log('second', current(state));
+    },
+    [followUser.rejected]: (state, action) => {
+      console.log(action.payload);
     },
   },
 });
