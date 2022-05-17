@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import ResizeTextarea from 'react-textarea-autosize';
 import { Button, HStack, Textarea } from '@chakra-ui/react';
-import { addComment } from '../pages/Home/postSlice';
+import { addComment, getSinglePost } from '../pages/Home/postSlice';
 import { getAllUsers } from '../pages/Home/userSlice';
 import { getDateTime } from '../utils';
 
@@ -40,7 +40,8 @@ function AddComment({ postID }) {
                 userID: currentUser.uid,
               })
             ).unwrap();
-            await dispatch(getAllUsers()).unwrap();
+            dispatch(getAllUsers()).unwrap();
+            dispatch(getSinglePost(postID));
             setCommentInput('');
           }}
         >

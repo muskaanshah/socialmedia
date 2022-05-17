@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Box, Center, Text } from '@chakra-ui/react';
 import { FeedPost } from '../../components';
-import { getPostByPostId } from '../../services';
+import { getFeedPosts } from '../../services';
 import { getAllUsers } from '../Home/userSlice';
 import { TopBar } from './components/TopBar';
 
@@ -23,9 +23,8 @@ function Explore() {
     users.forEach(
       user => notFollowing.includes(user.uid) && feedArray.push(...user.posts)
     );
-    feedArray.length > 0 && getPostByPostId(feedArray, setFeedPosts);
+    feedArray.length > 0 && getFeedPosts(feedArray, setFeedPosts);
   }, [users, currentUser]);
-  console.log(feedPosts);
   return (
     <Box sx={{ flexGrow: '1' }}>
       <TopBar />

@@ -23,7 +23,7 @@ const getComments = async (id, setCommentDetails, setUserDetails) => {
   }
 };
 
-const getPostByPostId = async (feedArray, setFeedPosts) => {
+const getFeedPosts = async (feedArray, setFeedPosts) => {
   let tempArray = [];
   const q = query(collection(db, 'posts'), where('uid', 'in', feedArray));
   try {
@@ -37,4 +37,4 @@ const getPostByPostId = async (feedArray, setFeedPosts) => {
   }
 };
 
-export { getComments, getPostByPostId };
+export { getComments, getFeedPosts };

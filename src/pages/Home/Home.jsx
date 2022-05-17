@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Box, Center, Text } from '@chakra-ui/react';
 import { FeedPost } from '../../components';
-import { getPostByPostId } from '../../services';
+import { getFeedPosts } from '../../services';
 import { TopBar } from './components/TopBar';
 
 function Home() {
@@ -18,7 +18,7 @@ function Home() {
         curUser?.following?.includes(user.uid) && feedArray.push(...user.posts)
     );
     // feedArray.push(...curUser?.posts);
-    feedArray.length > 0 && getPostByPostId(feedArray, setFeedPosts);
+    feedArray.length > 0 && getFeedPosts(feedArray, setFeedPosts);
   }, [users, currentUser]);
   return (
     <Box sx={{ flexGrow: '1' }}>

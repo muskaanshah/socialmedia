@@ -15,6 +15,7 @@ import { db } from '../../firebase';
 const initialState = {
   userPosts: [],
   commentStatus: 'idle',
+  singlePost: {},
 };
 
 export const addPost = createAsyncThunk(
@@ -91,14 +92,22 @@ export const getPostByUserId = createAsyncThunk(
   }
 );
 
+export const getSinglePost = createAsyncThunk(
+  'post/getSinglePost',
+  async id => {
+    const postDoc = await getDoc(doc(collection(db, 'posts'), id));
+    return postDoc.data();
+  }
+);
+
 export const postSlice = createSlice({
   name: 'post',
   initialState,
   reducers: {},
   extraReducers: {
-    // [addPost.fulfilled]: (state, action) => {
-    //   state.userPosts = [...state.userPosts, action.payload];
-    // },
+    [getSinglePost.fulfilled]: (state, action) => {
+      state.singlePost = action.payload;
+    },
     [getPostByUserId.fulfilled]: (state, action) => {
       state.userPosts = [];
       action.payload.forEach(doc => {
@@ -109,7 +118,6 @@ export const postSlice = createSlice({
       state.commentStatus = 'loading';
     },
     [addComment.fulfilled]: (state, action) => {
-      console.log(action.payload);
       const tempUserPosts = state.userPosts.reduce(
         (acc, curr) =>
           curr.uid === action.payload.uid
