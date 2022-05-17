@@ -98,7 +98,7 @@ function FeedPost({ post }) {
           )}
         </Box>
         <AddComment postID={post.uid} />
-        <LikesModal isOpen={isOpen} onClose={onClose} />
+        <LikesModal isOpen={isOpen} onClose={onClose} likes={post.likes} />
       </Box>
       <Divider />
     </>
