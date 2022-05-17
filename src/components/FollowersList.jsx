@@ -28,7 +28,7 @@ function FollowersList({ isOpen, onClose, followers }) {
               <UserFollowStack
                 key={user.uid}
                 user={user}
-                followers={followers}
+                userList={followers}
                 setUserObjectArray={setUserObjectArray}
               />
             ))}

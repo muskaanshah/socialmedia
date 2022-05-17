@@ -1,21 +1,27 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import {
   Avatar,
+  Box,
   Button,
   HStack,
   Spinner,
   Text,
   VStack,
 } from '@chakra-ui/react';
-import { followUser, unFollowUser } from '../pages/Home/userSlice';
+import {
+  followUser,
+  getSingleUser,
+  unFollowUser,
+} from '../pages/Home/userSlice';
 import { getUserObjectsInArray } from '../services';
 
-function UserFollowStack({ user, setUserObjectArray, followers }) {
+function UserFollowStack({ user, setUserObjectArray, userList }) {
   const { currentUser } = useSelector(state => state.auth);
   const { followUnfollowStatus } = useSelector(state => state.user);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { userID } = useParams();
 
   const unFollowUserHandler = async () => {
     await dispatch(
@@ -24,7 +30,8 @@ function UserFollowStack({ user, setUserObjectArray, followers }) {
         unFollowedUserID: user?.uid,
       })
     ).unwrap();
-    getUserObjectsInArray(followers, setUserObjectArray);
+    getUserObjectsInArray(userList, setUserObjectArray);
+    if (userID === currentUser?.uid) dispatch(getSingleUser(userID));
   };
 
   const followUserHandler = async () => {
@@ -34,7 +41,8 @@ function UserFollowStack({ user, setUserObjectArray, followers }) {
         followedUserID: user?.uid,
       })
     ).unwrap();
-    getUserObjectsInArray(followers, setUserObjectArray);
+    getUserObjectsInArray(userList, setUserObjectArray);
+    if (userID === currentUser?.uid) dispatch(getSingleUser(userID));
   };
   return (
     <HStack justifyContent="space-between" w="full">
@@ -56,22 +64,28 @@ function UserFollowStack({ user, setUserObjectArray, followers }) {
         <Spinner />
       ) : (
         <>
-          {user?.followers?.includes(currentUser?.uid) ? (
-            <Button
-              variant="link"
-              _focus={{ border: 'none' }}
-              onClick={unFollowUserHandler}
-            >
-              Unfollow
-            </Button>
+          {user?.uid === currentUser?.uid ? (
+            <Box />
           ) : (
-            <Button
-              variant="link"
-              _focus={{ border: 'none' }}
-              onClick={followUserHandler}
-            >
-              Follow
-            </Button>
+            <>
+              {user?.followers?.includes(currentUser?.uid) ? (
+                <Button
+                  variant="link"
+                  _focus={{ border: 'none' }}
+                  onClick={unFollowUserHandler}
+                >
+                  Unfollow
+                </Button>
+              ) : (
+                <Button
+                  variant="link"
+                  _focus={{ border: 'none' }}
+                  onClick={followUserHandler}
+                >
+                  Follow
+                </Button>
+              )}
+            </>
           )}
         </>
       )}
