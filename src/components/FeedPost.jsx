@@ -19,7 +19,7 @@ function FeedPost({ post }) {
   const [userDetails, setUserDetails] = useState({
     name: '',
     photoURL: '',
-    id: '',
+    uid: '',
     username: '',
   });
   useEffect(() => {

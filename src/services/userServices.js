@@ -7,7 +7,7 @@ const getUserDetailsById = async (id, setUserDetails) => {
     setUserDetails({
       name: userDoc.data().name,
       photoURL: userDoc.data().photoURL,
-      id: userDoc.data().uid,
+      uid: userDoc.data().uid,
       username: userDoc.data().username,
     });
   } catch (err) {

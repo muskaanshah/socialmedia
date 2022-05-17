@@ -104,7 +104,7 @@ function Drawer() {
         </VStack>
         <Link
           as={NavLink}
-          to="/profile"
+          to={`/profile/${currentUser.uid}`}
           _hover={{ textDecoration: 'none' }}
           _focus={{ outline: 'none' }}
           w="full"

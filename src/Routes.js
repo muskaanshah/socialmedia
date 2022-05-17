@@ -22,7 +22,7 @@ function Routes() {
           <Route path="/explore" element={<Explore />} />
           <Route path="/saved" element={<Saved />} />
           <Route path="/notifications" element={<Notifications />} />
-          <Route path="/profile" element={<Profile />} />
+          <Route path="/profile/:userID" element={<Profile />} />
           <Route path="/singlepost" element={<SinglePost />} />
         </Route>
       </Route>
