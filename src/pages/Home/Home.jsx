@@ -22,13 +22,14 @@ function Home() {
       user =>
         curUser.following.includes(user.uid) && feedArray.push(...user.posts)
     );
-    feedArray.forEach(postID => getPostByPostId(postID, setFeedPosts));
+    feedArray.push(...curUser.posts);
+    getPostByPostId(feedArray, setFeedPosts);
   }, [users, currentUser]);
   return (
     <Box sx={{ flexGrow: '1' }}>
       <TopBar />
       {feedPosts.map(post => (
-        <FeedPost post={post} />
+        <FeedPost post={post} key={post.uid} />
       ))}
     </Box>
   );

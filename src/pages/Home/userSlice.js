@@ -15,6 +15,7 @@ const initialState = {
 
 export const getAllUsers = createAsyncThunk('user/getAllUsers', async () => {
   const q = query(collection(db, 'users'));
+  console.log('inside');
   const querySnapshot = await getDocs(q);
   return querySnapshot;
 });
