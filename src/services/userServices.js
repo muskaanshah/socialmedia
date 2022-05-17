@@ -22,7 +22,7 @@ const getUserDetailsByIdForHeader = async (id, setUserDetails) => {
   }
 };
 
-const getSingleUser = async (idArray, setUserObjectArray) => {
+const getUserObjectsInArray = async (idArray, setUserObjectArray) => {
   try {
     let tempArray = [];
     const q = query(collection(db, 'users'), where('uid', 'in', idArray));
@@ -36,4 +36,4 @@ const getSingleUser = async (idArray, setUserObjectArray) => {
   }
 };
 
-export { getUserDetailsByIdForHeader, getSingleUser };
+export { getUserDetailsByIdForHeader, getUserObjectsInArray };

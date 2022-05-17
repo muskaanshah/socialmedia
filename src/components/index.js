@@ -10,3 +10,4 @@ export { LikesModal } from './LikesModal';
 export { AddPostModal } from './AddPostModal';
 export { FollowersList } from './FollowersList';
 export { FollowingList } from './FollowingList';
+export { SidebarUserChip } from './SidebarUserChip';

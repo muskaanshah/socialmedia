@@ -1,12 +1,41 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { Avatar, Button, HStack, Text, VStack } from '@chakra-ui/react';
-import { followUser, getAllUsers } from '../pages/Home/userSlice';
+import {
+  Avatar,
+  Button,
+  HStack,
+  Spinner,
+  Text,
+  VStack,
+} from '@chakra-ui/react';
+import { followUser, unFollowUser } from '../pages/Home/userSlice';
+import { getUserObjectsInArray } from '../services';
 
-function UserFollowStack({ user }) {
+function UserFollowStack({ user, setUserObjectArray, followers }) {
   const { currentUser } = useSelector(state => state.auth);
+  const { followUnfollowStatus } = useSelector(state => state.user);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
+  const unFollowUserHandler = async () => {
+    await dispatch(
+      unFollowUser({
+        currentUserID: currentUser?.uid,
+        unFollowedUserID: user?.uid,
+      })
+    ).unwrap();
+    getUserObjectsInArray(followers, setUserObjectArray);
+  };
+
+  const followUserHandler = async () => {
+    await dispatch(
+      followUser({
+        currentUserID: currentUser?.uid,
+        followedUserID: user?.uid,
+      })
+    ).unwrap();
+    getUserObjectsInArray(followers, setUserObjectArray);
+  };
   return (
     <HStack justifyContent="space-between" w="full">
       <HStack
@@ -23,21 +52,29 @@ function UserFollowStack({ user }) {
           </Text>
         </VStack>
       </HStack>
-      <Button
-        variant="link"
-        _focus={{ border: 'none' }}
-        onClick={async () => {
-          await dispatch(
-            followUser({
-              currentUserID: currentUser.uid,
-              followedUserID: user.uid,
-            })
-          ).unwrap();
-          dispatch(getAllUsers());
-        }}
-      >
-        Follow
-      </Button>
+      {followUnfollowStatus === 'loading' ? (
+        <Spinner />
+      ) : (
+        <>
+          {user?.followers?.includes(currentUser?.uid) ? (
+            <Button
+              variant="link"
+              _focus={{ border: 'none' }}
+              onClick={unFollowUserHandler}
+            >
+              Unfollow
+            </Button>
+          ) : (
+            <Button
+              variant="link"
+              _focus={{ border: 'none' }}
+              onClick={followUserHandler}
+            >
+              Follow
+            </Button>
+          )}
+        </>
+      )}
     </HStack>
   );
 }

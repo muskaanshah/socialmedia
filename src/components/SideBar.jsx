@@ -8,7 +8,7 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import { UserFollowStack } from './UserFollowStack';
+import { SidebarUserChip } from './SidebarUserChip';
 
 function SideBar() {
   const { users } = useSelector(state => state.user);
@@ -42,7 +42,7 @@ function SideBar() {
           )
           .filter((_, index) => index < 5)
           .map(user => (
-            <UserFollowStack key={user.uid} user={user} />
+            <SidebarUserChip key={user.uid} user={user} />
           ))}
       </VStack>
     </Box>
