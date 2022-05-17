@@ -17,6 +17,9 @@ function FollowingList({ isOpen, onClose, following }) {
     following?.length > 0 &&
       getUserObjectsInArray(following, setUserObjectArray);
   }, [following]);
+  // useEffect(() => {
+  //   return () => onClose();
+  // }, [onClose]);
   return (
     <Modal isOpen={isOpen} onClose={onClose} scrollBehavior="inside">
       <ModalOverlay />

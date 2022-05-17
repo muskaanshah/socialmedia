@@ -1,6 +1,12 @@
 import { useEffect, useState } from 'react';
-import { FaRegBookmark, FaRegComment, FaRegHeart } from 'react-icons/fa';
-import { useNavigate } from 'react-router-dom';
+import {
+  FaHeart,
+  FaRegBookmark,
+  FaRegComment,
+  FaRegHeart,
+} from 'react-icons/fa';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate, useParams } from 'react-router-dom';
 import {
   Box,
   Divider,
@@ -9,6 +15,8 @@ import {
   Text,
   useDisclosure,
 } from '@chakra-ui/react';
+import { getPostByUserId, likePost, unlikePost } from '../pages/Home/postSlice';
+import { getAllUsers } from '../pages/Home/userSlice';
 import { getUserDetailsByIdForHeader } from '../services';
 import { AddComment } from './AddComment';
 import { LikesModal } from './LikesModal';
@@ -16,7 +24,12 @@ import { ProfileHeader } from './ProfileHeader';
 import { SingleComment } from './SingleComment';
 
 function FeedPost({ post }) {
+  const { userID } = useParams();
+  const dispatch = useDispatch();
+  const { users } = useSelector(state => state.user);
+  const { currentUser } = useSelector(state => state.auth);
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const [isLiked, setIsLiked] = useState(false);
   const [userDetails, setUserDetails] = useState({
     name: '',
     photoURL: '',
@@ -24,9 +37,29 @@ function FeedPost({ post }) {
     username: '',
   });
   const navigate = useNavigate();
+
+  const likeHandler = async () => {
+    await dispatch(
+      likePost({ postID: post.uid, currentUserId: currentUser.uid })
+    ).unwrap();
+    dispatch(getAllUsers());
+    dispatch(getPostByUserId(userID));
+  };
+
+  const unlikeHandler = async () => {
+    await dispatch(
+      unlikePost({ postID: post.uid, currentUserId: currentUser.uid })
+    ).unwrap();
+    dispatch(getAllUsers());
+    dispatch(getPostByUserId(userID));
+  };
+
   useEffect(() => {
     getUserDetailsByIdForHeader(post.userID, setUserDetails);
-  }, [post.userID]);
+  }, [post.userID, users]);
+  useEffect(() => {
+    setIsLiked(post?.likes?.find(userID => userID === currentUser.uid));
+  }, [currentUser.uid, post.likes]);
   return (
     <>
       <Box maxW="full" p={4} mx={{ base: 'auto', sm: 8 }}>
@@ -38,15 +71,19 @@ function FeedPost({ post }) {
         </Text>
         <HStack w="full" my={4}>
           <HStack spacing={6} grow={1} w="full">
-            <FaRegHeart size="1.5em" />
+            {isLiked ? (
+              <FaHeart size="1.5em" onClick={unlikeHandler} />
+            ) : (
+              <FaRegHeart size="1.5em" onClick={likeHandler} />
+            )}
             <FaRegComment size="1.5em" />
           </HStack>
           <FaRegBookmark size="1.5em" />
         </HStack>
         {post.likes.length > 0 && (
           <Text my={2} onClick={onOpen} cursor="pointer">
-            {`${post.likes.length} ${
-              post.likes.length === 1 ? 'like' : 'likes'
+            {`${post?.likes?.length} ${
+              post?.likes?.length === 1 ? 'like' : 'likes'
             }`}
           </Text>
         )}

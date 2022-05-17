@@ -67,13 +67,9 @@ export const addComment = createAsyncThunk(
     const posts = postsDoc?.data();
     // Add comment to post's comments:
     const postRef = doc(collection(db, 'posts'), postID);
-    await updateDoc(
-      postRef,
-      {
-        comments: [...posts.comments, commentObj.uid],
-      },
-      { merge: true }
-    );
+    await updateDoc(postRef, {
+      comments: [...posts.comments, commentObj.uid],
+    });
     const postsDocAfterPostingComment = await getDoc(doc(db, 'posts', postID));
     return postsDocAfterPostingComment.data();
   }
@@ -97,6 +93,30 @@ export const getSinglePost = createAsyncThunk(
   async id => {
     const postDoc = await getDoc(doc(collection(db, 'posts'), id));
     return postDoc.data();
+  }
+);
+
+export const likePost = createAsyncThunk(
+  'post/likePost',
+  async ({ postID, currentUserId }) => {
+    const postsDoc = await getDoc(doc(db, 'posts', postID));
+    const posts = postsDoc?.data();
+    const postRef = doc(collection(db, 'posts'), postID);
+    await updateDoc(postRef, {
+      likes: [...posts.likes, currentUserId],
+    });
+  }
+);
+
+export const unlikePost = createAsyncThunk(
+  'post/unlikePost',
+  async ({ postID, currentUserId }) => {
+    const postsDoc = await getDoc(doc(db, 'posts', postID));
+    const posts = postsDoc?.data();
+    const postRef = doc(collection(db, 'posts'), postID);
+    await updateDoc(postRef, {
+      likes: posts.likes.filter(user => user !== currentUserId),
+    });
   }
 );
 
