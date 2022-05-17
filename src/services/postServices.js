@@ -7,7 +7,7 @@ import {
   where,
 } from 'firebase/firestore';
 import { db } from '../firebase';
-import { getUserDetailsById } from './userServices';
+import { getUserDetailsByIdForHeader } from './userServices';
 
 const getComments = async (id, setCommentDetails, setUserDetails) => {
   const commentDoc = await getDoc(doc(collection(db, 'comments'), id));
@@ -17,7 +17,7 @@ const getComments = async (id, setCommentDetails, setUserDetails) => {
       comment: commentDoc.data().comment,
       userID: commentDoc.data().userID,
     });
-    getUserDetailsById(commentDoc.data().userID, setUserDetails);
+    getUserDetailsByIdForHeader(commentDoc.data().userID, setUserDetails);
   } catch (err) {
     console.error(err);
   }

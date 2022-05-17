@@ -1,3 +1,4 @@
+import { useDispatch, useSelector } from 'react-redux';
 import {
   Avatar,
   Box,
@@ -10,6 +11,7 @@ import {
   useDisclosure,
 } from '@chakra-ui/react';
 import { FollowersList, FollowingList } from '../../../components';
+import { followUser, getAllUsers } from '../../Home/userSlice';
 import { EditProfile } from './EditProfile';
 import { SettingsModal } from './SettingsModal';
 
@@ -20,7 +22,7 @@ const buttonStyles = {
   _focus: { border: 'none' },
   fontWeight: '400',
 };
-function ProfileDescription({ curUser }) {
+function ProfileDescription() {
   const {
     isOpen: editProfileIsOpen,
     onOpen: editProfileOnOpen,
@@ -41,6 +43,9 @@ function ProfileDescription({ curUser }) {
     onOpen: followingListOnOpen,
     onClose: followingListOnClose,
   } = useDisclosure();
+  const { currentUser } = useSelector(state => state.auth);
+  const { singleUser } = useSelector(state => state.user);
+  const dispatch = useDispatch();
   return (
     <>
       <Image
@@ -51,8 +56,8 @@ function ProfileDescription({ curUser }) {
       />
       <HStack p={4} spacing={4} align="flex-start">
         <Avatar
-          name={curUser?.name}
-          src={curUser?.photoURL}
+          name={singleUser?.name}
+          src={singleUser?.photoURL}
           size={useBreakpointValue({
             base: 'md',
             sm: 'lg',
@@ -60,56 +65,77 @@ function ProfileDescription({ curUser }) {
             xl: '2xl',
           })}
         />
-        <VStack align="flex-start">
+        <VStack align="flex-start" w="full">
           <HStack w="full" justify="space-between">
             <VStack align="flex-start">
               <Text fontWeight="500" fontSize="xl">
-                {curUser?.name}
+                {singleUser?.name}
               </Text>
               <Text color="gray.500" fontSize="sm" className="mt-0">
-                @{curUser?.username}
+                @{singleUser?.username}
               </Text>
             </VStack>
             <>
               {/* Either of these three buttons based on conditional rendering */}
-              <Button sx={buttonStyles} variant="outline">
-                Unfollow
-              </Button>
-              <HStack spacing={4}>
-                <Button
-                  sx={buttonStyles}
-                  variant="outline"
-                  onClick={editProfileOnOpen}
-                >
-                  Edit Profile
-                </Button>
-                <Box
-                  display="inline-block"
-                  cursor="pointer"
-                  onClick={settingsOnOpen}
-                >
-                  <span className="material-icons-outlined">settings</span>
-                </Box>
-              </HStack>
-              <Button sx={buttonStyles}>Follow</Button>
+              {singleUser?.uid === currentUser?.uid ? (
+                <HStack spacing={4}>
+                  <Button
+                    sx={buttonStyles}
+                    variant="outline"
+                    onClick={editProfileOnOpen}
+                  >
+                    Edit Profile
+                  </Button>
+                  <Box
+                    display="inline-block"
+                    cursor="pointer"
+                    onClick={settingsOnOpen}
+                  >
+                    <span className="material-icons-outlined">settings</span>
+                  </Box>
+                </HStack>
+              ) : (
+                <>
+                  {singleUser?.followers?.includes(currentUser?.uid) ? (
+                    <Button sx={buttonStyles} variant="outline">
+                      Unfollow
+                    </Button>
+                  ) : (
+                    <Button
+                      sx={buttonStyles}
+                      onClick={async () => {
+                        await dispatch(
+                          followUser({
+                            currentUserID: currentUser?.uid,
+                            followedUserID: singleUser?.uid,
+                          })
+                        ).unwrap();
+                        dispatch(getAllUsers());
+                      }}
+                    >
+                      Follow
+                    </Button>
+                  )}
+                </>
+              )}
             </>
           </HStack>
-          <Text fontSize="sm">{curUser?.bio}</Text>
+          <Text fontSize="sm">{singleUser?.bio}</Text>
           <HStack spacing={8} w="full">
             <Text>
-              {`${curUser?.posts?.length} `}
+              {`${singleUser?.posts?.length} `}
               <Text as={'span'} fontWeight="300">
                 Posts
               </Text>
             </Text>
             <Text cursor="pointer" onClick={followersListOnOpen}>
-              {`${curUser?.followers?.length} `}
+              {`${singleUser?.followers?.length} `}
               <Text as={'span'} fontWeight="300">
                 Followers
               </Text>
             </Text>
             <Text cursor="pointer" onClick={followingListOnOpen}>
-              {`${curUser?.following?.length} `}
+              {`${singleUser?.following?.length} `}
               <Text as={'span'} fontWeight="300">
                 Following
               </Text>

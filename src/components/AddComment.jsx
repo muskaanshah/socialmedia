@@ -12,7 +12,7 @@ function AddComment({ postID }) {
   const { commentStatus } = useSelector(state => state.post);
   const dispatch = useDispatch();
   return (
-    <HStack>
+    <HStack mt="6">
       <Textarea
         minH="unset"
         placeholder="Add a comment"

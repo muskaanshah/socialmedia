@@ -8,7 +8,7 @@ import {
   Text,
   useDisclosure,
 } from '@chakra-ui/react';
-import { getUserDetailsById } from '../services';
+import { getUserDetailsByIdForHeader } from '../services';
 import { AddComment } from './AddComment';
 import { LikesModal } from './LikesModal';
 import { ProfileHeader } from './ProfileHeader';
@@ -23,7 +23,7 @@ function FeedPost({ post }) {
     username: '',
   });
   useEffect(() => {
-    getUserDetailsById(post.userID, setUserDetails);
+    getUserDetailsByIdForHeader(post.userID, setUserDetails);
   }, [post.userID]);
   return (
     <>
