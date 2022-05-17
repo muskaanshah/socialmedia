@@ -1,12 +1,25 @@
 import { useSelector } from 'react-redux';
-import { Navigate, Outlet } from 'react-router-dom';
+import { Navigate, Outlet, useLocation } from 'react-router-dom';
 
 const PrivateRoute = ({ authRoute = false }) => {
-  const user = useSelector(state => state.auth);
+  const location = useLocation();
+  const { currentUser } = useSelector(state => state.auth);
   if (authRoute) {
-    return user.currentUser ? <Navigate replace to={'/home'} /> : <Outlet />;
+    return currentUser ? (
+      <Navigate
+        to={location.state?.from?.pathname ?? '/home'}
+        state={{ from: null }}
+        replace
+      />
+    ) : (
+      <Outlet />
+    );
   }
-  return user.currentUser ? <Outlet /> : <Navigate to="/" />;
+  return currentUser ? (
+    <Outlet />
+  ) : (
+    <Navigate to="/" state={{ from: location }} />
+  );
 };
 
 export { PrivateRoute };

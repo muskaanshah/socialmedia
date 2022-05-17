@@ -15,6 +15,7 @@ import { db } from '../../firebase';
 const initialState = {
   userPosts: [],
   commentStatus: 'idle',
+  singlePost: {},
 };
 
 export const addPost = createAsyncThunk(
@@ -44,7 +45,7 @@ export const addPost = createAsyncThunk(
       },
       { merge: true }
     );
-    return postObj;
+    // return postObj;
   }
 );
 
@@ -78,37 +79,45 @@ export const addComment = createAsyncThunk(
   }
 );
 
-export const getPostById = createAsyncThunk('post/getPostById', async id => {
-  const q = query(collection(db, 'posts'), where('userID', '==', id));
-  try {
-    const querySnapshot = await getDocs(q);
-    return querySnapshot;
-  } catch (err) {
-    console.log(err);
+export const getPostByUserId = createAsyncThunk(
+  'post/getPostByUserId',
+  async id => {
+    const q = query(collection(db, 'posts'), where('userID', '==', id));
+    try {
+      const querySnapshot = await getDocs(q);
+      return querySnapshot;
+    } catch (err) {
+      console.log(err);
+    }
   }
-});
+);
+
+export const getSinglePost = createAsyncThunk(
+  'post/getSinglePost',
+  async id => {
+    const postDoc = await getDoc(doc(collection(db, 'posts'), id));
+    return postDoc.data();
+  }
+);
 
 export const postSlice = createSlice({
   name: 'post',
   initialState,
   reducers: {},
   extraReducers: {
-    [addPost.fulfilled]: (state, action) => {
-      state.userPosts = [...state.userPosts, action.payload];
+    [getSinglePost.fulfilled]: (state, action) => {
+      state.singlePost = action.payload;
     },
-    [getPostById.fulfilled]: (state, action) => {
+    [getPostByUserId.fulfilled]: (state, action) => {
+      state.userPosts = [];
       action.payload.forEach(doc => {
-        const postExists = state.userPosts.find(
-          post => post.uid === doc.data().uid
-        );
-        !postExists && state.userPosts.push(doc.data());
+        state.userPosts.push(doc.data());
       });
     },
     [addComment.pending]: state => {
       state.commentStatus = 'loading';
     },
     [addComment.fulfilled]: (state, action) => {
-      console.log(action.payload);
       const tempUserPosts = state.userPosts.reduce(
         (acc, curr) =>
           curr.uid === action.payload.uid

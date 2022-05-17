@@ -18,7 +18,8 @@ import {
   ModalOverlay,
   Textarea,
 } from '@chakra-ui/react';
-import { addPost } from '../pages/Home/postSlice';
+import { addPost, getPostByUserId } from '../pages/Home/postSlice';
+import { getAllUsers } from '../pages/Home/userSlice';
 import { CloseButtonBlack } from '../styles/globalStyles';
 import { getDateTime } from '../utils';
 
@@ -34,17 +35,19 @@ function AddPostModal({ isOpen, onClose }) {
     }
   };
 
-  const addPostHandler = () => {
+  const addPostHandler = async () => {
     const tempDate = getDateTime(new Date());
-    dispatch(
+    onClose();
+    await dispatch(
       addPost({
         description: postDescription,
         photoURL: imgUrl,
         uploadDate: tempDate,
         id: currentUser.uid,
       })
-    );
-    onClose();
+    ).unwrap();
+    await dispatch(getPostByUserId(currentUser.uid)).unwrap();
+    dispatch(getAllUsers());
   };
 
   useEffect(() => {

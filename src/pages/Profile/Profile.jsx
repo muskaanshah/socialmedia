@@ -1,32 +1,42 @@
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Box, Divider } from '@chakra-ui/react';
+import { useParams } from 'react-router-dom';
+import { Box, Center, Divider, Text } from '@chakra-ui/react';
 import { FeedPost } from '../../components';
-import { getPostById } from '../Home/postSlice';
+import { getPostByUserId } from '../Home/postSlice';
+import { getSingleUser } from '../Home/userSlice';
 import { ProfileDescription } from './components/ProfileDescription';
 import { TopBar } from './components/TopBar';
 
 function Profile() {
   const [postsFeed, setPostsFeed] = useState([]);
+  const { userID } = useParams();
   const dispatch = useDispatch();
-  const { currentUser } = useSelector(state => state.auth);
   const { userPosts } = useSelector(state => state.post);
+
   useEffect(() => {
-    dispatch(getPostById(currentUser.uid));
-  }, [dispatch, currentUser]);
+    dispatch(getSingleUser(userID));
+    dispatch(getPostByUserId(userID));
+  }, [dispatch, userID]);
   useEffect(() => {
     const tempPosts = [...userPosts].sort((a, b) => {
       return new Date(b.uploadDate) - new Date(a.uploadDate);
     });
     setPostsFeed(tempPosts);
   }, [userPosts]);
+
   return (
     <Box sx={{ flexGrow: '1' }}>
       <TopBar />
-      <ProfileDescription currentUser={currentUser} />
+      <ProfileDescription />
       <Divider />
-      {postsFeed?.length > 0 &&
-        postsFeed.map(post => <FeedPost post={post} key={post.uid} />)}
+      {postsFeed?.length > 0 ? (
+        postsFeed.map(post => <FeedPost post={post} key={post.uid} />)
+      ) : (
+        <Center height="20vh">
+          <Text>No posts to show</Text>
+        </Center>
+      )}
     </Box>
   );
 }

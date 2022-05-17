@@ -104,7 +104,7 @@ function Drawer() {
         </VStack>
         <Link
           as={NavLink}
-          to="/profile"
+          to={`/profile/${currentUser.uid}`}
           _hover={{ textDecoration: 'none' }}
           _focus={{ outline: 'none' }}
           w="full"
@@ -118,7 +118,7 @@ function Drawer() {
             <VStack align="flex-start">
               <Text fontSize="1rem">{currentUser.name}</Text>
               <Text fontSize="1rem" className="mt-0" color="gray.500">
-                {currentUser.username}
+                @{currentUser.username}
               </Text>
             </VStack>
           </HStack>

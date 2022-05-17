@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { FaRegBookmark, FaRegComment, FaRegHeart } from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom';
 import {
   Box,
   Divider,
@@ -8,7 +9,7 @@ import {
   Text,
   useDisclosure,
 } from '@chakra-ui/react';
-import { getUserDetailsById } from '../services';
+import { getUserDetailsByIdForHeader } from '../services';
 import { AddComment } from './AddComment';
 import { LikesModal } from './LikesModal';
 import { ProfileHeader } from './ProfileHeader';
@@ -19,11 +20,12 @@ function FeedPost({ post }) {
   const [userDetails, setUserDetails] = useState({
     name: '',
     photoURL: '',
-    id: '',
+    uid: '',
     username: '',
   });
+  const navigate = useNavigate();
   useEffect(() => {
-    getUserDetailsById(post.userID, setUserDetails);
+    getUserDetailsByIdForHeader(post.userID, setUserDetails);
   }, [post.userID]);
   return (
     <>
@@ -48,14 +50,16 @@ function FeedPost({ post }) {
             }`}
           </Text>
         )}
-        {post.comments.length > 1 && (
-          <Text
-            color={'gray.500'}
-          >{`View all ${post.comments.length} comments`}</Text>
-        )}
-        {post.comments.length > 0 && (
-          <SingleComment comment={post.comments[post.comments.length - 1]} />
-        )}
+        <Box onClick={() => navigate(`/post/${post.uid}`)}>
+          {post.comments.length > 1 && (
+            <Text
+              color={'gray.500'}
+            >{`View all ${post.comments.length} comments`}</Text>
+          )}
+          {post.comments.length > 0 && (
+            <SingleComment comment={post.comments[post.comments.length - 1]} />
+          )}
+        </Box>
         <AddComment postID={post.uid} />
         <LikesModal isOpen={isOpen} onClose={onClose} />
       </Box>

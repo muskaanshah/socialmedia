@@ -1,22 +1,41 @@
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import { Avatar, Button, HStack, Text, VStack } from '@chakra-ui/react';
+import { followUser, getAllUsers } from '../pages/Home/userSlice';
 
-function UserFollowStack() {
+function UserFollowStack({ user }) {
+  const { currentUser } = useSelector(state => state.auth);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   return (
     <HStack justifyContent="space-between" w="full">
-      <HStack spacing={3} flexGrow="1">
-        <Avatar
-          name="Dan Abrahmov"
-          src="https://bit.ly/dan-abramov"
-          size="md"
-        />
+      <HStack
+        spacing={3}
+        flexGrow="1"
+        cursor="pointer"
+        onClick={() => navigate(`/profile/${user.uid}`)}
+      >
+        <Avatar name={user.name} src={user.photoURL} size="md" />
         <VStack align="flex-start">
-          <Text fontSize="1rem">Profile</Text>
+          <Text fontSize="1rem">{user.name}</Text>
           <Text fontSize="1rem" className="mt-0" color="gray.500">
-            Username
+            @{user.username}
           </Text>
         </VStack>
       </HStack>
-      <Button variant="link" _focus={{ border: 'none' }}>
+      <Button
+        variant="link"
+        _focus={{ border: 'none' }}
+        onClick={async () => {
+          await dispatch(
+            followUser({
+              currentUserID: currentUser.uid,
+              followedUserID: user.uid,
+            })
+          ).unwrap();
+          dispatch(getAllUsers());
+        }}
+      >
         Follow
       </Button>
     </HStack>
