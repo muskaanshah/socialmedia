@@ -23,21 +23,6 @@ const getComments = async (id, setCommentDetails, setUserDetails) => {
   }
 };
 
-// const getPostByPostId = async (id, setFeedPosts) => {
-//   const q = query(collection(db, 'posts'), where('uid', '==', id));
-//   try {
-//     const querySnapshot = await getDocs(q);
-//     querySnapshot.forEach(doc => {
-//       setFeedPosts(prev => {
-//         console.log(prev);
-//         return [...prev, doc.data()];
-//       });
-//     });
-//   } catch (err) {
-//     console.error(err);
-//   }
-// };
-
 const getPostByPostId = async (feedArray, setFeedPosts) => {
   let tempArray = [];
   const q = query(collection(db, 'posts'), where('uid', 'in', feedArray));
@@ -51,19 +36,5 @@ const getPostByPostId = async (feedArray, setFeedPosts) => {
     console.error(err);
   }
 };
-
-// const getExplorePostByPostId = async (feedArray, setExplorePosts) => {
-//   let tempArray = [];
-//   const q = query(collection(db, 'posts'), where('uid', 'in', feedArray));
-//   try {
-//     const querySnapshot = await getDocs(q);
-//     querySnapshot.forEach(doc => {
-//       tempArray = [...tempArray, doc.data()];
-//     });
-//     setFeedPosts(tempArray);
-//   } catch (err) {
-//     console.error(err);
-//   }
-// };
 
 export { getComments, getPostByPostId };
