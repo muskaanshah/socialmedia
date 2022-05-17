@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import {
   Modal,
   ModalBody,
@@ -7,9 +8,14 @@ import {
   ModalOverlay,
   VStack,
 } from '@chakra-ui/react';
+import { getSingleUser } from '../services';
 import { UserFollowStack } from './UserFollowStack';
 
-function FollowersList({ isOpen, onClose }) {
+function FollowersList({ isOpen, onClose, followers }) {
+  const [userObjectArray, setUserObjectArray] = useState([]);
+  useEffect(() => {
+    getSingleUser(followers, setUserObjectArray);
+  }, [followers]);
   return (
     <Modal isOpen={isOpen} onClose={onClose} scrollBehavior="inside">
       <ModalOverlay />
@@ -18,9 +24,9 @@ function FollowersList({ isOpen, onClose }) {
         <ModalCloseButton />
         <ModalBody>
           <VStack>
-            <UserFollowStack />
-            <UserFollowStack />
-            <UserFollowStack />
+            {userObjectArray.map(user => (
+              <UserFollowStack key={user.uid} user={user} />
+            ))}
           </VStack>
         </ModalBody>
       </ModalContent>

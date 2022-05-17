@@ -1,2 +1,2 @@
-export { getUserDetailsByIdForHeader } from './userServices';
+export { getUserDetailsByIdForHeader, getSingleUser } from './userServices';
 export { getComments, getFeedPosts } from './postServices';

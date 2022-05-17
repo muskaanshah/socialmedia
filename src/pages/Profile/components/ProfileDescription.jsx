@@ -168,6 +168,7 @@ function ProfileDescription() {
       <FollowersList
         isOpen={followersListIsOpen}
         onClose={followersListOnClose}
+        followers={singleUser.followers}
       />
       <FollowingList
         isOpen={followingListIsOpen}
