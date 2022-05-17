@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice, current } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import {
   collection,
   doc,
@@ -28,24 +28,16 @@ export const followUser = createAsyncThunk(
       const currentUser = currentUserDocs?.data();
       // Add user to current user's followings list:
       const currentUserRef = doc(collection(db, 'users'), currentUserID);
-      await updateDoc(
-        currentUserRef,
-        {
-          following: [...currentUser.following, followedUserID],
-        },
-        { merge: true }
-      );
+      await updateDoc(currentUserRef, {
+        following: [...currentUser.following, followedUserID],
+      });
       const followedUserDocs = await getDoc(doc(db, 'users', followedUserID));
       const followedUser = followedUserDocs?.data();
       // Add user to followed user's followings list:
       const followedUserRef = doc(collection(db, 'users'), followedUserID);
-      await updateDoc(
-        followedUserRef,
-        {
-          followers: [...followedUser.followers, currentUserID],
-        },
-        { merge: true }
-      );
+      await updateDoc(followedUserRef, {
+        followers: [...followedUser.followers, currentUserID],
+      });
     } catch (error) {
       return thunkAPI.rejectWithValue(error);
     }
@@ -59,11 +51,9 @@ export const userSlice = createSlice({
   extraReducers: {
     [getAllUsers.fulfilled]: (state, action) => {
       state.users = [];
-      console.log('first', current(state));
       action.payload.forEach(doc => {
         state.users.push(doc.data());
       });
-      console.log('second', current(state));
     },
     [followUser.rejected]: (state, action) => {
       console.log(action.payload);
