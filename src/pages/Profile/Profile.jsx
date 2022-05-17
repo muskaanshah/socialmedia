@@ -11,6 +11,9 @@ function Profile() {
   const dispatch = useDispatch();
   const { currentUser } = useSelector(state => state.auth);
   const { userPosts } = useSelector(state => state.post);
+  const { users } = useSelector(state => state.user);
+  const curUser = users.find(user => user.uid === currentUser.uid);
+
   useEffect(() => {
     dispatch(getPostById(currentUser.uid));
   }, [dispatch, currentUser]);
@@ -20,10 +23,11 @@ function Profile() {
     });
     setPostsFeed(tempPosts);
   }, [userPosts]);
+
   return (
     <Box sx={{ flexGrow: '1' }}>
       <TopBar />
-      <ProfileDescription currentUser={currentUser} />
+      <ProfileDescription curUser={curUser} />
       <Divider />
       {postsFeed?.length > 0 &&
         postsFeed.map(post => <FeedPost post={post} key={post.uid} />)}

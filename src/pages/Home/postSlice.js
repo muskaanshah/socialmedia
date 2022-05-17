@@ -44,7 +44,7 @@ export const addPost = createAsyncThunk(
       },
       { merge: true }
     );
-    return postObj;
+    // return postObj;
   }
 );
 
@@ -80,6 +80,7 @@ export const addComment = createAsyncThunk(
 
 export const getPostById = createAsyncThunk('post/getPostById', async id => {
   const q = query(collection(db, 'posts'), where('userID', '==', id));
+  console.log('inside');
   try {
     const querySnapshot = await getDocs(q);
     return querySnapshot;
@@ -93,16 +94,16 @@ export const postSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers: {
-    [addPost.fulfilled]: (state, action) => {
-      state.userPosts = [...state.userPosts, action.payload];
-    },
+    // [addPost.fulfilled]: (state, action) => {
+    //   state.userPosts = [...state.userPosts, action.payload];
+    // },
     [getPostById.fulfilled]: (state, action) => {
+      state.userPosts = [];
+      console.log('First', current(state));
       action.payload.forEach(doc => {
-        const postExists = state.userPosts.find(
-          post => post.uid === doc.data().uid
-        );
-        !postExists && state.userPosts.push(doc.data());
+        state.userPosts.push(doc.data());
       });
+      console.log('Second', current(state));
     },
     [addComment.pending]: state => {
       state.commentStatus = 'loading';
