@@ -11,9 +11,8 @@ import {
 import { SidebarUserChip } from './SidebarUserChip';
 
 function SideBar() {
-  const { users } = useSelector(state => state.user);
+  const { users, curUser } = useSelector(state => state.user);
   const { currentUser } = useSelector(state => state.auth);
-  const curUser = users.find(user => user.uid === currentUser.uid);
   return (
     <Box
       bg="inherit"
@@ -38,7 +37,7 @@ function SideBar() {
           .filter(
             user =>
               user.uid !== currentUser.uid &&
-              !curUser.following.includes(user.uid)
+              !curUser?.following?.includes(user.uid)
           )
           .filter((_, index) => index < 5)
           .map(user => (

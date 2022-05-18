@@ -11,3 +11,4 @@ export { AddPostModal } from './AddPostModal';
 export { FollowersList } from './FollowersList';
 export { FollowingList } from './FollowingList';
 export { SidebarUserChip } from './SidebarUserChip';
+export { EditDeletePostPopover } from './EditDeletePostPopover';

@@ -12,6 +12,7 @@ import { db } from '../../firebase';
 const initialState = {
   users: [],
   singleUser: {},
+  curUser: {},
   followUnfollowStatus: 'idle',
 };
 
@@ -23,6 +24,14 @@ export const getAllUsers = createAsyncThunk('user/getAllUsers', async () => {
 
 export const getSingleUser = createAsyncThunk(
   'user/getSingleUser',
+  async id => {
+    const userDoc = await getDoc(doc(collection(db, 'users'), id));
+    return userDoc.data();
+  }
+);
+
+export const getCurrentUserDetails = createAsyncThunk(
+  'user/getCurrentUserDetails',
   async id => {
     const userDoc = await getDoc(doc(collection(db, 'users'), id));
     return userDoc.data();
@@ -90,6 +99,9 @@ export const userSlice = createSlice({
     },
     [getSingleUser.fulfilled]: (state, action) => {
       state.singleUser = action.payload;
+    },
+    [getCurrentUserDetails.fulfilled]: (state, action) => {
+      state.curUser = action.payload;
     },
     [followUser.pending]: state => {
       state.followUnfollowStatus = 'loading';

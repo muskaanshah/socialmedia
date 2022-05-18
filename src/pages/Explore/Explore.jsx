@@ -17,12 +17,11 @@ function Explore() {
   useEffect(() => {
     let feedArray = [];
     const curUser = users.find(user => user.uid === currentUser.uid);
-    const notFollowing = users.filter(
-      user => !curUser.following.includes(user) || curUser.uid !== user
+    const notFollowing = users?.filter(
+      user =>
+        !curUser?.following?.includes(user.uid) && curUser?.uid !== user.uid
     );
-    users.forEach(
-      user => notFollowing.includes(user.uid) && feedArray.push(...user.posts)
-    );
+    notFollowing?.forEach(user => feedArray.push(...user.posts));
     feedArray.length > 0 && getFeedPosts(feedArray, setFeedPosts);
   }, [users, currentUser]);
   return (

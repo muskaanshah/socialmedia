@@ -1,15 +1,17 @@
 import React, { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Outlet } from 'react-router-dom';
 import { Box, Grid } from '@chakra-ui/react';
 import { BottomBar, Drawer, SideBar } from './components';
-import { getAllUsers } from './pages/Home/userSlice';
+import { getAllUsers, getCurrentUserDetails } from './pages/Home/userSlice';
 
 function App() {
+  const { currentUser } = useSelector(state => state.auth);
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(getAllUsers());
-  }, [dispatch]);
+    dispatch(getCurrentUserDetails(currentUser.uid));
+  }, [dispatch, currentUser.uid]);
   return (
     <Box px={{ base: 0, lg: 6 }} maxW="8xl" mx="auto">
       <Grid

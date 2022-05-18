@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import {
+  FaBookmark,
   FaHeart,
   FaRegBookmark,
   FaRegComment,
@@ -15,10 +16,17 @@ import {
   Text,
   useDisclosure,
 } from '@chakra-ui/react';
-import { getPostByUserId, likePost, unlikePost } from '../pages/Home/postSlice';
-import { getAllUsers } from '../pages/Home/userSlice';
+import {
+  addPostToSaved,
+  getPostByUserId,
+  likePost,
+  removePostFromSaved,
+  unlikePost,
+} from '../pages/Home/postSlice';
+import { getAllUsers, getCurrentUserDetails } from '../pages/Home/userSlice';
 import { getUserDetailsByIdForHeader } from '../services';
 import { AddComment } from './AddComment';
+import { EditDeletePostPopover } from './EditDeletePostPopover';
 import { LikesModal } from './LikesModal';
 import { ProfileHeader } from './ProfileHeader';
 import { SingleComment } from './SingleComment';
@@ -27,7 +35,9 @@ function FeedPost({ post }) {
   const { userID } = useParams();
   const dispatch = useDispatch();
   const { users } = useSelector(state => state.user);
+  const [isBookmarked, setIsBookmarked] = useState(false);
   const { currentUser } = useSelector(state => state.auth);
+  const { curUser } = useSelector(state => state.user);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [isLiked, setIsLiked] = useState(false);
   const [userDetails, setUserDetails] = useState({
@@ -54,16 +64,40 @@ function FeedPost({ post }) {
     dispatch(getPostByUserId(userID));
   };
 
+  const saveHandler = async () => {
+    await dispatch(
+      addPostToSaved({ postID: post.uid, currentUserId: currentUser.uid })
+    ).unwrap();
+    dispatch(getCurrentUserDetails(currentUser.uid));
+  };
+
+  const unsaveHandler = async () => {
+    await dispatch(
+      removePostFromSaved({
+        postID: post.uid,
+        currentUserId: currentUser.uid,
+      })
+    ).unwrap();
+    dispatch(getCurrentUserDetails(currentUser.uid));
+  };
+
   useEffect(() => {
     getUserDetailsByIdForHeader(post.userID, setUserDetails);
   }, [post.userID, users]);
   useEffect(() => {
     setIsLiked(post?.likes?.find(userID => userID === currentUser.uid));
-  }, [currentUser.uid, post.likes]);
+    setIsBookmarked(curUser?.bookmarked?.includes(post.uid));
+  }, [currentUser.uid, post.likes, curUser?.bookmarked, post.uid]);
+
   return (
     <>
       <Box maxW="full" p={4} mx={{ base: 'auto', sm: 8 }}>
-        <ProfileHeader userDetails={userDetails} />
+        <HStack w="full">
+          <ProfileHeader userDetails={userDetails} />
+          {post.userID === currentUser.uid && (
+            <EditDeletePostPopover postID={post.uid} />
+          )}
+        </HStack>
         <Text my={4}>{post.description}</Text>
         {post.photoURL && <Image src={post.photoURL} alt="post" my={4} />}
         <Text color="gray.500" fontSize="xs">
@@ -86,7 +120,13 @@ function FeedPost({ post }) {
               <FaRegComment size="1.5em" />
             </Box>
           </HStack>
-          <FaRegBookmark size="1.5em" />
+          <Box as="span" cursor="Pointer">
+            {isBookmarked ? (
+              <FaBookmark size="1.5em" onClick={unsaveHandler} />
+            ) : (
+              <FaRegBookmark size="1.5em" onClick={saveHandler} />
+            )}
+          </Box>
         </HStack>
         {post.likes.length > 0 && (
           <Text my={2} onClick={onOpen} cursor="pointer">

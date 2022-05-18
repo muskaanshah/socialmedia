@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice, current } from '@reduxjs/toolkit';
 import {
   collection,
+  deleteDoc,
   doc,
   getDoc,
   getDocs,
@@ -16,6 +17,7 @@ const initialState = {
   userPosts: [],
   commentStatus: 'idle',
   singlePost: {},
+  deleteStatus: 'idle',
 };
 
 export const addPost = createAsyncThunk(
@@ -120,6 +122,52 @@ export const unlikePost = createAsyncThunk(
   }
 );
 
+export const addPostToSaved = createAsyncThunk(
+  'post/addPostToSaved',
+  async ({ postID, currentUserId }) => {
+    const userDocs = await getDoc(doc(db, 'users', currentUserId));
+    const user = userDocs?.data();
+    const userRef = doc(collection(db, 'users'), currentUserId);
+    await updateDoc(userRef, {
+      bookmarked: [...user.bookmarked, postID],
+    });
+  }
+);
+
+export const removePostFromSaved = createAsyncThunk(
+  'post/removePostFromSaved',
+  async ({ postID, currentUserId }) => {
+    const userDocs = await getDoc(doc(db, 'users', currentUserId));
+    const user = userDocs?.data();
+    const userRef = doc(collection(db, 'users'), currentUserId);
+    await updateDoc(userRef, {
+      bookmarked: user.bookmarked.filter(post => post !== postID),
+    });
+  }
+);
+
+export const deletePost = createAsyncThunk(
+  'post/deletePost',
+  async ({ postID, currentUserId }) => {
+    await deleteDoc(doc(db, 'posts', postID));
+    //delete it from users bookmarks if any
+    const q = query(collection(db, 'users'));
+    const querySnapshot = await getDocs(q);
+    querySnapshot.forEach(async doc => {
+      await updateDoc(doc.ref, {
+        bookmarked: doc.data().bookmarked.filter(post => post !== postID),
+      });
+    });
+    //delete it from user's posts
+    const userDocs = await getDoc(doc(db, 'users', currentUserId));
+    const user = userDocs?.data();
+    const userRef = doc(collection(db, 'users'), currentUserId);
+    await updateDoc(userRef, {
+      posts: user.posts.filter(post => post !== postID),
+    });
+  }
+);
+
 export const postSlice = createSlice({
   name: 'post',
   initialState,
@@ -136,6 +184,12 @@ export const postSlice = createSlice({
     },
     [addComment.pending]: state => {
       state.commentStatus = 'loading';
+    },
+    [deletePost.pending]: state => {
+      state.deleteStatus = 'loading';
+    },
+    [deletePost.fulfilled]: state => {
+      state.deleteStatus = 'fulfilled';
     },
     [addComment.fulfilled]: (state, action) => {
       const tempUserPosts = state.userPosts.reduce(
