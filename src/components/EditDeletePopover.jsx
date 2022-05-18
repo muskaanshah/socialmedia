@@ -23,16 +23,18 @@ const functionButtonStyles = {
   py: '2',
 };
 
-function EditDeletePopover({ postID }) {
+function EditDeletePopover({ postID, type }) {
   const { currentUser } = useSelector(state => state.auth);
   const { deleteStatus } = useSelector(state => state.post);
   const dispatch = useDispatch();
-  const deletePostHandler = async () => {
-    await dispatch(
-      deletePost({ postID: postID, currentUserId: currentUser.uid })
-    ).unwrap();
-    dispatch(getAllUsers());
-    dispatch(getPostByUserId(currentUser.uid));
+  const deleteHandler = async () => {
+    if (type === 'post') {
+      await dispatch(
+        deletePost({ postID: postID, currentUserId: currentUser.uid })
+      ).unwrap();
+      dispatch(getAllUsers());
+      dispatch(getPostByUserId(currentUser.uid));
+    }
   };
 
   return (
@@ -65,7 +67,7 @@ function EditDeletePopover({ postID }) {
               <HStack
                 color="red.400"
                 sx={functionButtonStyles}
-                onClick={deletePostHandler}
+                onClick={deleteHandler}
               >
                 <span className="material-icons-outlined">delete</span>
                 <Text fontSize="1rem">Delete</Text>

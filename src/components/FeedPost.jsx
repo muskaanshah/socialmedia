@@ -95,7 +95,7 @@ function FeedPost({ post }) {
         <HStack w="full">
           <ProfileHeader userDetails={userDetails} />
           {post.userID === currentUser.uid && (
-            <EditDeletePopover postID={post.uid} />
+            <EditDeletePopover postID={post.uid} type="post" />
           )}
         </HStack>
         <Text my={4}>{post.description}</Text>
