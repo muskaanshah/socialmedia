@@ -26,6 +26,7 @@ import {
 import { getAllUsers, getCurrentUserDetails } from '../pages/Home/userSlice';
 import { getUserDetailsByIdForHeader } from '../services';
 import { AddComment } from './AddComment';
+import { EditDeletePostPopover } from './EditDeletePostPopover';
 import { LikesModal } from './LikesModal';
 import { ProfileHeader } from './ProfileHeader';
 import { SingleComment } from './SingleComment';
@@ -91,7 +92,12 @@ function FeedPost({ post }) {
   return (
     <>
       <Box maxW="full" p={4} mx={{ base: 'auto', sm: 8 }}>
-        <ProfileHeader userDetails={userDetails} />
+        <HStack w="full">
+          <ProfileHeader userDetails={userDetails} />
+          {post.userID === currentUser.uid && (
+            <EditDeletePostPopover postID={post.uid} />
+          )}
+        </HStack>
         <Text my={4}>{post.description}</Text>
         {post.photoURL && <Image src={post.photoURL} alt="post" my={4} />}
         <Text color="gray.500" fontSize="xs">
