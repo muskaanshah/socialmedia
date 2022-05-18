@@ -1,7 +1,11 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { Avatar, Button, HStack, Text, VStack } from '@chakra-ui/react';
-import { followUser, getAllUsers } from '../pages/Home/userSlice';
+import {
+  followUser,
+  getAllUsers,
+  getCurrentUserDetails,
+} from '../pages/Home/userSlice';
 
 function SidebarUserChip({ user }) {
   const { currentUser } = useSelector(state => state.auth);
@@ -33,7 +37,7 @@ function SidebarUserChip({ user }) {
               followedUserID: user.uid,
             })
           ).unwrap();
-          dispatch(getAllUsers());
+          dispatch(getCurrentUserDetails(currentUser.uid));
         }}
       >
         Follow
