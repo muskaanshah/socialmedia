@@ -12,12 +12,12 @@ function Home() {
   const { currentUser } = useSelector(state => state.auth);
   useEffect(() => {
     let feedArray = [];
-    const curUser = users.find(user => user.uid === currentUser.uid);
+    const curUser = users?.find(user => user.uid === currentUser?.uid);
     users.forEach(
       user =>
         curUser?.following?.includes(user.uid) && feedArray.push(...user.posts)
     );
-    // feedArray.push(...curUser?.posts);
+    curUser?.posts?.forEach(post => feedArray.push(post));
     feedArray.length > 0 && getFeedPosts(feedArray, setFeedPosts);
   }, [users, currentUser]);
   return (
