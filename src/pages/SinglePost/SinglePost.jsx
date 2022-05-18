@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import {
+  FaBookmark,
   FaHeart,
   FaRegBookmark,
   FaRegComment,
@@ -22,12 +23,21 @@ import {
   SingleComment,
 } from '../../components';
 import { getUserDetailsByIdForHeader } from '../../services';
-import { getSinglePost, likePost, unlikePost } from '../Home/postSlice';
+import {
+  addPostToSaved,
+  getSinglePost,
+  likePost,
+  removePostFromSaved,
+  unlikePost,
+} from '../Home/postSlice';
+import { getCurrentUserDetails } from '../Home/userSlice';
 
 function SinglePost() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [isLiked, setIsLiked] = useState(false);
+  const [isBookmarked, setIsBookmarked] = useState(false);
   const { currentUser } = useSelector(state => state.auth);
+  const { curUser } = useSelector(state => state.user);
   const dispatch = useDispatch();
   const [userDetails, setUserDetails] = useState({
     name: '',
@@ -50,15 +60,36 @@ function SinglePost() {
     ).unwrap();
     dispatch(getSinglePost(postID));
   };
+
+  const saveHandler = async () => {
+    await dispatch(
+      addPostToSaved({ postID: singlePost.uid, currentUserId: currentUser.uid })
+    ).unwrap();
+    dispatch(getCurrentUserDetails(currentUser.uid));
+  };
+
+  const unsaveHandler = async () => {
+    await dispatch(
+      removePostFromSaved({
+        postID: singlePost.uid,
+        currentUserId: currentUser.uid,
+      })
+    ).unwrap();
+    dispatch(getCurrentUserDetails(currentUser.uid));
+  };
+
   useEffect(() => {
     (async () => {
       await dispatch(getSinglePost(postID)).unwrap();
       getUserDetailsByIdForHeader(singlePost.userID, setUserDetails);
     })();
   }, [postID, dispatch, singlePost.userID]);
+
   useEffect(() => {
     setIsLiked(singlePost?.likes?.find(userID => userID === currentUser.uid));
-  }, [currentUser.uid, singlePost.likes]);
+    setIsBookmarked(curUser?.bookmarked?.includes(singlePost.uid));
+  }, [currentUser.uid, singlePost.likes, curUser?.bookmarked, singlePost.uid]);
+
   return (
     <Box maxW="full" p={4} mx={{ base: 'auto', sm: 8 }}>
       <ProfileHeader userDetails={userDetails} />
@@ -84,7 +115,13 @@ function SinglePost() {
             <FaRegComment size="1.5em" />
           </Box>
         </HStack>
-        <FaRegBookmark size="1.5em" />
+        <Box as="span" cursor="Pointer">
+          {isBookmarked ? (
+            <FaBookmark size="1.5em" onClick={unsaveHandler} />
+          ) : (
+            <FaRegBookmark size="1.5em" onClick={saveHandler} />
+          )}
+        </Box>
       </HStack>
       {singlePost?.likes?.length > 0 && (
         <Text my={2} onClick={onOpen} cursor="pointer">

@@ -120,6 +120,30 @@ export const unlikePost = createAsyncThunk(
   }
 );
 
+export const addPostToSaved = createAsyncThunk(
+  'post/addPostToSaved',
+  async ({ postID, currentUserId }) => {
+    const userDocs = await getDoc(doc(db, 'users', currentUserId));
+    const user = userDocs?.data();
+    const userRef = doc(collection(db, 'users'), currentUserId);
+    await updateDoc(userRef, {
+      bookmarked: [...user.bookmarked, postID],
+    });
+  }
+);
+
+export const removePostFromSaved = createAsyncThunk(
+  'post/removePostFromSaved',
+  async ({ postID, currentUserId }) => {
+    const userDocs = await getDoc(doc(db, 'users', currentUserId));
+    const user = userDocs?.data();
+    const userRef = doc(collection(db, 'users'), currentUserId);
+    await updateDoc(userRef, {
+      bookmarked: user.bookmarked.filter(post => post !== postID),
+    });
+  }
+);
+
 export const postSlice = createSlice({
   name: 'post',
   initialState,
