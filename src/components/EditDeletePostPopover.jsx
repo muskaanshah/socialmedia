@@ -15,6 +15,9 @@ const functionButtonStyles = {
   justify: 'flex-start',
   spacing: '2',
   cursor: 'pointer',
+  _hover: { background: 'blackAlpha.300' },
+  px: '3',
+  py: '2',
 };
 
 function EditDeletePostPopover({ postID }) {
@@ -33,8 +36,8 @@ function EditDeletePostPopover({ postID }) {
       </PopoverTrigger>
       <PopoverContent w="40" _focus={{ border: 'none' }}>
         <PopoverArrow />
-        <PopoverBody>
-          <VStack>
+        <PopoverBody px="0">
+          <VStack spacing="0">
             <HStack sx={functionButtonStyles}>
               <span className="material-icons-outlined">edit</span>
               <Text fontSize="1rem">Edit</Text>
