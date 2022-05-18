@@ -23,9 +23,8 @@ const getComments = async (id, setCommentDetails, setUserDetails) => {
   }
 };
 
-const getFeedPosts = async (feedArray, setFeedPosts, setLoading) => {
+const getFeedPosts = async (feedArray, setFeedPosts) => {
   let tempArray = [];
-  setLoading(true);
   try {
     for (let i = 0; i < feedArray.length; i++) {
       const q = query(
@@ -40,8 +39,6 @@ const getFeedPosts = async (feedArray, setFeedPosts, setLoading) => {
     setFeedPosts(tempArray);
   } catch (err) {
     console.error(err);
-  } finally {
-    setLoading(false);
   }
 };
 
