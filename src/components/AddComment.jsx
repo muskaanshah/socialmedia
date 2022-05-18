@@ -20,6 +20,7 @@ function AddComment({ postID }) {
         resize="none"
         minRows={1}
         maxRows={4}
+        maxLength="400"
         as={ResizeTextarea}
         value={commentInput}
         onChange={e => setCommentInput(e.target.value)}

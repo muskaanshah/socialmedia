@@ -69,10 +69,12 @@ function EditDeletePopover({ id, type, desc, postID = '' }) {
           <PopoverArrow />
           <PopoverBody px="0">
             <VStack spacing="0">
-              <HStack sx={functionButtonStyles} onClick={onOpen}>
-                <span className="material-icons-outlined">edit</span>
-                <Text fontSize="1rem">Edit</Text>
-              </HStack>
+              {type === 'post' && (
+                <HStack sx={functionButtonStyles} onClick={onOpen}>
+                  <span className="material-icons-outlined">edit</span>
+                  <Text fontSize="1rem">Edit</Text>
+                </HStack>
+              )}
               {deleteStatus === 'loading' ? (
                 <HStack color="red.400" sx={functionButtonStyles}>
                   <span className="material-icons-outlined">delete</span>
