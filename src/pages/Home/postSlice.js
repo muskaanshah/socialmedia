@@ -168,6 +168,16 @@ export const deletePost = createAsyncThunk(
   }
 );
 
+export const editPost = createAsyncThunk(
+  'post/editPost',
+  async ({ postID, description }) => {
+    const postRef = doc(collection(db, 'posts'), postID);
+    await updateDoc(postRef, {
+      description: description,
+    });
+  }
+);
+
 export const postSlice = createSlice({
   name: 'post',
   initialState,

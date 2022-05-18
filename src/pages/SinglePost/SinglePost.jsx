@@ -96,7 +96,11 @@ function SinglePost() {
       <HStack w="full">
         <ProfileHeader userDetails={userDetails} />
         {singlePost.userID === currentUser.uid && (
-          <EditDeletePopover postID={singlePost.uid} type="post" />
+          <EditDeletePopover
+            postID={singlePost.uid}
+            type="post"
+            desc={singlePost.description}
+          />
         )}
       </HStack>
       <Center>
