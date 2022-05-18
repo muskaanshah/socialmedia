@@ -11,7 +11,12 @@ import {
   VStack,
   useDisclosure,
 } from '@chakra-ui/react';
-import { deletePost, getPostByUserId } from '../pages/Home/postSlice';
+import {
+  deleteComment,
+  deletePost,
+  getPostByUserId,
+  getSinglePost,
+} from '../pages/Home/postSlice';
 import { getAllUsers } from '../pages/Home/userSlice';
 import { EditPostModal } from './EditPostModal';
 
@@ -25,7 +30,7 @@ const functionButtonStyles = {
   py: '2',
 };
 
-function EditDeletePopover({ id, type, desc }) {
+function EditDeletePopover({ id, type, desc, postID = '' }) {
   const { currentUser } = useSelector(state => state.auth);
   const { deleteStatus } = useSelector(state => state.post);
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -37,6 +42,11 @@ function EditDeletePopover({ id, type, desc }) {
       ).unwrap();
       dispatch(getAllUsers());
       dispatch(getPostByUserId(currentUser.uid));
+    }
+    if (type === 'comment') {
+      await dispatch(deleteComment({ commentID: id, postID: postID })).unwrap();
+      dispatch(getAllUsers());
+      dispatch(getSinglePost(postID));
     }
   };
 
@@ -52,6 +62,7 @@ function EditDeletePopover({ id, type, desc }) {
             _active={{ background: 'transparent' }}
             color="inherit"
             icon={<span className="material-icons-outlined">more_vert</span>}
+            onClick={e => e.stopPropagation()}
           />
         </PopoverTrigger>
         <PopoverContent w="40" _focus={{ border: 'none' }}>

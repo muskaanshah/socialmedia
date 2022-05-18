@@ -146,7 +146,10 @@ function FeedPost({ post }) {
             >{`View all ${post.comments.length} comments`}</Text>
           )}
           {post.comments.length > 0 && (
-            <SingleComment comment={post.comments[post.comments.length - 1]} />
+            <SingleComment
+              comment={post.comments[post.comments.length - 1]}
+              postID={post.uid}
+            />
           )}
         </Box>
         <AddComment postID={post.uid} />

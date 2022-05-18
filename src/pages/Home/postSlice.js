@@ -178,6 +178,20 @@ export const editPost = createAsyncThunk(
   }
 );
 
+export const deleteComment = createAsyncThunk(
+  'post/deleteComment',
+  async ({ commentID, postID }) => {
+    await deleteDoc(doc(db, 'comments', commentID));
+    //delete it from post's comments
+    const postDocs = await getDoc(doc(db, 'posts', postID));
+    const post = postDocs?.data();
+    const postRef = doc(collection(db, 'posts'), postID);
+    await updateDoc(postRef, {
+      comments: post.comments.filter(comment => comment !== commentID),
+    });
+  }
+);
+
 export const postSlice = createSlice({
   name: 'post',
   initialState,

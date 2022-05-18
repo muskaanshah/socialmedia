@@ -103,6 +103,7 @@ function SinglePost() {
           />
         )}
       </HStack>
+      <Text my={4}>{singlePost.description}</Text>
       <Center>
         <Image
           src="https://picsum.photos/300"
@@ -141,7 +142,11 @@ function SinglePost() {
         </Text>
       )}
       {singlePost?.comments?.map(comment => (
-        <SingleComment comment={comment} key={comment} />
+        <SingleComment
+          comment={comment}
+          key={comment}
+          postID={singlePost.uid}
+        />
       ))}
       <AddComment postID={postID} />
       <LikesModal isOpen={isOpen} onClose={onClose} likes={singlePost.likes} />
