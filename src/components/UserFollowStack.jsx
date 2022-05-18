@@ -1,20 +1,51 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
-import { Avatar, Button, HStack, Text, VStack } from '@chakra-ui/react';
-import { followUser, getAllUsers } from '../pages/Home/userSlice';
+import { useParams } from 'react-router-dom';
+import {
+  Avatar,
+  Box,
+  Button,
+  HStack,
+  Spinner,
+  Text,
+  VStack,
+} from '@chakra-ui/react';
+import {
+  followUser,
+  getSingleUser,
+  unFollowUser,
+} from '../pages/Home/userSlice';
+import { getUserObjectsInArray } from '../services';
 
-function UserFollowStack({ user }) {
+function UserFollowStack({ user, setUserObjectArray, userList, onClick }) {
   const { currentUser } = useSelector(state => state.auth);
-  const navigate = useNavigate();
+  const { followUnfollowStatus } = useSelector(state => state.user);
   const dispatch = useDispatch();
+  const { userID } = useParams();
+
+  const unFollowUserHandler = async () => {
+    await dispatch(
+      unFollowUser({
+        currentUserID: currentUser?.uid,
+        unFollowedUserID: user?.uid,
+      })
+    ).unwrap();
+    getUserObjectsInArray(userList, setUserObjectArray);
+    if (userID === currentUser?.uid) dispatch(getSingleUser(userID));
+  };
+
+  const followUserHandler = async () => {
+    await dispatch(
+      followUser({
+        currentUserID: currentUser?.uid,
+        followedUserID: user?.uid,
+      })
+    ).unwrap();
+    getUserObjectsInArray(userList, setUserObjectArray);
+    if (userID === currentUser?.uid) dispatch(getSingleUser(userID));
+  };
   return (
     <HStack justifyContent="space-between" w="full">
-      <HStack
-        spacing={3}
-        flexGrow="1"
-        cursor="pointer"
-        onClick={() => navigate(`/profile/${user.uid}`)}
-      >
+      <HStack spacing={3} flexGrow="1" cursor="pointer" onClick={onClick}>
         <Avatar name={user.name} src={user.photoURL} size="md" />
         <VStack align="flex-start">
           <Text fontSize="1rem">{user.name}</Text>
@@ -23,21 +54,35 @@ function UserFollowStack({ user }) {
           </Text>
         </VStack>
       </HStack>
-      <Button
-        variant="link"
-        _focus={{ border: 'none' }}
-        onClick={async () => {
-          await dispatch(
-            followUser({
-              currentUserID: currentUser.uid,
-              followedUserID: user.uid,
-            })
-          ).unwrap();
-          dispatch(getAllUsers());
-        }}
-      >
-        Follow
-      </Button>
+      {followUnfollowStatus === 'loading' ? (
+        <Spinner />
+      ) : (
+        <>
+          {user?.uid === currentUser?.uid ? (
+            <Box />
+          ) : (
+            <>
+              {user?.followers?.includes(currentUser?.uid) ? (
+                <Button
+                  variant="link"
+                  _focus={{ border: 'none' }}
+                  onClick={unFollowUserHandler}
+                >
+                  Unfollow
+                </Button>
+              ) : (
+                <Button
+                  variant="link"
+                  _focus={{ border: 'none' }}
+                  onClick={followUserHandler}
+                >
+                  Follow
+                </Button>
+              )}
+            </>
+          )}
+        </>
+      )}
     </HStack>
   );
 }

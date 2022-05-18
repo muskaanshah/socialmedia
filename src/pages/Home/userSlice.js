@@ -12,6 +12,7 @@ import { db } from '../../firebase';
 const initialState = {
   users: [],
   singleUser: {},
+  followUnfollowStatus: 'idle',
 };
 
 export const getAllUsers = createAsyncThunk('user/getAllUsers', async () => {
@@ -90,8 +91,17 @@ export const userSlice = createSlice({
     [getSingleUser.fulfilled]: (state, action) => {
       state.singleUser = action.payload;
     },
-    [followUser.rejected]: (state, action) => {
-      console.log(action.payload);
+    [followUser.pending]: state => {
+      state.followUnfollowStatus = 'loading';
+    },
+    [followUser.fulfilled]: state => {
+      state.followUnfollowStatus = 'fulfilled';
+    },
+    [unFollowUser.pending]: state => {
+      state.followUnfollowStatus = 'loading';
+    },
+    [unFollowUser.fulfilled]: state => {
+      state.followUnfollowStatus = 'fulfilled';
     },
   },
 });

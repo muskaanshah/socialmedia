@@ -22,18 +22,34 @@ const getUserDetailsByIdForHeader = async (id, setUserDetails) => {
   }
 };
 
-const getSingleUser = async (idArray, setUserObjectArray) => {
+// const getUserObjectsInArray = async (idArray, setUserObjectArray) => {
+//   try {
+//     let tempArray = [];
+//     const q = query(collection(db, 'users'), where('uid', 'in', idArray));
+//     const querySnapshot = await getDocs(q);
+//     querySnapshot.forEach(doc => {
+//       tempArray = [...tempArray, doc.data()];
+//     });
+//     setUserObjectArray(tempArray);
+//   } catch (err) {
+//     console.error(err);
+//   }
+// };
+
+const getUserObjectsInArray = async (idArray, setUserObjectArray) => {
+  let tempArray = [];
   try {
-    let tempArray = [];
-    const q = query(collection(db, 'users'), where('uid', 'in', idArray));
-    const querySnapshot = await getDocs(q);
-    querySnapshot.forEach(doc => {
-      tempArray = [...tempArray, doc.data()];
-    });
+    for (let i = 0; i < idArray.length; i++) {
+      const q = query(collection(db, 'users'), where('uid', '==', idArray[i]));
+      const querySnapshot = await getDocs(q);
+      querySnapshot.forEach(doc => {
+        tempArray = [...tempArray, doc.data()];
+      });
+    }
     setUserObjectArray(tempArray);
   } catch (err) {
     console.error(err);
   }
 };
 
-export { getUserDetailsByIdForHeader, getSingleUser };
+export { getUserDetailsByIdForHeader, getUserObjectsInArray };

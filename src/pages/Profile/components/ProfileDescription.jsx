@@ -173,6 +173,7 @@ function ProfileDescription() {
       <FollowingList
         isOpen={followingListIsOpen}
         onClose={followingListOnClose}
+        following={singleUser.following}
       />
     </>
   );

@@ -25,12 +25,17 @@ const getComments = async (id, setCommentDetails, setUserDetails) => {
 
 const getFeedPosts = async (feedArray, setFeedPosts) => {
   let tempArray = [];
-  const q = query(collection(db, 'posts'), where('uid', 'in', feedArray));
   try {
-    const querySnapshot = await getDocs(q);
-    querySnapshot.forEach(doc => {
-      tempArray = [...tempArray, doc.data()];
-    });
+    for (let i = 0; i < feedArray.length; i++) {
+      const q = query(
+        collection(db, 'posts'),
+        where('uid', '==', feedArray[i])
+      );
+      const querySnapshot = await getDocs(q);
+      querySnapshot.forEach(doc => {
+        tempArray = [...tempArray, doc.data()];
+      });
+    }
     setFeedPosts(tempArray);
   } catch (err) {
     console.error(err);
