@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Avatar, Box, HStack, Text, VStack } from '@chakra-ui/react';
 import { getComments } from '../services';
 
 function SingleComment({ comment }) {
+  const navigate = useNavigate();
   const [userDetails, setUserDetails] = useState({
     name: '',
     photoURL: '',
@@ -20,10 +22,21 @@ function SingleComment({ comment }) {
   return (
     <Box my={2}>
       <HStack alignItems="flex-start">
-        <Avatar name={userDetails.name} src={userDetails.photoURL} size="md" />
+        <Avatar
+          name={userDetails.name}
+          src={userDetails.photoURL}
+          size="md"
+          onClick={() => navigate(`/profile/${userDetails.uid}`)}
+          cursor="Pointer"
+        />
         <VStack align="flex-start" w="full">
           <Text>
-            <Text as={'span'} fontWeight="500">
+            <Text
+              as={'span'}
+              fontWeight="500"
+              onClick={() => navigate(`/profile/${userDetails.uid}`)}
+              cursor="Pointer"
+            >
               {`${userDetails.username} `}
             </Text>
             {commentDetails.comment}

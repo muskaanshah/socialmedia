@@ -71,12 +71,20 @@ function FeedPost({ post }) {
         </Text>
         <HStack w="full" my={4}>
           <HStack spacing={6} grow={1} w="full">
-            {isLiked ? (
-              <FaHeart size="1.5em" onClick={unlikeHandler} />
-            ) : (
-              <FaRegHeart size="1.5em" onClick={likeHandler} />
-            )}
-            <FaRegComment size="1.5em" />
+            <Box as="span" cursor="Pointer">
+              {isLiked ? (
+                <FaHeart size="1.5em" onClick={unlikeHandler} />
+              ) : (
+                <FaRegHeart size="1.5em" onClick={likeHandler} />
+              )}
+            </Box>
+            <Box
+              as="span"
+              cursor="Pointer"
+              onClick={() => navigate(`/post/${post.uid}`)}
+            >
+              <FaRegComment size="1.5em" />
+            </Box>
           </HStack>
           <FaRegBookmark size="1.5em" />
         </HStack>
@@ -87,7 +95,7 @@ function FeedPost({ post }) {
             }`}
           </Text>
         )}
-        <Box onClick={() => navigate(`/post/${post.uid}`)}>
+        <Box cursor="Pointer" onClick={() => navigate(`/post/${post.uid}`)}>
           {post.comments.length > 1 && (
             <Text
               color={'gray.500'}
