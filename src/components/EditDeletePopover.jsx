@@ -25,7 +25,7 @@ const functionButtonStyles = {
   py: '2',
 };
 
-function EditDeletePopover({ postID, type, desc }) {
+function EditDeletePopover({ id, type, desc }) {
   const { currentUser } = useSelector(state => state.auth);
   const { deleteStatus } = useSelector(state => state.post);
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -33,7 +33,7 @@ function EditDeletePopover({ postID, type, desc }) {
   const deleteHandler = async () => {
     if (type === 'post') {
       await dispatch(
-        deletePost({ postID: postID, currentUserId: currentUser.uid })
+        deletePost({ postID: id, currentUserId: currentUser.uid })
       ).unwrap();
       dispatch(getAllUsers());
       dispatch(getPostByUserId(currentUser.uid));
@@ -84,7 +84,7 @@ function EditDeletePopover({ postID, type, desc }) {
       <EditPostModal
         isOpen={isOpen}
         onClose={onClose}
-        postID={postID}
+        postID={id}
         desc={desc}
       />
     </>

@@ -97,7 +97,7 @@ function SinglePost() {
         <ProfileHeader userDetails={userDetails} />
         {singlePost.userID === currentUser.uid && (
           <EditDeletePopover
-            postID={singlePost.uid}
+            id={singlePost.uid}
             type="post"
             desc={singlePost.description}
           />

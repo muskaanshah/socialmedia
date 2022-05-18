@@ -96,7 +96,7 @@ function FeedPost({ post }) {
           <ProfileHeader userDetails={userDetails} />
           {post.userID === currentUser.uid && (
             <EditDeletePopover
-              postID={post.uid}
+              id={post.uid}
               type="post"
               desc={post.description}
             />
