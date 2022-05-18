@@ -26,7 +26,10 @@ function SingleComment({ comment }) {
           name={userDetails.name}
           src={userDetails.photoURL}
           size="md"
-          onClick={() => navigate(`/profile/${userDetails.uid}`)}
+          onClick={e => {
+            navigate(`/profile/${userDetails.uid}`);
+            e.stopPropagation();
+          }}
           cursor="Pointer"
         />
         <VStack align="flex-start" w="full">
@@ -34,7 +37,10 @@ function SingleComment({ comment }) {
             <Text
               as={'span'}
               fontWeight="500"
-              onClick={() => navigate(`/profile/${userDetails.uid}`)}
+              onClick={e => {
+                navigate(`/profile/${userDetails.uid}`);
+                e.stopPropagation();
+              }}
               cursor="Pointer"
             >
               {`${userDetails.username} `}
