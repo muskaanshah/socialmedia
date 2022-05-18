@@ -17,6 +17,9 @@ function LikesModal({ isOpen, onClose, likes }) {
   const navigate = useNavigate();
   useEffect(() => {
     likes?.length > 0 && getUserObjectsInArray(likes, setUserObjectArray);
+    return () => {
+      setUserObjectArray([]);
+    };
   }, [likes]);
   return (
     <Modal isOpen={isOpen} onClose={onClose} scrollBehavior="inside">

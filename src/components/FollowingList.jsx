@@ -18,6 +18,9 @@ function FollowingList({ isOpen, onClose, following }) {
   useEffect(() => {
     following?.length > 0 &&
       getUserObjectsInArray(following, setUserObjectArray);
+    return () => {
+      setUserObjectArray([]);
+    };
   }, [following]);
   return (
     <Modal isOpen={isOpen} onClose={onClose} scrollBehavior="inside">

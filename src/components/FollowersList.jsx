@@ -15,7 +15,11 @@ import { UserFollowStack } from './UserFollowStack';
 function FollowersList({ isOpen, onClose, followers }) {
   const [userObjectArray, setUserObjectArray] = useState([]);
   useEffect(() => {
-    getUserObjectsInArray(followers, setUserObjectArray);
+    followers?.length > 0 &&
+      getUserObjectsInArray(followers, setUserObjectArray);
+    return () => {
+      setUserObjectArray([]);
+    };
   }, [followers]);
   const navigate = useNavigate();
   return (
