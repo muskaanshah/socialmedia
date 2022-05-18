@@ -26,7 +26,7 @@ import {
 import { getAllUsers, getCurrentUserDetails } from '../pages/Home/userSlice';
 import { getUserDetailsByIdForHeader } from '../services';
 import { AddComment } from './AddComment';
-import { EditDeletePostPopover } from './EditDeletePostPopover';
+import { EditDeletePopover } from './EditDeletePopover';
 import { LikesModal } from './LikesModal';
 import { ProfileHeader } from './ProfileHeader';
 import { SingleComment } from './SingleComment';
@@ -95,7 +95,7 @@ function FeedPost({ post }) {
         <HStack w="full">
           <ProfileHeader userDetails={userDetails} />
           {post.userID === currentUser.uid && (
-            <EditDeletePostPopover postID={post.uid} />
+            <EditDeletePopover postID={post.uid} />
           )}
         </HStack>
         <Text my={4}>{post.description}</Text>

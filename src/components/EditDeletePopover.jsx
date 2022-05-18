@@ -23,7 +23,7 @@ const functionButtonStyles = {
   py: '2',
 };
 
-function EditDeletePostPopover({ postID }) {
+function EditDeletePopover({ postID }) {
   const { currentUser } = useSelector(state => state.auth);
   const { deleteStatus } = useSelector(state => state.post);
   const dispatch = useDispatch();
@@ -78,4 +78,4 @@ function EditDeletePostPopover({ postID }) {
   );
 }
 
-export { EditDeletePostPopover };
+export { EditDeletePopover };
