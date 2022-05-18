@@ -146,17 +146,27 @@ export const removePostFromSaved = createAsyncThunk(
   }
 );
 
-export const deletePost = createAsyncThunk('post/deletePost', async postID => {
-  await deleteDoc(doc(db, 'posts', postID));
-  //delete it from users bookmarks if any
-  const q = query(collection(db, 'users'));
-  const querySnapshot = await getDocs(q);
-  querySnapshot.forEach(async doc => {
-    await updateDoc(doc.ref, {
-      bookmarked: doc.data().bookmarked.filter(post => post !== postID),
+export const deletePost = createAsyncThunk(
+  'post/deletePost',
+  async ({ postID, currentUserId }) => {
+    await deleteDoc(doc(db, 'posts', postID));
+    //delete it from users bookmarks if any
+    const q = query(collection(db, 'users'));
+    const querySnapshot = await getDocs(q);
+    querySnapshot.forEach(async doc => {
+      await updateDoc(doc.ref, {
+        bookmarked: doc.data().bookmarked.filter(post => post !== postID),
+      });
     });
-  });
-});
+    //delete it from user's posts
+    const userDocs = await getDoc(doc(db, 'users', currentUserId));
+    const user = userDocs?.data();
+    const userRef = doc(collection(db, 'users'), currentUserId);
+    await updateDoc(userRef, {
+      posts: user.posts.filter(post => post !== postID),
+    });
+  }
+);
 
 export const postSlice = createSlice({
   name: 'post',

@@ -28,7 +28,9 @@ function EditDeletePostPopover({ postID }) {
   const { deleteStatus } = useSelector(state => state.post);
   const dispatch = useDispatch();
   const deletePostHandler = async () => {
-    await dispatch(deletePost(postID)).unwrap();
+    await dispatch(
+      deletePost({ postID: postID, currentUserId: currentUser.uid })
+    ).unwrap();
     dispatch(getAllUsers());
     dispatch(getPostByUserId(currentUser.uid));
   };

@@ -18,6 +18,7 @@ import {
 } from '@chakra-ui/react';
 import {
   AddComment,
+  EditDeletePostPopover,
   LikesModal,
   ProfileHeader,
   SingleComment,
@@ -92,7 +93,12 @@ function SinglePost() {
 
   return (
     <Box maxW="full" p={4} mx={{ base: 'auto', sm: 8 }}>
-      <ProfileHeader userDetails={userDetails} />
+      <HStack w="full">
+        <ProfileHeader userDetails={userDetails} />
+        {singlePost.userID === currentUser.uid && (
+          <EditDeletePostPopover postID={singlePost.uid} />
+        )}
+      </HStack>
       <Center>
         <Image
           src="https://picsum.photos/300"
