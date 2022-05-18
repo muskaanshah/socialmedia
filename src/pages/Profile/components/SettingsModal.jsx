@@ -120,12 +120,6 @@ function SettingsModal({ isOpen, onClose }) {
             </Button>
           </VStack>
         </ModalBody>
-
-        <ModalFooter>
-          <Button colorScheme="blue" onClick={onClose}>
-            Done
-          </Button>
-        </ModalFooter>
       </ModalContent>
     </Modal>
   );
