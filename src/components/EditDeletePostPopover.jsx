@@ -1,3 +1,4 @@
+import { useDispatch, useSelector } from 'react-redux';
 import {
   HStack,
   IconButton,
@@ -9,6 +10,8 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
+import { deletePost, getPostByUserId } from '../pages/Home/postSlice';
+import { getAllUsers } from '../pages/Home/userSlice';
 
 const functionButtonStyles = {
   w: 'full',
@@ -21,6 +24,15 @@ const functionButtonStyles = {
 };
 
 function EditDeletePostPopover({ postID }) {
+  const { currentUser } = useSelector(state => state.auth);
+  const { deleteStatus } = useSelector(state => state.post);
+  const dispatch = useDispatch();
+  const deletePostHandler = async () => {
+    await dispatch(deletePost(postID)).unwrap();
+    dispatch(getAllUsers());
+    dispatch(getPostByUserId(currentUser.uid));
+  };
+
   return (
     <Popover placement="bottom-end">
       <PopoverTrigger>
@@ -31,7 +43,7 @@ function EditDeletePostPopover({ postID }) {
           _hover={{ background: 'transparent' }}
           _active={{ background: 'transparent' }}
           color="inherit"
-          icon={<span class="material-icons-outlined">more_vert</span>}
+          icon={<span className="material-icons-outlined">more_vert</span>}
         />
       </PopoverTrigger>
       <PopoverContent w="40" _focus={{ border: 'none' }}>
@@ -42,10 +54,21 @@ function EditDeletePostPopover({ postID }) {
               <span className="material-icons-outlined">edit</span>
               <Text fontSize="1rem">Edit</Text>
             </HStack>
-            <HStack color="red.400" sx={functionButtonStyles}>
-              <span className="material-icons-outlined">delete</span>
-              <Text fontSize="1rem">Delete</Text>
-            </HStack>
+            {deleteStatus === 'loading' ? (
+              <HStack color="red.400" sx={functionButtonStyles}>
+                <span className="material-icons-outlined">delete</span>
+                <Text fontSize="1rem">Deleting...</Text>
+              </HStack>
+            ) : (
+              <HStack
+                color="red.400"
+                sx={functionButtonStyles}
+                onClick={deletePostHandler}
+              >
+                <span className="material-icons-outlined">delete</span>
+                <Text fontSize="1rem">Delete</Text>
+              </HStack>
+            )}
           </VStack>
         </PopoverBody>
       </PopoverContent>
