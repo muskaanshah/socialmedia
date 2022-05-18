@@ -16,6 +16,12 @@ function SingleComment({ comment }) {
     uploadDate: '',
     userID: '',
   });
+
+  const navigateToUserHandler = e => {
+    navigate(`/profile/${userDetails.uid}`);
+    e.stopPropagation();
+  };
+
   useEffect(() => {
     getComments(comment, setCommentDetails, setUserDetails);
   }, [comment]);
@@ -26,10 +32,7 @@ function SingleComment({ comment }) {
           name={userDetails.name}
           src={userDetails.photoURL}
           size="md"
-          onClick={e => {
-            navigate(`/profile/${userDetails.uid}`);
-            e.stopPropagation();
-          }}
+          onClick={navigateToUserHandler}
           cursor="Pointer"
         />
         <VStack align="flex-start" w="full">
@@ -37,10 +40,7 @@ function SingleComment({ comment }) {
             <Text
               as={'span'}
               fontWeight="500"
-              onClick={e => {
-                navigate(`/profile/${userDetails.uid}`);
-                e.stopPropagation();
-              }}
+              onClick={navigateToUserHandler}
               cursor="Pointer"
             >
               {`${userDetails.username} `}
