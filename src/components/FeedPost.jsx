@@ -10,6 +10,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
   Box,
+  Center,
   Divider,
   HStack,
   Image,
@@ -95,11 +96,25 @@ function FeedPost({ post }) {
         <HStack w="full">
           <ProfileHeader userDetails={userDetails} />
           {post.userID === currentUser.uid && (
-            <EditDeletePopover postID={post.uid} type="post" />
+            <EditDeletePopover
+              id={post.uid}
+              type="post"
+              desc={post.description}
+            />
           )}
         </HStack>
         <Text my={4}>{post.description}</Text>
-        {post.photoURL && <Image src={post.photoURL} alt="post" my={4} />}
+        {post.photo && (
+          <Center>
+            <Image
+              src={post.photo}
+              alt="post"
+              my={4}
+              w={{ base: 'full', md: 'auto' }}
+              maxH={{ base: 'auto', md: '500px' }}
+            />
+          </Center>
+        )}
         <Text color="gray.500" fontSize="xs">
           {post.uploadDate}
         </Text>
@@ -142,7 +157,10 @@ function FeedPost({ post }) {
             >{`View all ${post.comments.length} comments`}</Text>
           )}
           {post.comments.length > 0 && (
-            <SingleComment comment={post.comments[post.comments.length - 1]} />
+            <SingleComment
+              comment={post.comments[post.comments.length - 1]}
+              postID={post.uid}
+            />
           )}
         </Box>
         <AddComment postID={post.uid} />

@@ -4,20 +4,22 @@ import { useParams } from 'react-router-dom';
 import { Box, Center, Divider, Text } from '@chakra-ui/react';
 import { FeedPost } from '../../components';
 import { getPostByUserId } from '../Home/postSlice';
-import { getSingleUser } from '../Home/userSlice';
+import { getCurrentUserDetails, getSingleUser } from '../Home/userSlice';
 import { ProfileDescription } from './components/ProfileDescription';
 import { TopBar } from './components/TopBar';
 
 function Profile() {
   const [postsFeed, setPostsFeed] = useState([]);
+  const { currentUser } = useSelector(state => state.auth);
   const { userID } = useParams();
   const dispatch = useDispatch();
   const { userPosts } = useSelector(state => state.post);
 
   useEffect(() => {
+    userID === currentUser.uid && dispatch(getCurrentUserDetails(userID));
     dispatch(getSingleUser(userID));
     dispatch(getPostByUserId(userID));
-  }, [dispatch, userID]);
+  }, [dispatch, userID, currentUser.uid]);
   useEffect(() => {
     const tempPosts = [...userPosts].sort((a, b) => {
       return new Date(b.uploadDate) - new Date(a.uploadDate);

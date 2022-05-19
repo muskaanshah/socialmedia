@@ -96,18 +96,28 @@ function SinglePost() {
       <HStack w="full">
         <ProfileHeader userDetails={userDetails} />
         {singlePost.userID === currentUser.uid && (
-          <EditDeletePopover postID={singlePost.uid} type="post" />
+          <EditDeletePopover
+            id={singlePost.uid}
+            type="post"
+            desc={singlePost.description}
+          />
         )}
       </HStack>
-      <Center>
-        <Image
-          src="https://picsum.photos/300"
-          alt="post"
-          my={4}
-          w={{ base: 'full', md: 'auto' }}
-          minH={{ base: 'auto', md: '500px' }}
-        />
-      </Center>
+      <Text my={4}>{singlePost.description}</Text>
+      {singlePost.photo && (
+        <Center>
+          <Image
+            src={singlePost.photo}
+            alt="post"
+            my={4}
+            w={{ base: 'full', md: 'auto' }}
+            maxH={{ base: 'auto', md: '500px' }}
+          />
+        </Center>
+      )}
+      <Text color="gray.500" fontSize="xs">
+        {singlePost.uploadDate}
+      </Text>
       <HStack w="full" my={4}>
         <HStack spacing={6} grow={1} w="full">
           <Box as="span" cursor="Pointer">
@@ -137,7 +147,11 @@ function SinglePost() {
         </Text>
       )}
       {singlePost?.comments?.map(comment => (
-        <SingleComment comment={comment} key={comment} />
+        <SingleComment
+          comment={comment}
+          key={comment}
+          postID={singlePost.uid}
+        />
       ))}
       <AddComment postID={postID} />
       <LikesModal isOpen={isOpen} onClose={onClose} likes={singlePost.likes} />

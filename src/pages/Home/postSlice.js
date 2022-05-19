@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice, current } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import {
   collection,
   deleteDoc,
@@ -164,6 +164,30 @@ export const deletePost = createAsyncThunk(
     const userRef = doc(collection(db, 'users'), currentUserId);
     await updateDoc(userRef, {
       posts: user.posts.filter(post => post !== postID),
+    });
+  }
+);
+
+export const editPost = createAsyncThunk(
+  'post/editPost',
+  async ({ postID, description }) => {
+    const postRef = doc(collection(db, 'posts'), postID);
+    await updateDoc(postRef, {
+      description: description,
+    });
+  }
+);
+
+export const deleteComment = createAsyncThunk(
+  'post/deleteComment',
+  async ({ commentID, postID }) => {
+    await deleteDoc(doc(db, 'comments', commentID));
+    //delete it from post's comments
+    const postDocs = await getDoc(doc(db, 'posts', postID));
+    const post = postDocs?.data();
+    const postRef = doc(collection(db, 'posts'), postID);
+    await updateDoc(postRef, {
+      comments: post.comments.filter(comment => comment !== commentID),
     });
   }
 );

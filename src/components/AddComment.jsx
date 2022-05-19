@@ -11,6 +11,19 @@ function AddComment({ postID }) {
   const { currentUser } = useSelector(state => state.auth);
   const { commentStatus } = useSelector(state => state.post);
   const dispatch = useDispatch();
+  const addCommentHandler = async () => {
+    await dispatch(
+      addComment({
+        comment: commentInput,
+        postID: postID,
+        uploadDate: getDateTime(new Date()),
+        userID: currentUser.uid,
+      })
+    ).unwrap();
+    dispatch(getAllUsers()).unwrap();
+    dispatch(getSinglePost(postID));
+    setCommentInput('');
+  };
   return (
     <HStack mt="6">
       <Textarea
@@ -20,6 +33,7 @@ function AddComment({ postID }) {
         resize="none"
         minRows={1}
         maxRows={4}
+        maxLength="400"
         as={ResizeTextarea}
         value={commentInput}
         onChange={e => setCommentInput(e.target.value)}
@@ -31,19 +45,8 @@ function AddComment({ postID }) {
       ) : (
         <Button
           _focus={{ border: 'none' }}
-          onClick={async () => {
-            await dispatch(
-              addComment({
-                comment: commentInput,
-                postID: postID,
-                uploadDate: getDateTime(new Date()),
-                userID: currentUser.uid,
-              })
-            ).unwrap();
-            dispatch(getAllUsers()).unwrap();
-            dispatch(getSinglePost(postID));
-            setCommentInput('');
-          }}
+          onClick={addCommentHandler}
+          disabled={!commentInput}
         >
           Send
         </Button>

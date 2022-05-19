@@ -38,6 +38,19 @@ export const getCurrentUserDetails = createAsyncThunk(
   }
 );
 
+export const updateCurrentUserDetails = createAsyncThunk(
+  'user/updateCurrentUserDetails',
+  async ({ headerImage, photoURL, name, bio, currentUserID }) => {
+    const userRef = doc(collection(db, 'users'), currentUserID);
+    await updateDoc(userRef, {
+      headerImage: headerImage,
+      photoURL: photoURL,
+      name: name,
+      bio: bio,
+    });
+  }
+);
+
 export const followUser = createAsyncThunk(
   'user/followUser',
   async ({ currentUserID, followedUserID }, thunkAPI) => {
