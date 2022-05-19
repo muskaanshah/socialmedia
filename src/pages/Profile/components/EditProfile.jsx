@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import ResizeTextarea from 'react-textarea-autosize';
 import {
   Avatar,
@@ -20,6 +21,18 @@ import {
   Textarea,
   VStack,
 } from '@chakra-ui/react';
+import {
+  getDownloadURL,
+  ref,
+  uploadBytes,
+  uploadBytesResumable,
+} from 'firebase/storage';
+import { storage } from '../../../firebase';
+import {
+  getCurrentUserDetails,
+  getSingleUser,
+  updateCurrentUserDetails,
+} from '../../Home/userSlice';
 
 const UploadButton = {
   color: 'inherit',
@@ -33,20 +46,59 @@ const FormLabelStyles = {
 };
 
 function EditProfile({ isOpen, onClose }) {
-  const [bannerUrl, setBannerUrl] = useState('https://picsum.photos/300');
-  const [avatarUrl, setAvatarUrl] = useState('https://bit.ly/dan-abramov');
+  const { currentUser } = useSelector(state => state.auth);
+  const dispatch = useDispatch();
+  const [userDetails, setUserDetails] = useState({
+    photo: currentUser.photoURL,
+    name: currentUser.name,
+    bio: currentUser.bio,
+    headerImage: currentUser.headerImage,
+    headerURL: '',
+    photoURL: '',
+  });
+  const { photo, name, bio, headerImage, headerURL, photoURL } = userDetails;
   const bannerFile = useRef();
   const avatarFile = useRef();
   const bannerChange = e => {
     if (e.target.files && e.target.files.length > 0) {
-      setBannerUrl(URL.createObjectURL(e.target.files[0]));
+      setUserDetails({
+        ...userDetails,
+        headerImage: URL.createObjectURL(e.target.files[0]),
+        headerURL: e.target.files[0],
+      });
     }
   };
   const avatarChange = e => {
     if (e.target.files && e.target.files.length > 0) {
-      setAvatarUrl(URL.createObjectURL(e.target.files[0]));
+      setUserDetails({
+        ...userDetails,
+        photo: URL.createObjectURL(e.target.files[0]),
+        photoURL: e.target.files[0],
+      });
     }
   };
+
+  const submitHandler = async () => {
+    onClose();
+    const headerRef = ref(storage, `${currentUser.uid}/${headerURL.name}`);
+    const headerSnapshot = await uploadBytes(headerRef, headerURL);
+    const headerDownloadURL = await getDownloadURL(headerSnapshot.ref);
+    const avatarRef = ref(storage, `${currentUser.uid}/${photoURL.name}`);
+    const avatarSnapshot = await uploadBytes(avatarRef, photoURL);
+    const avatarURL = await getDownloadURL(avatarSnapshot.ref);
+    await dispatch(
+      updateCurrentUserDetails({
+        headerImage: headerDownloadURL || currentUser.headerImage,
+        photoURL: avatarURL || currentUser.photoURL,
+        name: name,
+        bio: bio,
+        currentUserID: currentUser.uid,
+      })
+    ).unwrap();
+    dispatch(getCurrentUserDetails(currentUser.uid));
+    dispatch(getSingleUser(currentUser.uid));
+  };
+  console.log(userDetails);
   return (
     <Modal isOpen={isOpen} onClose={onClose} scrollBehavior="inside">
       <ModalOverlay />
@@ -56,7 +108,13 @@ function EditProfile({ isOpen, onClose }) {
         <ModalBody>
           <VStack spacing={4} w="full" align="flex-start">
             <Box pos="relative" w="full">
-              <Image minW="full" h="8rem" src={bannerUrl} alt="banner" />
+              <Image
+                minW="full"
+                h="8rem"
+                src={headerImage}
+                alt="banner"
+                fallbackSrc="https://via.placeholder.com/500"
+              />
               <Center pos="absolute" inset={0} bg="blackAlpha.500">
                 <Button sx={UploadButton} variant="ghost">
                   <FormLabel sx={FormLabelStyles}>
@@ -72,7 +130,7 @@ function EditProfile({ isOpen, onClose }) {
               </Center>
             </Box>
             <HStack>
-              <Avatar name="Dan Abrahmov" src={avatarUrl} size="md" />
+              <Avatar name={name} src={photo} size="md" />
               <Button sx={UploadButton} variant="link">
                 <FormLabel sx={FormLabelStyles} fontWeight="400">
                   <Input
@@ -87,7 +145,15 @@ function EditProfile({ isOpen, onClose }) {
             </HStack>
             <FormControl>
               <FormLabel htmlFor="name">Name</FormLabel>
-              <Input id="name" type="text" placeholder="Add your name" />
+              <Input
+                id="name"
+                type="text"
+                placeholder="Add your name"
+                value={name}
+                onChange={e =>
+                  setUserDetails({ ...userDetails, name: e.target.value })
+                }
+              />
             </FormControl>
             <FormControl>
               <FormLabel htmlFor="bio">Bio</FormLabel>
@@ -101,13 +167,17 @@ function EditProfile({ isOpen, onClose }) {
                 maxRows={4}
                 maxLength="200"
                 as={ResizeTextarea}
+                value={bio}
+                onChange={e =>
+                  setUserDetails({ ...userDetails, bio: e.target.value })
+                }
               />
             </FormControl>
           </VStack>
         </ModalBody>
 
         <ModalFooter>
-          <Button colorScheme="blue" onClick={onClose}>
+          <Button colorScheme="blue" onClick={submitHandler}>
             Save
           </Button>
         </ModalFooter>

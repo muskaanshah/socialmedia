@@ -75,12 +75,7 @@ function ProfileDescription() {
   };
   return (
     <>
-      <Image
-        minW="full"
-        h="15rem"
-        src="https://picsum.photos/300"
-        alt="banner"
-      />
+      <Image minW="full" h="15rem" src={singleUser?.headerImage} alt="banner" />
       <HStack p={4} spacing={4} align="flex-start">
         <Avatar
           name={singleUser?.name}
@@ -100,6 +95,9 @@ function ProfileDescription() {
               </Text>
               <Text color="gray.500" fontSize="sm" className="mt-0">
                 @{singleUser?.username}
+              </Text>
+              <Text fontWeight="500" fontSize="xl">
+                {singleUser?.bio}
               </Text>
             </VStack>
             <>
