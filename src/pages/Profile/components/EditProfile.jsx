@@ -21,12 +21,7 @@ import {
   Textarea,
   VStack,
 } from '@chakra-ui/react';
-import {
-  getDownloadURL,
-  ref,
-  uploadBytes,
-  uploadBytesResumable,
-} from 'firebase/storage';
+import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 import { storage } from '../../../firebase';
 import {
   getCurrentUserDetails,

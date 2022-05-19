@@ -22,7 +22,6 @@ import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 import { storage } from '../firebase';
 import { addPost, getPostByUserId } from '../pages/Home/postSlice';
 import { getAllUsers } from '../pages/Home/userSlice';
-import { CloseButtonBlack } from '../styles/globalStyles';
 import { getDateTime } from '../utils';
 
 function AddPostModal({ isOpen, onClose }) {
@@ -106,15 +105,6 @@ function AddPostModal({ isOpen, onClose }) {
                 alt="selected"
                 maxW="100px"
               />
-              {/* <Button
-                sx={CloseButtonBlack}
-                onClick={() => {
-                  file.value = '';
-                  setImg.preview('');
-                }}
-              >
-                <span className="material-icons-outlined sm">close</span>
-              </Button> */}
             </Box>
           )}
         </ModalBody>
