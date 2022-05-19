@@ -20,6 +20,7 @@ function Drawer() {
   const logoColor = useColorModeValue('blue.500', 'blue.200');
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { currentUser } = useSelector(state => state.auth);
+  const { curUser } = useSelector(state => state.user);
   return (
     <Box
       bg="inherit"
@@ -110,15 +111,11 @@ function Drawer() {
           w="full"
         >
           <HStack spacing={3} w="full">
-            <Avatar
-              name={currentUser.name}
-              src={currentUser.photoURL}
-              size="md"
-            />
+            <Avatar name={curUser.name} src={curUser.photoURL} size="md" />
             <VStack align="flex-start">
-              <Text fontSize="1rem">{currentUser.name}</Text>
+              <Text fontSize="1rem">{curUser.name}</Text>
               <Text fontSize="1rem" className="mt-0" color="gray.500">
-                @{currentUser.username}
+                @{curUser.username}
               </Text>
             </VStack>
           </HStack>

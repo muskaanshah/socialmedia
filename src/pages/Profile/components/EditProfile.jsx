@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import ResizeTextarea from 'react-textarea-autosize';
 import {
@@ -41,19 +41,21 @@ const FormLabelStyles = {
 };
 
 function EditProfile({ isOpen, onClose }) {
-  const { currentUser } = useSelector(state => state.auth);
+  // const { currentUser } = useSelector(state => state.auth);
+  const { curUser } = useSelector(state => state.user);
   const dispatch = useDispatch();
   const [userDetails, setUserDetails] = useState({
-    photo: currentUser.photoURL,
-    name: currentUser.name,
-    bio: currentUser.bio,
-    headerImage: currentUser.headerImage,
+    photo: curUser.photoURL,
+    name: curUser.name,
+    bio: curUser.bio,
+    headerImage: curUser.headerImage,
     headerURL: '',
     photoURL: '',
   });
   const { photo, name, bio, headerImage, headerURL, photoURL } = userDetails;
   const bannerFile = useRef();
   const avatarFile = useRef();
+  console.log(curUser.headerImage);
   const bannerChange = e => {
     if (e.target.files && e.target.files.length > 0) {
       setUserDetails({
@@ -75,25 +77,35 @@ function EditProfile({ isOpen, onClose }) {
 
   const submitHandler = async () => {
     onClose();
-    const headerRef = ref(storage, `${currentUser.uid}/${headerURL.name}`);
+    const headerRef = ref(storage, `${curUser.uid}/${headerURL.name}`);
     const headerSnapshot = await uploadBytes(headerRef, headerURL);
     const headerDownloadURL = await getDownloadURL(headerSnapshot.ref);
-    const avatarRef = ref(storage, `${currentUser.uid}/${photoURL.name}`);
+    const avatarRef = ref(storage, `${curUser.uid}/${photoURL.name}`);
     const avatarSnapshot = await uploadBytes(avatarRef, photoURL);
     const avatarURL = await getDownloadURL(avatarSnapshot.ref);
     await dispatch(
       updateCurrentUserDetails({
-        headerImage: headerDownloadURL || currentUser.headerImage,
-        photoURL: avatarURL || currentUser.photoURL,
+        headerImage: headerDownloadURL || curUser.headerImage,
+        photoURL: avatarURL || curUser.photo,
         name: name,
         bio: bio,
-        currentUserID: currentUser.uid,
+        currentUserID: curUser.uid,
       })
     ).unwrap();
-    dispatch(getCurrentUserDetails(currentUser.uid));
-    dispatch(getSingleUser(currentUser.uid));
+    dispatch(getCurrentUserDetails(curUser.uid));
+    dispatch(getSingleUser(curUser.uid));
   };
-  console.log(userDetails);
+
+  useEffect(() => {
+    setUserDetails({
+      photo: curUser.photoURL,
+      name: curUser.name,
+      bio: curUser.bio,
+      headerImage: curUser.headerImage,
+      headerURL: '',
+      photoURL: '',
+    });
+  }, [curUser]);
   return (
     <Modal isOpen={isOpen} onClose={onClose} scrollBehavior="inside">
       <ModalOverlay />

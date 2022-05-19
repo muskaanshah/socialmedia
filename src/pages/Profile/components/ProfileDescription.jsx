@@ -75,7 +75,13 @@ function ProfileDescription() {
   };
   return (
     <>
-      <Image minW="full" h="15rem" src={singleUser?.headerImage} alt="banner" />
+      <Image
+        minW="full"
+        h="15rem"
+        src={singleUser?.headerImage}
+        alt="banner"
+        fallbackSrc="https://via.placeholder.com/500"
+      />
       <HStack p={4} spacing={4} align="flex-start">
         <Avatar
           name={singleUser?.name}
