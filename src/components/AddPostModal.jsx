@@ -134,7 +134,12 @@ function AddPostModal({ isOpen, onClose }) {
               <span className="material-icons-outlined">image</span>
             </FormLabel>
           </Button>
-          <Button mr={3} _focus={{ border: 'none' }} onClick={addPostHandler}>
+          <Button
+            mr={3}
+            _focus={{ border: 'none' }}
+            onClick={addPostHandler}
+            disabled={!img.url && !postDescription}
+          >
             POST
           </Button>
         </ModalFooter>
