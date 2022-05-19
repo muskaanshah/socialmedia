@@ -18,30 +18,42 @@ import {
   ModalOverlay,
   Textarea,
 } from '@chakra-ui/react';
+import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
+import { storage } from '../firebase';
 import { addPost, getPostByUserId } from '../pages/Home/postSlice';
 import { getAllUsers } from '../pages/Home/userSlice';
 import { CloseButtonBlack } from '../styles/globalStyles';
 import { getDateTime } from '../utils';
 
 function AddPostModal({ isOpen, onClose }) {
-  const [imgUrl, setImgUrl] = useState('');
+  const [img, setImg] = useState({
+    preview: '',
+    url: '',
+  });
   const [postDescription, setPostDescription] = useState('');
   const { currentUser } = useSelector(state => state.auth);
   const dispatch = useDispatch();
   const file = useRef();
   const imageChange = e => {
     if (e.target.files && e.target.files.length > 0) {
-      setImgUrl(URL.createObjectURL(e.target.files[0]));
+      setImg({
+        ...img,
+        url: e.target.files[0],
+        preview: URL.createObjectURL(e.target.files[0]),
+      });
     }
   };
 
   const addPostHandler = async () => {
     const tempDate = getDateTime(new Date());
     onClose();
+    const postRef = ref(storage, `${currentUser.uid}/${img.url.name}`);
+    const postSnapshot = await uploadBytes(postRef, img.url);
+    const postDownloadURL = await getDownloadURL(postSnapshot.ref);
     await dispatch(
       addPost({
         description: postDescription,
-        photoURL: imgUrl,
+        photoURL: postDownloadURL,
         uploadDate: tempDate,
         id: currentUser.uid,
       })
@@ -52,7 +64,7 @@ function AddPostModal({ isOpen, onClose }) {
 
   useEffect(() => {
     return () => {
-      setImgUrl('');
+      setImg({ preview: '', url: '' });
       setPostDescription('');
     };
   }, [isOpen]);
@@ -66,8 +78,8 @@ function AddPostModal({ isOpen, onClose }) {
         <ModalBody>
           <HStack alignItems={'flex-start'}>
             <Avatar
-              name={currentUser.name}
-              src={currentUser.photoURL}
+              name={currentUser?.name}
+              src={currentUser?.photoURL}
               size="md"
             />
             <Textarea
@@ -86,18 +98,23 @@ function AddPostModal({ isOpen, onClose }) {
               autoFocus
             />
           </HStack>
-          {imgUrl.length > 0 && (
+          {img.preview.length > 0 && (
             <Box pos="relative" display="inline-block" mt={4}>
-              <Image id="thumbnail" src={imgUrl} alt="selected" maxW="100px" />
-              <Button
+              <Image
+                id="thumbnail"
+                src={img.preview}
+                alt="selected"
+                maxW="100px"
+              />
+              {/* <Button
                 sx={CloseButtonBlack}
                 onClick={() => {
                   file.value = '';
-                  setImgUrl('');
+                  setImg.preview('');
                 }}
               >
                 <span className="material-icons-outlined sm">close</span>
-              </Button>
+              </Button> */}
             </Box>
           )}
         </ModalBody>

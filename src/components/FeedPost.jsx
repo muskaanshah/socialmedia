@@ -10,6 +10,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
   Box,
+  Center,
   Divider,
   HStack,
   Image,
@@ -103,7 +104,17 @@ function FeedPost({ post }) {
           )}
         </HStack>
         <Text my={4}>{post.description}</Text>
-        {post.photoURL && <Image src={post.photoURL} alt="post" my={4} />}
+        {post.photo && (
+          <Center>
+            <Image
+              src={post.photo}
+              alt="post"
+              my={4}
+              w={{ base: 'full', md: 'auto' }}
+              maxH={{ base: 'auto', md: '500px' }}
+            />
+          </Center>
+        )}
         <Text color="gray.500" fontSize="xs">
           {post.uploadDate}
         </Text>
