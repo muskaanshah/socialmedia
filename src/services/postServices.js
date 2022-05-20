@@ -36,7 +36,10 @@ const getFeedPosts = async (feedArray, setFeedPosts) => {
         tempArray = [...tempArray, doc.data()];
       });
     }
-    setFeedPosts(tempArray);
+    const tempPosts = [...tempArray].sort((a, b) => {
+      return new Date(b.uploadDate) - new Date(a.uploadDate);
+    });
+    setFeedPosts(tempPosts);
   } catch (err) {
     console.error(err);
   }
