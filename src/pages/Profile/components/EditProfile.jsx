@@ -30,6 +30,9 @@ function EditProfile({ isOpen, onClose }) {
   const onCloseHandler = () => {
     dispatch(getCurrentUserDetails(curUser.uid));
     dispatch(getSingleUser(curUser.uid));
+    setHeaderDiv(false);
+    setAvatarDiv(false);
+    setOtherDetailsDiv(false);
     onClose();
   };
   return (
