@@ -1,193 +1,73 @@
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import ResizeTextarea from 'react-textarea-autosize';
 import {
-  Avatar,
-  Box,
   Button,
-  Center,
-  FormControl,
-  FormLabel,
-  HStack,
-  Image,
-  Input,
   Modal,
   ModalBody,
   ModalCloseButton,
   ModalContent,
-  ModalFooter,
   ModalHeader,
   ModalOverlay,
-  Textarea,
   VStack,
 } from '@chakra-ui/react';
-import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
-import { storage } from '../../../firebase';
-import {
-  getCurrentUserDetails,
-  getSingleUser,
-  updateCurrentUserDetails,
-} from '../../Home/userSlice';
+import { getCurrentUserDetails, getSingleUser } from '../../Home/userSlice';
+import { EditHeaderImage } from './EditHeaderImage';
+import { EditOtherDetails } from './EditOtherDetails';
+import { EditProfileImage } from './EditProfileImage';
 
-const UploadButton = {
+const LinkButtonStyles = {
+  _focus: { border: 'none' },
   color: 'inherit',
-  _focus: { border: 'none' },
+  fontWeight: '400',
 };
-const FormLabelStyles = {
-  _focus: { border: 'none' },
-  className: 'custom-file-upload',
-  m: '0',
-  cursor: 'pointer',
-};
-
 function EditProfile({ isOpen, onClose }) {
-  // const { currentUser } = useSelector(state => state.auth);
   const { curUser } = useSelector(state => state.user);
   const dispatch = useDispatch();
-  const [userDetails, setUserDetails] = useState({
-    photo: curUser.photoURL,
-    name: curUser.name,
-    bio: curUser.bio,
-    headerImage: curUser.headerImage,
-    headerURL: '',
-    photoURL: '',
-  });
-  const { photo, name, bio, headerImage, headerURL, photoURL } = userDetails;
-  const bannerFile = useRef();
-  const avatarFile = useRef();
-  console.log(curUser.headerImage);
-  const bannerChange = e => {
-    if (e.target.files && e.target.files.length > 0) {
-      setUserDetails({
-        ...userDetails,
-        headerImage: URL.createObjectURL(e.target.files[0]),
-        headerURL: e.target.files[0],
-      });
-    }
-  };
-  const avatarChange = e => {
-    if (e.target.files && e.target.files.length > 0) {
-      setUserDetails({
-        ...userDetails,
-        photo: URL.createObjectURL(e.target.files[0]),
-        photoURL: e.target.files[0],
-      });
-    }
-  };
+  const [headerDiv, setHeaderDiv] = useState(false);
+  const [avatarDiv, setAvatarDiv] = useState(false);
+  const [otherDetailsDiv, setOtherDetailsDiv] = useState(false);
 
-  const submitHandler = async () => {
-    onClose();
-    const headerRef = ref(storage, `${curUser.uid}/${headerURL.name}`);
-    const headerSnapshot = await uploadBytes(headerRef, headerURL);
-    const headerDownloadURL = await getDownloadURL(headerSnapshot.ref);
-    const avatarRef = ref(storage, `${curUser.uid}/${photoURL.name}`);
-    const avatarSnapshot = await uploadBytes(avatarRef, photoURL);
-    const avatarURL = await getDownloadURL(avatarSnapshot.ref);
-    await dispatch(
-      updateCurrentUserDetails({
-        headerImage: headerDownloadURL || curUser.headerImage,
-        photoURL: avatarURL || curUser.photo,
-        name: name,
-        bio: bio,
-        currentUserID: curUser.uid,
-      })
-    ).unwrap();
+  const onCloseHandler = () => {
     dispatch(getCurrentUserDetails(curUser.uid));
     dispatch(getSingleUser(curUser.uid));
+    onClose();
   };
-
-  useEffect(() => {
-    setUserDetails({
-      photo: curUser.photoURL,
-      name: curUser.name,
-      bio: curUser.bio,
-      headerImage: curUser.headerImage,
-      headerURL: '',
-      photoURL: '',
-    });
-  }, [curUser]);
   return (
-    <Modal isOpen={isOpen} onClose={onClose} scrollBehavior="inside">
+    <Modal isOpen={isOpen} onClose={onCloseHandler} scrollBehavior="inside">
       <ModalOverlay />
       <ModalContent>
         <ModalHeader>Edit Profile</ModalHeader>
         <ModalCloseButton />
-        <ModalBody>
+        <ModalBody mb="4">
           <VStack spacing={4} w="full" align="flex-start">
-            <Box pos="relative" w="full">
-              <Image
-                minW="full"
-                h="8rem"
-                src={headerImage}
-                alt="banner"
-                fallbackSrc="https://via.placeholder.com/500"
-              />
-              <Center pos="absolute" inset={0} bg="blackAlpha.500">
-                <Button sx={UploadButton} variant="ghost">
-                  <FormLabel sx={FormLabelStyles}>
-                    <Input
-                      type="file"
-                      accept="image/*"
-                      ref={bannerFile}
-                      onChange={bannerChange}
-                    />
-                    <span className="material-icons-outlined">add_a_photo</span>
-                  </FormLabel>
-                </Button>
-              </Center>
-            </Box>
-            <HStack>
-              <Avatar name={name} src={photo} size="md" />
-              <Button sx={UploadButton} variant="link">
-                <FormLabel sx={FormLabelStyles} fontWeight="400">
-                  <Input
-                    type="file"
-                    accept="image/*"
-                    ref={avatarFile}
-                    onChange={avatarChange}
-                  />
-                  Edit Avatar
-                </FormLabel>
-              </Button>
-            </HStack>
-            <FormControl>
-              <FormLabel htmlFor="name">Name</FormLabel>
-              <Input
-                id="name"
-                type="text"
-                placeholder="Add your name"
-                value={name}
-                onChange={e =>
-                  setUserDetails({ ...userDetails, name: e.target.value })
-                }
-              />
-            </FormControl>
-            <FormControl>
-              <FormLabel htmlFor="bio">Bio</FormLabel>
-              <Textarea
-                id="bio"
-                minH="unset"
-                placeholder="Add your bio"
-                w="100%"
-                resize="none"
-                minRows={1}
-                maxRows={4}
-                maxLength="200"
-                as={ResizeTextarea}
-                value={bio}
-                onChange={e =>
-                  setUserDetails({ ...userDetails, bio: e.target.value })
-                }
-              />
-            </FormControl>
+            <Button
+              sx={LinkButtonStyles}
+              variant="link"
+              onClick={() => setHeaderDiv(prev => !prev)}
+            >
+              Edit header image
+            </Button>
+            {headerDiv && <EditHeaderImage setHeaderDiv={setHeaderDiv} />}
+            <Button
+              sx={LinkButtonStyles}
+              variant="link"
+              onClick={() => setAvatarDiv(prev => !prev)}
+            >
+              Edit avatar
+            </Button>
+            {avatarDiv && <EditProfileImage setAvatarDiv={setAvatarDiv} />}
+            <Button
+              sx={LinkButtonStyles}
+              variant="link"
+              onClick={() => setOtherDetailsDiv(prev => !prev)}
+            >
+              Edit other details
+            </Button>
+            {otherDetailsDiv && (
+              <EditOtherDetails setOtherDetailsDiv={setOtherDetailsDiv} />
+            )}
           </VStack>
         </ModalBody>
-
-        <ModalFooter>
-          <Button colorScheme="blue" onClick={submitHandler}>
-            Save
-          </Button>
-        </ModalFooter>
       </ModalContent>
     </Modal>
   );

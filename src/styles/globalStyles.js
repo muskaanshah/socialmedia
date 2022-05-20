@@ -41,4 +41,30 @@ const submitButtonStyles = {
   color: 'gray.900',
 };
 
-export { TopBarStyles, CloseButtonBlack, AuthInputStyles, submitButtonStyles };
+const UploadButton = {
+  color: 'inherit',
+  _focus: { border: 'none' },
+};
+
+const FormLabelStyles = {
+  _focus: { border: 'none' },
+  className: 'custom-file-upload',
+  m: '0',
+  cursor: 'pointer',
+};
+
+const LinkButtonStyles = {
+  _focus: { border: 'none' },
+  color: 'inherit',
+  fontWeight: '400',
+};
+
+export {
+  TopBarStyles,
+  CloseButtonBlack,
+  AuthInputStyles,
+  submitButtonStyles,
+  UploadButton,
+  FormLabelStyles,
+  LinkButtonStyles,
+};
