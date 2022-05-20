@@ -104,7 +104,7 @@ function FeedPost({ post }) {
           )}
         </HStack>
         <Text my={4}>{post.description}</Text>
-        {post.photo && (
+        {post.photoURL && (
           <Center>
             <Image
               src={post.photo}
