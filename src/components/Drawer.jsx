@@ -19,7 +19,6 @@ import { AddPostModal } from './AddPostModal';
 function Drawer() {
   const logoColor = useColorModeValue('blue.500', 'blue.200');
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { currentUser } = useSelector(state => state.auth);
   const { curUser } = useSelector(state => state.user);
   return (
     <Box
@@ -82,7 +81,8 @@ function Drawer() {
               <Text fontSize="1rem">Saved</Text>
             </HStack>
           </Link>
-          <Link
+          {/* To be implemented later */}
+          {/* <Link
             as={NavLink}
             to="/notifications"
             _hover={{ color: logoColor, textDecoration: 'none' }}
@@ -93,7 +93,7 @@ function Drawer() {
               <span className="material-icons-outlined">notifications</span>
               <Text fontSize="1rem">Notifications</Text>
             </HStack>
-          </Link>
+          </Link> */}
           <Button
             borderRadius="2xl"
             w="full"
@@ -105,7 +105,7 @@ function Drawer() {
         </VStack>
         <Link
           as={NavLink}
-          to={`/profile/${currentUser.uid}`}
+          to={`/profile/${curUser.uid}`}
           _hover={{ textDecoration: 'none' }}
           _focus={{ outline: 'none' }}
           w="full"

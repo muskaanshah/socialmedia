@@ -16,13 +16,8 @@ import {
   useColorMode,
   useColorModeValue,
 } from '@chakra-ui/react';
+import { LinkButtonStyles } from '../../../styles/globalStyles';
 import { signOutUser } from '../../authentication/authSlice';
-
-const LinkButtonStyles = {
-  _focus: { border: 'none' },
-  color: 'inherit',
-  fontWeight: '400',
-};
 
 function SettingsModal({ isOpen, onClose }) {
   const { toggleColorMode } = useColorMode();
@@ -44,9 +39,10 @@ function SettingsModal({ isOpen, onClose }) {
       <ModalContent>
         <ModalHeader>User Settings</ModalHeader>
         <ModalCloseButton />
-        <ModalBody>
+        <ModalBody mb="4">
           <VStack align="flex-start">
-            <Button
+            {/* to be implemented later */}
+            {/* <Button
               sx={LinkButtonStyles}
               variant="link"
               onClick={() => setChangePasswordDivToggle(prev => !prev)}
@@ -79,7 +75,7 @@ function SettingsModal({ isOpen, onClose }) {
                   </Button>
                 </HStack>
               </VStack>
-            )}
+            )} */}
             <Button
               sx={LinkButtonStyles}
               variant="link"

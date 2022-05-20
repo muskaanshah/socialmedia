@@ -51,6 +51,37 @@ export const updateCurrentUserDetails = createAsyncThunk(
   }
 );
 
+export const updateHeaderImage = createAsyncThunk(
+  'user/updateHeaderImage',
+  async ({ headerImage, currentUserID }) => {
+    const userRef = doc(collection(db, 'users'), currentUserID);
+    await updateDoc(userRef, {
+      headerImage: headerImage,
+    });
+  }
+);
+
+export const updateProfileImage = createAsyncThunk(
+  'user/updateProfileImage',
+  async ({ photoURL, currentUserID }) => {
+    const userRef = doc(collection(db, 'users'), currentUserID);
+    await updateDoc(userRef, {
+      photoURL: photoURL,
+    });
+  }
+);
+
+export const updateOtherDetails = createAsyncThunk(
+  'user/updateOtherDetails',
+  async ({ name, bio, currentUserID }) => {
+    const userRef = doc(collection(db, 'users'), currentUserID);
+    await updateDoc(userRef, {
+      name: name,
+      bio: bio,
+    });
+  }
+);
+
 export const followUser = createAsyncThunk(
   'user/followUser',
   async ({ currentUserID, followedUserID }, thunkAPI) => {
