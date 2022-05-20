@@ -1,3 +1,5 @@
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import {
   createUserWithEmailAndPassword,
@@ -40,7 +42,7 @@ export const signUpUser = createAsyncThunk(
       });
       return JSON.parse(JSON.stringify(response.user));
     } catch (err) {
-      console.error(err);
+      toast.error(err.message);
     }
   }
 );
@@ -52,7 +54,7 @@ export const signInUser = createAsyncThunk(
       const response = await signInWithEmailAndPassword(auth, email, password);
       return JSON.parse(JSON.stringify(response.user));
     } catch (err) {
-      console.error(err);
+      toast.error(err.message);
     }
   }
 );
@@ -61,7 +63,6 @@ export const signOutUser = createAsyncThunk('auth/signOutUser', async () => {
   await signOut(auth).catch(error => {
     console.error('Failed to signout user, ', error);
   });
-  console.log('Logged out');
 });
 
 export const authSlice = createSlice({
