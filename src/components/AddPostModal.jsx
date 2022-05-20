@@ -52,7 +52,7 @@ function AddPostModal({ isOpen, onClose }) {
     await dispatch(
       addPost({
         description: postDescription,
-        photoURL: postDownloadURL,
+        photoURL: !!img.url ? postDownloadURL : '',
         uploadDate: tempDate,
         id: currentUser.uid,
       })
