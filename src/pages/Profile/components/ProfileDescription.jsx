@@ -77,7 +77,7 @@ function ProfileDescription() {
     <>
       <Image
         minW="full"
-        h="15rem"
+        h={{ sm: '10rem', md: '15rem' }}
         src={singleUser?.headerImage}
         alt="banner"
         fallbackSrc="https://via.placeholder.com/500"
@@ -101,9 +101,6 @@ function ProfileDescription() {
               </Text>
               <Text color="gray.500" fontSize="sm" className="mt-0">
                 @{singleUser?.username}
-              </Text>
-              <Text fontWeight="500" fontSize="xl">
-                {singleUser?.bio}
               </Text>
             </VStack>
             <>

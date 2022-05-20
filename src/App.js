@@ -12,6 +12,10 @@ function App() {
     dispatch(getAllUsers());
     dispatch(getCurrentUserDetails(currentUser.uid));
   }, [dispatch, currentUser.uid]);
+
+  // useEffect(()=> {
+  //   localStorage.getItem("")
+  // }, [])
   return (
     <Box px={{ base: 0, lg: 6 }} maxW="8xl" mx="auto">
       <Grid

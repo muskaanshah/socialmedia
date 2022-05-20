@@ -19,7 +19,6 @@ import { AddPostModal } from './AddPostModal';
 function Drawer() {
   const logoColor = useColorModeValue('blue.500', 'blue.200');
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { currentUser } = useSelector(state => state.auth);
   const { curUser } = useSelector(state => state.user);
   return (
     <Box
@@ -105,7 +104,7 @@ function Drawer() {
         </VStack>
         <Link
           as={NavLink}
-          to={`/profile/${currentUser.uid}`}
+          to={`/profile/${curUser.uid}`}
           _hover={{ textDecoration: 'none' }}
           _focus={{ outline: 'none' }}
           w="full"
