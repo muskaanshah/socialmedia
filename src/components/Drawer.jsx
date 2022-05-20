@@ -81,7 +81,8 @@ function Drawer() {
               <Text fontSize="1rem">Saved</Text>
             </HStack>
           </Link>
-          <Link
+          {/* To be implemented later */}
+          {/* <Link
             as={NavLink}
             to="/notifications"
             _hover={{ color: logoColor, textDecoration: 'none' }}
@@ -92,7 +93,7 @@ function Drawer() {
               <span className="material-icons-outlined">notifications</span>
               <Text fontSize="1rem">Notifications</Text>
             </HStack>
-          </Link>
+          </Link> */}
           <Button
             borderRadius="2xl"
             w="full"

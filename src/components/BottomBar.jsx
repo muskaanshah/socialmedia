@@ -51,7 +51,8 @@ function BottomBar() {
         >
           <span className="material-icons-outlined">bookmark_border</span>
         </Link>
-        <Link
+        {/* To be implemented later */}
+        {/* <Link
           as={NavLink}
           to="/notifications"
           w="full"
@@ -61,7 +62,7 @@ function BottomBar() {
           _activeLink={{ color: logoColor, fontWeight: 'bold' }}
         >
           <span className="material-icons-outlined">notifications</span>
-        </Link>
+        </Link> */}
         <Link
           as={NavLink}
           to={`/profile/${curUser.uid}`}

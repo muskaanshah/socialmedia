@@ -41,7 +41,8 @@ function SettingsModal({ isOpen, onClose }) {
         <ModalCloseButton />
         <ModalBody mb="4">
           <VStack align="flex-start">
-            <Button
+            {/* to be implemented later */}
+            {/* <Button
               sx={LinkButtonStyles}
               variant="link"
               onClick={() => setChangePasswordDivToggle(prev => !prev)}
@@ -74,7 +75,7 @@ function SettingsModal({ isOpen, onClose }) {
                   </Button>
                 </HStack>
               </VStack>
-            )}
+            )} */}
             <Button
               sx={LinkButtonStyles}
               variant="link"

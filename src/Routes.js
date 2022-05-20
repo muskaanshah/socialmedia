@@ -21,7 +21,7 @@ function Routes() {
           <Route path="/home" element={<Home />} />
           <Route path="/explore" element={<Explore />} />
           <Route path="/saved" element={<Saved />} />
-          <Route path="/notifications" element={<Notifications />} />
+          {/* <Route path="/notifications" element={<Notifications />} /> */}
           <Route path="/profile/:userID" element={<Profile />} />
           <Route path="/post/:postID" element={<SinglePost />} />
         </Route>
