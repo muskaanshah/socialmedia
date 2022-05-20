@@ -1,6 +1,11 @@
+import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 import { Route, Routes as RoutesContainer } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
+import { onAuthStateChanged } from 'firebase/auth';
+import { doc, getDoc } from 'firebase/firestore';
 import App from './App';
+import { auth, db } from './firebase';
 import {
   Explore,
   Home,
@@ -12,9 +17,25 @@ import {
   Signup,
   SinglePost,
 } from './pages';
+import { setCurrentUserData } from './pages/authentication/authSlice';
 import { PrivateRoute } from './utils';
 
 function Routes() {
+  const dispatch = useDispatch();
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, async user => {
+      if (user) {
+        const userObj = await getDoc(doc(db, `users/${user.uid}`));
+        const data = userObj.data();
+        if (data) dispatch(setCurrentUserData(data));
+      } else {
+        dispatch(setCurrentUserData(null));
+      }
+    });
+    return () => {
+      unsubscribe();
+    };
+  }, [dispatch]);
   return (
     <>
       <RoutesContainer>
