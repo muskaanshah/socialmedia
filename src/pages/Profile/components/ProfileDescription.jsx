@@ -10,6 +10,7 @@ import {
   useBreakpointValue,
   useDisclosure,
 } from '@chakra-ui/react';
+import { headerfallback } from '../../../assets';
 import { FollowersList, FollowingList } from '../../../components';
 import {
   followUser,
@@ -80,7 +81,7 @@ function ProfileDescription() {
         h={{ sm: '10rem', md: '15rem' }}
         src={singleUser?.headerImage}
         alt="banner"
-        fallbackSrc="https://via.placeholder.com/500"
+        fallbackSrc={headerfallback}
       />
       <HStack p={4} spacing={4} align="flex-start">
         <Avatar
