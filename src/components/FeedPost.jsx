@@ -89,7 +89,6 @@ function FeedPost({ post }) {
     setIsLiked(post?.likes?.find(userID => userID === currentUser.uid));
     setIsBookmarked(curUser?.bookmarked?.includes(post.uid));
   }, [currentUser.uid, post.likes, curUser?.bookmarked, post.uid]);
-  console.log(post.photo.length);
   return (
     <>
       <Box maxW="full" p={4} mx={{ base: 'auto', sm: 8 }}>

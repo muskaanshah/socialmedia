@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice, current } from '@reduxjs/toolkit';
 import {
   collection,
   doc,
@@ -14,6 +14,8 @@ const initialState = {
   singleUser: {},
   curUser: {},
   followUnfollowStatus: 'idle',
+  headerStatus: 'idle',
+  avatarStatus: 'idle',
 };
 
 export const getAllUsers = createAsyncThunk('user/getAllUsers', async () => {
@@ -58,6 +60,7 @@ export const updateHeaderImage = createAsyncThunk(
     await updateDoc(userRef, {
       headerImage: headerImage,
     });
+    return headerImage;
   }
 );
 
@@ -68,6 +71,7 @@ export const updateProfileImage = createAsyncThunk(
     await updateDoc(userRef, {
       photoURL: photoURL,
     });
+    return photoURL;
   }
 );
 
@@ -79,6 +83,7 @@ export const updateOtherDetails = createAsyncThunk(
       name: name,
       bio: bio,
     });
+    return { name, bio };
   }
 );
 
@@ -100,6 +105,7 @@ export const followUser = createAsyncThunk(
       await updateDoc(followedUserRef, {
         followers: [...followedUser.followers, currentUserID],
       });
+      return followedUserID;
     } catch (error) {
       return thunkAPI.rejectWithValue(error);
     }
@@ -124,6 +130,7 @@ export const unFollowUser = createAsyncThunk(
       await updateDoc(followedUserRef, {
         followers: followedUser.followers.filter(id => id !== currentUserID),
       });
+      return unFollowedUserID;
     } catch (error) {
       return thunkAPI.rejectWithValue(error);
     }
@@ -150,14 +157,66 @@ export const userSlice = createSlice({
     [followUser.pending]: state => {
       state.followUnfollowStatus = 'loading';
     },
-    [followUser.fulfilled]: state => {
+    [followUser.fulfilled]: (state, action) => {
       state.followUnfollowStatus = 'fulfilled';
+      // actions done according to if the following unfollowing is done on the logged in user's profile page
+      if (state.curUser.uid === state.singleUser.uid) {
+        state.singleUser.following = [
+          ...state.singleUser.following,
+          action.payload,
+        ];
+      } else {
+        state.singleUser.followers = [
+          ...state.singleUser.followers,
+          state.curUser.uid,
+        ];
+      }
+      state.curUser.following = [...state.curUser.following, action.payload];
+      console.log(current(state.singleUser));
+      console.log(current(state.curUser));
     },
     [unFollowUser.pending]: state => {
       state.followUnfollowStatus = 'loading';
     },
-    [unFollowUser.fulfilled]: state => {
+    [unFollowUser.fulfilled]: (state, action) => {
       state.followUnfollowStatus = 'fulfilled';
+      // actions done according to if the following unfollowing is done on the logged in user's profile page
+      if (state.curUser.uid === state.singleUser.uid) {
+        state.singleUser.following = state.singleUser.following.filter(
+          user => user !== action.payload
+        );
+      } else {
+        state.singleUser.followers = state.singleUser.followers.filter(
+          user => user !== state.curUser.uid
+        );
+      }
+      state.curUser.following = state.curUser.following.filter(
+        user => user !== action.payload
+      );
+      console.log(current(state.singleUser));
+      console.log(current(state.curUser));
+    },
+    [updateOtherDetails.fulfilled]: (state, action) => {
+      state.singleUser.name = action.payload.name;
+      state.singleUser.bio = action.payload.bio;
+      state.curUser.name = action.payload.name;
+      state.curUser.bio = action.payload.bio;
+    },
+    [updateHeaderImage.pending]: state => {
+      state.headerStatus = 'loading';
+    },
+    [updateHeaderImage.fulfilled]: (state, action) => {
+      state.singleUser.headerImage = action.payload;
+      state.curUser.headerImage = action.payload;
+      state.headerStatus = 'fulfilled';
+    },
+    [updateProfileImage.pending]: state => {
+      state.avatarStatus = 'loading';
+    },
+    [updateProfileImage.fulfilled]: (state, action) => {
+      state.singleUser.photoURL = action.payload;
+      state.curUser.photoURL = action.payload;
+      state.avatarStatus = 'fulfilled';
     },
   },
 });

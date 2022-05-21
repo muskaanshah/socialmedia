@@ -14,9 +14,8 @@ function Profile() {
   const { userID } = useParams();
   const dispatch = useDispatch();
   const { userPosts } = useSelector(state => state.post);
-
   useEffect(() => {
-    userID === currentUser.uid && dispatch(getCurrentUserDetails(userID));
+    // userID === currentUser.uid && dispatch(getCurrentUserDetails(userID));
     dispatch(getSingleUser(userID));
     dispatch(getPostByUserId(userID));
   }, [dispatch, userID, currentUser.uid]);

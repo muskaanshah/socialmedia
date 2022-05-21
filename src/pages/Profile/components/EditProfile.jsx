@@ -28,8 +28,8 @@ function EditProfile({ isOpen, onClose }) {
   const [otherDetailsDiv, setOtherDetailsDiv] = useState(false);
 
   const onCloseHandler = () => {
-    dispatch(getCurrentUserDetails(curUser.uid));
-    dispatch(getSingleUser(curUser.uid));
+    // dispatch(getCurrentUserDetails(curUser.uid));
+    // dispatch(getSingleUser(curUser.uid));
     setHeaderDiv(false);
     setAvatarDiv(false);
     setOtherDetailsDiv(false);

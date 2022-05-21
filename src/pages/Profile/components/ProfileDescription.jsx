@@ -50,7 +50,7 @@ function ProfileDescription() {
     onClose: followingListOnClose,
   } = useDisclosure();
   const { currentUser } = useSelector(state => state.auth);
-  const { singleUser } = useSelector(state => state.user);
+  const { singleUser, curUser } = useSelector(state => state.user);
   const dispatch = useDispatch();
 
   const unFollowUserHandler = async () => {
@@ -60,8 +60,8 @@ function ProfileDescription() {
         unFollowedUserID: singleUser?.uid,
       })
     ).unwrap();
-    dispatch(getAllUsers());
-    dispatch(getSingleUser(singleUser.uid));
+    // dispatch(getAllUsers());
+    // dispatch(getSingleUser(singleUser.uid));
   };
 
   const followUserHandler = async () => {
@@ -71,8 +71,8 @@ function ProfileDescription() {
         followedUserID: singleUser?.uid,
       })
     ).unwrap();
-    dispatch(getAllUsers());
-    dispatch(getSingleUser(singleUser.uid));
+    // dispatch(getAllUsers());
+    // dispatch(getSingleUser(singleUser.uid));
   };
   return (
     <>
@@ -125,7 +125,7 @@ function ProfileDescription() {
                 </HStack>
               ) : (
                 <>
-                  {singleUser?.followers?.includes(currentUser?.uid) ? (
+                  {singleUser?.followers?.includes(curUser?.uid) ? (
                     <Button
                       sx={buttonStyles}
                       variant="outline"

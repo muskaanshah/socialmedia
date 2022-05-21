@@ -11,7 +11,7 @@ import {
 import { updateProfileImage } from '../../Home/userSlice';
 
 function EditProfileImage({ setAvatarDiv }) {
-  const { curUser } = useSelector(state => state.user);
+  const { curUser, avatarStatus } = useSelector(state => state.user);
   const [avatarImg, setAvatarImg] = useState({
     image: curUser.photoURL,
     URL: curUser.photoURL,
@@ -57,21 +57,34 @@ function EditProfileImage({ setAvatarDiv }) {
         </Button>
       </HStack>
       <HStack className="mt-1" w="full" justifyContent="center">
-        <Button
-          type="submit"
-          variant="link"
-          sx={LinkButtonStyles}
-          onClick={headerSaveHandler}
-        >
-          Save
-        </Button>
-        <Button
-          variant="link"
-          sx={LinkButtonStyles}
-          onClick={() => setAvatarDiv(false)}
-        >
-          Cancel
-        </Button>
+        {avatarStatus === 'loading' ? (
+          <Button
+            isLoading
+            loadingText="Saving"
+            variant="outline"
+            _focus={{ border: 'none' }}
+          >
+            Saving
+          </Button>
+        ) : (
+          <>
+            <Button
+              type="submit"
+              variant="link"
+              sx={LinkButtonStyles}
+              onClick={headerSaveHandler}
+            >
+              Save
+            </Button>
+            <Button
+              variant="link"
+              sx={LinkButtonStyles}
+              onClick={() => setAvatarDiv(false)}
+            >
+              Cancel
+            </Button>
+          </>
+        )}
       </HStack>
     </>
   );
