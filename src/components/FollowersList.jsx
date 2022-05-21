@@ -7,6 +7,7 @@ import {
   ModalContent,
   ModalHeader,
   ModalOverlay,
+  Text,
   VStack,
 } from '@chakra-ui/react';
 import { getUserObjectsInArray } from '../services';
@@ -29,20 +30,24 @@ function FollowersList({ isOpen, onClose, followers }) {
         <ModalHeader>Followers</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
-          <VStack>
-            {userObjectArray.map(user => (
-              <UserFollowStack
-                key={user.uid}
-                user={user}
-                userList={followers}
-                setUserObjectArray={setUserObjectArray}
-                onClick={() => {
-                  onClose();
-                  navigate(`/profile/${user.uid}`);
-                }}
-              />
-            ))}
-          </VStack>
+          {userObjectArray.length === 0 ? (
+            <Text>No followers</Text>
+          ) : (
+            <VStack>
+              {userObjectArray.map(user => (
+                <UserFollowStack
+                  key={user.uid}
+                  user={user}
+                  userList={followers}
+                  setUserObjectArray={setUserObjectArray}
+                  onClick={() => {
+                    onClose();
+                    navigate(`/profile/${user.uid}`);
+                  }}
+                />
+              ))}
+            </VStack>
+          )}
         </ModalBody>
       </ModalContent>
     </Modal>
