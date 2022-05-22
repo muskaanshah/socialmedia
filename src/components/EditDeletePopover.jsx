@@ -18,7 +18,10 @@ import {
   getPostByUserId,
   getSinglePost,
 } from '../pages/Home/postSlice';
-import { getAllUsers } from '../pages/Home/userSlice';
+import {
+  getAllUsers,
+  removePostFromCurrentUserPosts,
+} from '../pages/Home/userSlice';
 import { EditPostModal } from './EditPostModal';
 
 const functionButtonStyles = {
@@ -37,15 +40,20 @@ function EditDeletePopover({ id, type, desc, postID = '' }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const dispatch = useDispatch();
   const { pathname } = useLocation();
-  const currentLocation = pathname.split('/')[1];
+  const currentLocation = pathname.split('/').slice(1);
   const deleteHandler = async e => {
     e.stopPropagation();
     if (type === 'post') {
-      await dispatch(
-        deletePost({ postID: id, currentUserId: currentUser.uid })
-      ).unwrap();
-      dispatch(getAllUsers());
-      dispatch(getPostByUserId(currentUser.uid));
+      dispatch(
+        deletePost({
+          postID: id,
+          currentUserId: currentUser.uid,
+          currentLocation,
+        })
+      );
+      dispatch(removePostFromCurrentUserPosts(id));
+      // dispatch(getAllUsers());
+      // dispatch(getPostByUserId(currentUser.uid));
     }
     if (type === 'comment') {
       await dispatch(

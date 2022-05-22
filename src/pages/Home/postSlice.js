@@ -18,16 +18,18 @@ const initialState = {
   commentStatus: 'idle',
   singlePost: {},
   deleteStatus: 'idle',
-  feedPosts: [],
+  homePosts: [],
+  explorePosts: [],
+  savedPosts: [],
 };
 
 export const addPost = createAsyncThunk(
   'post/addPost',
-  async ({ description, photoURL, uploadDate, id, currentLocation }) => {
+  async ({ description, photoURL, uploadDate, id, uid, currentLocation }) => {
     const postObj = {
       userID: id,
       description: description,
-      uid: uuid(),
+      uid: uid,
       likes: [],
       comments: [],
       uploadDate: uploadDate,
@@ -146,7 +148,7 @@ export const removePostFromSaved = createAsyncThunk(
 
 export const deletePost = createAsyncThunk(
   'post/deletePost',
-  async ({ postID, currentUserId }) => {
+  async ({ postID, currentUserId, currentLocation }) => {
     await deleteDoc(doc(db, 'posts', postID));
     //delete it from users bookmarks if any
     const q = query(collection(db, 'users'));
@@ -163,6 +165,7 @@ export const deletePost = createAsyncThunk(
     await updateDoc(userRef, {
       posts: user.posts.filter(post => post !== postID),
     });
+    return { postID, currentUserId, currentLocation };
   }
 );
 
@@ -193,7 +196,7 @@ export const deleteComment = createAsyncThunk(
 
 export const getFeedPosts = createAsyncThunk(
   'post/getFeedPosts',
-  async (feedArray, thunkAPI) => {
+  async ({ feedArray, currentLocation }, thunkAPI) => {
     let tempArray = [];
     try {
       for (let i = 0; i < feedArray.length; i++) {
@@ -203,7 +206,7 @@ export const getFeedPosts = createAsyncThunk(
       // const tempPosts = [...tempArray].sort((a, b) => {
       //   return new Date(b.uploadDate) - new Date(a.uploadDate);
       // });
-      return tempArray;
+      return { tempArray, currentLocation };
     } catch (err) {
       return thunkAPI.rejectWithValue(err);
     }
@@ -224,11 +227,20 @@ export const postSlice = createSlice({
     [getSinglePost.fulfilled]: (state, action) => {
       state.singlePost = action.payload;
     },
+    [getPostByUserId.fulfilled]: (state, action) => {
+      state.userPosts = [];
+      action.payload.forEach(doc => {
+        state.userPosts.push(doc.data());
+      });
+      state.userPosts = [...state.userPosts].sort((a, b) => {
+        return new Date(b.uploadDate) - new Date(a.uploadDate);
+      });
+    },
     [addPost.fulfilled]: (state, action) => {
       const curLoc = action.payload.currentLocation;
       //if location is home page
-      if (curLoc[0] === 'home')
-        state.feedPosts = [...state.feedPosts, action.payload.postObj];
+      // if (curLoc[0] === 'home')
+      state.homePosts = [...state.homePosts, action.payload.postObj];
       //if location is user's profile page
       if (
         curLoc[0] === 'profile' &&
@@ -240,20 +252,22 @@ export const postSlice = createSlice({
         });
       }
     },
-    [getPostByUserId.fulfilled]: (state, action) => {
-      state.userPosts = [];
-      action.payload.forEach(doc => {
-        state.userPosts.push(doc.data());
-      });
-      state.userPosts = [...state.userPosts].sort((a, b) => {
-        return new Date(b.uploadDate) - new Date(a.uploadDate);
-      });
-    },
-    [deletePost.fulfilled]: state => {
+    [deletePost.fulfilled]: (state, action) => {
       state.deleteStatus = 'fulfilled';
+      const curLoc = action.payload.currentLocation[0];
+      const filterFunc = post => post.uid !== action.payload.postID;
+      state.homePosts = state.homePosts.filter(filterFunc);
+      state.savedPosts = state.savedPosts.filter(filterFunc);
+      //if location is user's profile page
+      if (curLoc === 'profile') {
+        state.userPosts = state.userPosts.filter(filterFunc);
+        state.userPosts = [...state.userPosts].sort((a, b) => {
+          return new Date(b.uploadDate) - new Date(a.uploadDate);
+        });
+      }
     },
     [deleteComment.fulfilled]: (state, action) => {
-      const curLoc = action.payload.currentLocation;
+      const curLoc = action.payload.currentLocation[0];
       const reducerFunc = (acc, curr) =>
         curr.uid === action.payload.postID
           ? [
@@ -277,12 +291,12 @@ export const postSlice = createSlice({
             comm => comm !== action.payload.commentID
           ),
         };
-      //if action done on feedposts
-      if (curLoc === 'home' || curLoc === 'explore' || curLoc === 'saved')
-        state.feedPosts = state.feedPosts.reduce(reducerFunc, []);
+      state.homePosts = state.homePosts.reduce(reducerFunc, []);
+      state.explorePosts = state.explorePosts.reduce(reducerFunc, []);
+      state.savedPosts = state.savedPosts.reduce(reducerFunc, []);
     },
     [addComment.fulfilled]: (state, action) => {
-      const curLoc = action.payload.currentLocation;
+      const curLoc = action.payload.currentLocation[0];
       state.commentStatus = 'fulfilled';
       const reducerFunc = (acc, curr) =>
         curr.uid === action.payload.commentObj.postID
@@ -303,12 +317,15 @@ export const postSlice = createSlice({
           ...state.singlePost,
           comments: [...state.singlePost.comments, action.payload.uid],
         };
-      //if action done on feedposts
-      if (curLoc === 'home' || curLoc === 'explore' || curLoc === 'saved')
-        state.feedPosts = state.feedPosts.reduce(reducerFunc, []);
+      state.homePosts = state.homePosts.reduce(reducerFunc, []);
+      state.explorePosts = state.explorePosts.reduce(reducerFunc, []);
+      state.savedPosts = state.savedPosts.reduce(reducerFunc, []);
     },
     [getFeedPosts.fulfilled]: (state, action) => {
-      state.feedPosts = action.payload;
+      const curLoc = action.payload.currentLocation[0];
+      if (curLoc === 'home') state.homePosts = action.payload.tempArray;
+      if (curLoc === 'explore') state.explorePosts = action.payload.tempArray;
+      if (curLoc === 'saved') state.savedPosts = action.payload.tempArray;
     },
   },
 });

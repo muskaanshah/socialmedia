@@ -12,7 +12,7 @@ function AddComment({ postID }) {
   const { currentUser } = useSelector(state => state.auth);
   const { commentStatus } = useSelector(state => state.post);
   const { pathname } = useLocation();
-  const currentLocation = pathname.split('/')[1];
+  const currentLocation = pathname.split('/').slice(1);
   const dispatch = useDispatch();
   const addCommentHandler = async () => {
     await dispatch(

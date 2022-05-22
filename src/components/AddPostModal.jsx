@@ -20,9 +20,13 @@ import {
   Textarea,
 } from '@chakra-ui/react';
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
+import { v4 as uuid } from 'uuid';
 import { storage } from '../firebase';
 import { addPost, getPostByUserId } from '../pages/Home/postSlice';
-import { getAllUsers } from '../pages/Home/userSlice';
+import {
+  addPostToCurrentUserPosts,
+  getAllUsers,
+} from '../pages/Home/userSlice';
 import { getDateTime } from '../utils';
 
 function AddPostModal({ isOpen, onClose }) {
@@ -52,15 +56,18 @@ function AddPostModal({ isOpen, onClose }) {
     const postRef = ref(storage, `${currentUser.uid}/${img.url.name}`);
     const postSnapshot = await uploadBytes(postRef, img.url);
     const postDownloadURL = await getDownloadURL(postSnapshot.ref);
-    await dispatch(
+    const randomId = uuid();
+    dispatch(
       addPost({
         description: postDescription,
         photoURL: !!img.url ? postDownloadURL : '',
         uploadDate: tempDate,
         id: currentUser.uid,
+        uid: randomId,
         currentLocation,
       })
-    ).unwrap();
+    );
+    dispatch(addPostToCurrentUserPosts(randomId));
     // await dispatch(getPostByUserId(currentUser.uid)).unwrap();
     // dispatch(getAllUsers());
   };

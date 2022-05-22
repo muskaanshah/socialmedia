@@ -140,7 +140,16 @@ export const unFollowUser = createAsyncThunk(
 export const userSlice = createSlice({
   name: 'user',
   initialState,
-  reducers: {},
+  reducers: {
+    addPostToCurrentUserPosts: (state, action) => {
+      state.curUser.posts = [...state.curUser.posts, action.payload];
+    },
+    removePostFromCurrentUserPosts: (state, action) => {
+      state.curUser.posts = state.curUser.posts.filter(
+        post => post !== action.payload
+      );
+    },
+  },
   extraReducers: {
     [getAllUsers.fulfilled]: (state, action) => {
       state.users = [];
@@ -221,4 +230,6 @@ export const userSlice = createSlice({
   },
 });
 
+export const { addPostToCurrentUserPosts, removePostFromCurrentUserPosts } =
+  userSlice.actions;
 export default userSlice.reducer;
