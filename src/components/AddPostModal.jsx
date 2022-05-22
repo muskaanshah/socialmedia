@@ -128,7 +128,7 @@ function AddPostModal({ isOpen, onClose }) {
             mr={3}
             _focus={{ border: 'none' }}
             onClick={addPostHandler}
-            disabled={!img.url && !postDescription}
+            disabled={!img.url && !postDescription.trim()}
           >
             POST
           </Button>

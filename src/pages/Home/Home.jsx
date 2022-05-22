@@ -8,18 +8,16 @@ import { TopBar } from './components/TopBar';
 
 function Home() {
   const [feedPosts, setFeedPosts] = useState([]);
-  const { users } = useSelector(state => state.user);
-  const { currentUser } = useSelector(state => state.auth);
+  const { users, curUser } = useSelector(state => state.user);
   useEffect(() => {
     let feedArray = [];
-    const curUser = users?.find(user => user.uid === currentUser?.uid);
     users.forEach(
       user =>
         curUser?.following?.includes(user.uid) && feedArray.push(...user.posts)
     );
     curUser?.posts?.forEach(post => feedArray.push(post));
     feedArray.length > 0 && getFeedPosts(feedArray, setFeedPosts);
-  }, [users, currentUser]);
+  }, [users, curUser]);
   return (
     <Box sx={{ flexGrow: '1' }}>
       <TopBar />

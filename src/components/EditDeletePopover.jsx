@@ -35,7 +35,8 @@ function EditDeletePopover({ id, type, desc, postID = '' }) {
   const { deleteStatus } = useSelector(state => state.post);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const dispatch = useDispatch();
-  const deleteHandler = async () => {
+  const deleteHandler = async e => {
+    e.stopPropagation();
     if (type === 'post') {
       await dispatch(
         deletePost({ postID: id, currentUserId: currentUser.uid })
@@ -70,7 +71,13 @@ function EditDeletePopover({ id, type, desc, postID = '' }) {
           <PopoverBody px="0">
             <VStack spacing="0">
               {type === 'post' && (
-                <HStack sx={functionButtonStyles} onClick={onOpen}>
+                <HStack
+                  sx={functionButtonStyles}
+                  onClick={e => {
+                    onOpen();
+                    e.stopPropagation();
+                  }}
+                >
                   <span className="material-icons-outlined">edit</span>
                   <Text fontSize="1rem">Edit</Text>
                 </HStack>

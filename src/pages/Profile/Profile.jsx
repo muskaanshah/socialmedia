@@ -9,7 +9,7 @@ import { ProfileDescription } from './components/ProfileDescription';
 import { TopBar } from './components/TopBar';
 
 function Profile() {
-  const [postsFeed, setPostsFeed] = useState([]);
+  // const [postsFeed, setPostsFeed] = useState([]);
   const { currentUser } = useSelector(state => state.auth);
   const { userID } = useParams();
   const dispatch = useDispatch();
@@ -19,20 +19,20 @@ function Profile() {
     dispatch(getSingleUser(userID));
     dispatch(getPostByUserId(userID));
   }, [dispatch, userID, currentUser.uid]);
-  useEffect(() => {
-    const tempPosts = [...userPosts].sort((a, b) => {
-      return new Date(b.uploadDate) - new Date(a.uploadDate);
-    });
-    setPostsFeed(tempPosts);
-  }, [userPosts]);
+  // useEffect(() => {
+  //   const tempPosts = [...userPosts].sort((a, b) => {
+  //     return new Date(b.uploadDate) - new Date(a.uploadDate);
+  //   });
+  //   setPostsFeed(tempPosts);
+  // }, [userPosts]);
 
   return (
     <Box sx={{ flexGrow: '1' }}>
       <TopBar />
       <ProfileDescription />
       <Divider />
-      {postsFeed?.length > 0 ? (
-        postsFeed.map(post => <FeedPost post={post} key={post.uid} />)
+      {userPosts?.length > 0 ? (
+        userPosts.map(post => <FeedPost post={post} key={post.uid} />)
       ) : (
         <Center height="20vh">
           <Text>No posts to show</Text>

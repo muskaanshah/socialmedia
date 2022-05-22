@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice, current } from '@reduxjs/toolkit';
 import {
   collection,
   deleteDoc,
@@ -72,8 +72,9 @@ export const addComment = createAsyncThunk(
     await updateDoc(postRef, {
       comments: [...posts.comments, commentObj.uid],
     });
-    const postsDocAfterPostingComment = await getDoc(doc(db, 'posts', postID));
-    return postsDocAfterPostingComment.data();
+    // const postsDocAfterPostingComment = await getDoc(doc(db, 'posts', postID));
+    // return postsDocAfterPostingComment.data();
+    return commentObj;
   }
 );
 
@@ -189,6 +190,7 @@ export const deleteComment = createAsyncThunk(
     await updateDoc(postRef, {
       comments: post.comments.filter(comment => comment !== commentID),
     });
+    return { postID, commentID };
   }
 );
 
@@ -205,6 +207,9 @@ export const postSlice = createSlice({
       action.payload.forEach(doc => {
         state.userPosts.push(doc.data());
       });
+      state.userPosts = [...state.userPosts].sort((a, b) => {
+        return new Date(b.uploadDate) - new Date(a.uploadDate);
+      });
     },
     [addComment.pending]: state => {
       state.commentStatus = 'loading';
@@ -215,16 +220,50 @@ export const postSlice = createSlice({
     [deletePost.fulfilled]: state => {
       state.deleteStatus = 'fulfilled';
     },
+    [deleteComment.fulfilled]: (state, action) => {
+      //if action done on profile page
+      const reducerFunc = (acc, curr) =>
+        curr.uid === action.payload.postID
+          ? [
+              ...acc,
+              {
+                ...curr,
+                comments: curr.comments.filter(
+                  comm => comm !== action.payload.commentID
+                ),
+              },
+            ]
+          : [...acc, curr];
+      const tempUserPosts = state.userPosts.reduce(reducerFunc, []);
+      state.userPosts = tempUserPosts;
+
+      //if action done on single post page
+      state.singlePost = {
+        ...state.singlePost,
+        comments: state.singlePost.comments.filter(
+          comm => comm !== action.payload.commentID
+        ),
+      };
+    },
     [addComment.fulfilled]: (state, action) => {
-      const tempUserPosts = state.userPosts.reduce(
-        (acc, curr) =>
-          curr.uid === action.payload.uid
-            ? [...acc, action.payload]
-            : [...acc, curr],
-        []
-      );
+      //if action done on user profile page
+      const reducerFunc = (acc, curr) =>
+        curr.uid === action.payload.postID
+          ? [
+              ...acc,
+              { ...curr, comments: [...curr.comments, action.payload.uid] },
+            ]
+          : [...acc, curr];
+      const tempUserPosts = state.userPosts.reduce(reducerFunc, []);
+      // console.log(tempUserPosts);
       state.userPosts = tempUserPosts;
       state.commentStatus = 'fulfilled';
+
+      //if action done on singlepost page
+      state.singlePost = {
+        ...state.singlePost,
+        comments: [...state.singlePost.comments, action.payload.uid],
+      };
     },
   },
 });

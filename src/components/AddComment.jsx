@@ -20,8 +20,8 @@ function AddComment({ postID }) {
         userID: currentUser.uid,
       })
     ).unwrap();
-    dispatch(getAllUsers()).unwrap();
-    dispatch(getSinglePost(postID));
+    // dispatch(getAllUsers()).unwrap();
+    // dispatch(getSinglePost(postID));
     setCommentInput('');
   };
   return (
@@ -46,7 +46,7 @@ function AddComment({ postID }) {
         <Button
           _focus={{ border: 'none' }}
           onClick={addCommentHandler}
-          disabled={!commentInput}
+          disabled={!commentInput.trim()}
         >
           Send
         </Button>
