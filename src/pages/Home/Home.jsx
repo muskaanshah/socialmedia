@@ -1,14 +1,17 @@
 import { useEffect } from 'react';
 import { useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Box, Center, Text } from '@chakra-ui/react';
 import { FeedPost } from '../../components';
-import { getFeedPosts } from '../../services';
+// import { getFeedPosts } from '../../services';
 import { TopBar } from './components/TopBar';
+import { getFeedPosts } from './postSlice';
 
 function Home() {
-  const [feedPosts, setFeedPosts] = useState([]);
+  // const [feedPosts, setFeedPosts] = useState([]);
   const { users, curUser } = useSelector(state => state.user);
+  const { feedPosts } = useSelector(state => state.post);
+  const dispatch = useDispatch();
   useEffect(() => {
     let feedArray = [];
     users.forEach(
@@ -16,12 +19,12 @@ function Home() {
         curUser?.following?.includes(user.uid) && feedArray.push(...user.posts)
     );
     curUser?.posts?.forEach(post => feedArray.push(post));
-    feedArray.length > 0 && getFeedPosts(feedArray, setFeedPosts);
-  }, [users, curUser]);
+    dispatch(getFeedPosts(feedArray));
+  }, [users, curUser, dispatch]);
   return (
     <Box sx={{ flexGrow: '1' }}>
       <TopBar />
-      {feedPosts.length > 0 ? (
+      {feedPosts?.length > 0 ? (
         feedPosts.map(post => <FeedPost post={post} key={post.uid} />)
       ) : (
         <Center height="70vh">

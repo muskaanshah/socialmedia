@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useLocation } from 'react-router-dom';
 import ResizeTextarea from 'react-textarea-autosize';
 import {
   Avatar,
@@ -32,6 +33,8 @@ function AddPostModal({ isOpen, onClose }) {
   const [postDescription, setPostDescription] = useState('');
   const { currentUser } = useSelector(state => state.auth);
   const dispatch = useDispatch();
+  const { pathname } = useLocation();
+  const currentLocation = pathname.split('/').slice(1);
   const file = useRef();
   const imageChange = e => {
     if (e.target.files && e.target.files.length > 0) {
@@ -55,10 +58,11 @@ function AddPostModal({ isOpen, onClose }) {
         photoURL: !!img.url ? postDownloadURL : '',
         uploadDate: tempDate,
         id: currentUser.uid,
+        currentLocation,
       })
     ).unwrap();
-    await dispatch(getPostByUserId(currentUser.uid)).unwrap();
-    dispatch(getAllUsers());
+    // await dispatch(getPostByUserId(currentUser.uid)).unwrap();
+    // dispatch(getAllUsers());
   };
 
   useEffect(() => {

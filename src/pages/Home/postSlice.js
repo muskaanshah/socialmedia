@@ -18,11 +18,12 @@ const initialState = {
   commentStatus: 'idle',
   singlePost: {},
   deleteStatus: 'idle',
+  feedPosts: [],
 };
 
 export const addPost = createAsyncThunk(
   'post/addPost',
-  async ({ description, photoURL, uploadDate, id }) => {
+  async ({ description, photoURL, uploadDate, id, currentLocation }) => {
     const postObj = {
       userID: id,
       description: description,
@@ -40,20 +41,16 @@ export const addPost = createAsyncThunk(
     const user = usersDoc?.data();
     // Add post to user's posts:
     const userRef = doc(collection(db, 'users'), id);
-    await updateDoc(
-      userRef,
-      {
-        posts: [...user.posts, postObj.uid],
-      },
-      { merge: true }
-    );
-    // return postObj;
+    await updateDoc(userRef, {
+      posts: [...user.posts, postObj.uid],
+    });
+    return { postObj, currentLocation };
   }
 );
 
 export const addComment = createAsyncThunk(
   'post/addComment',
-  async ({ comment, uploadDate, userID, postID }) => {
+  async ({ comment, uploadDate, userID, postID, currentLocation }) => {
     const commentObj = {
       userID: userID,
       comment: comment,
@@ -74,7 +71,7 @@ export const addComment = createAsyncThunk(
     });
     // const postsDocAfterPostingComment = await getDoc(doc(db, 'posts', postID));
     // return postsDocAfterPostingComment.data();
-    return commentObj;
+    return { commentObj, currentLocation };
   }
 );
 
@@ -181,7 +178,7 @@ export const editPost = createAsyncThunk(
 
 export const deleteComment = createAsyncThunk(
   'post/deleteComment',
-  async ({ commentID, postID }) => {
+  async ({ commentID, postID, currentLocation }) => {
     await deleteDoc(doc(db, 'comments', commentID));
     //delete it from post's comments
     const postDocs = await getDoc(doc(db, 'posts', postID));
@@ -190,7 +187,26 @@ export const deleteComment = createAsyncThunk(
     await updateDoc(postRef, {
       comments: post.comments.filter(comment => comment !== commentID),
     });
-    return { postID, commentID };
+    return { postID, commentID, currentLocation };
+  }
+);
+
+export const getFeedPosts = createAsyncThunk(
+  'post/getFeedPosts',
+  async (feedArray, thunkAPI) => {
+    let tempArray = [];
+    try {
+      for (let i = 0; i < feedArray.length; i++) {
+        const postDoc = await getDoc(doc(db, 'posts', feedArray[i]));
+        tempArray = [...tempArray, postDoc.data()];
+      }
+      // const tempPosts = [...tempArray].sort((a, b) => {
+      //   return new Date(b.uploadDate) - new Date(a.uploadDate);
+      // });
+      return tempArray;
+    } catch (err) {
+      return thunkAPI.rejectWithValue(err);
+    }
   }
 );
 
@@ -199,8 +215,30 @@ export const postSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers: {
+    [addComment.pending]: state => {
+      state.commentStatus = 'loading';
+    },
+    [deletePost.pending]: state => {
+      state.deleteStatus = 'loading';
+    },
     [getSinglePost.fulfilled]: (state, action) => {
       state.singlePost = action.payload;
+    },
+    [addPost.fulfilled]: (state, action) => {
+      const curLoc = action.payload.currentLocation;
+      //if location is home page
+      if (curLoc[0] === 'home')
+        state.feedPosts = [...state.feedPosts, action.payload.postObj];
+      //if location is user's profile page
+      if (
+        curLoc[0] === 'profile' &&
+        curLoc[1] === action.payload.postObj.userID
+      ) {
+        state.userPosts = [...state.userPosts, action.payload.postObj];
+        state.userPosts = [...state.userPosts].sort((a, b) => {
+          return new Date(b.uploadDate) - new Date(a.uploadDate);
+        });
+      }
     },
     [getPostByUserId.fulfilled]: (state, action) => {
       state.userPosts = [];
@@ -211,17 +249,11 @@ export const postSlice = createSlice({
         return new Date(b.uploadDate) - new Date(a.uploadDate);
       });
     },
-    [addComment.pending]: state => {
-      state.commentStatus = 'loading';
-    },
-    [deletePost.pending]: state => {
-      state.deleteStatus = 'loading';
-    },
     [deletePost.fulfilled]: state => {
       state.deleteStatus = 'fulfilled';
     },
     [deleteComment.fulfilled]: (state, action) => {
-      //if action done on profile page
+      const curLoc = action.payload.currentLocation;
       const reducerFunc = (acc, curr) =>
         curr.uid === action.payload.postID
           ? [
@@ -234,36 +266,49 @@ export const postSlice = createSlice({
               },
             ]
           : [...acc, curr];
-      const tempUserPosts = state.userPosts.reduce(reducerFunc, []);
-      state.userPosts = tempUserPosts;
-
+      //if action done on profile page
+      if (curLoc === 'profile')
+        state.userPosts = state.userPosts.reduce(reducerFunc, []);
       //if action done on single post page
-      state.singlePost = {
-        ...state.singlePost,
-        comments: state.singlePost.comments.filter(
-          comm => comm !== action.payload.commentID
-        ),
-      };
+      if (curLoc === 'post')
+        state.singlePost = {
+          ...state.singlePost,
+          comments: state.singlePost.comments.filter(
+            comm => comm !== action.payload.commentID
+          ),
+        };
+      //if action done on feedposts
+      if (curLoc === 'home' || curLoc === 'explore' || curLoc === 'saved')
+        state.feedPosts = state.feedPosts.reduce(reducerFunc, []);
     },
     [addComment.fulfilled]: (state, action) => {
-      //if action done on user profile page
+      const curLoc = action.payload.currentLocation;
+      state.commentStatus = 'fulfilled';
       const reducerFunc = (acc, curr) =>
-        curr.uid === action.payload.postID
+        curr.uid === action.payload.commentObj.postID
           ? [
               ...acc,
-              { ...curr, comments: [...curr.comments, action.payload.uid] },
+              {
+                ...curr,
+                comments: [...curr.comments, action.payload.commentObj.uid],
+              },
             ]
           : [...acc, curr];
-      const tempUserPosts = state.userPosts.reduce(reducerFunc, []);
-      // console.log(tempUserPosts);
-      state.userPosts = tempUserPosts;
-      state.commentStatus = 'fulfilled';
-
+      //if action done on user profile page
+      if (curLoc === 'profile')
+        state.userPosts = state.userPosts.reduce(reducerFunc, []);
       //if action done on singlepost page
-      state.singlePost = {
-        ...state.singlePost,
-        comments: [...state.singlePost.comments, action.payload.uid],
-      };
+      if (curLoc === 'post')
+        state.singlePost = {
+          ...state.singlePost,
+          comments: [...state.singlePost.comments, action.payload.uid],
+        };
+      //if action done on feedposts
+      if (curLoc === 'home' || curLoc === 'explore' || curLoc === 'saved')
+        state.feedPosts = state.feedPosts.reduce(reducerFunc, []);
+    },
+    [getFeedPosts.fulfilled]: (state, action) => {
+      state.feedPosts = action.payload;
     },
   },
 });

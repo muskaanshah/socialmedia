@@ -33,7 +33,6 @@ import { ProfileHeader } from './ProfileHeader';
 import { SingleComment } from './SingleComment';
 
 function FeedPost({ post }) {
-  console.log(post);
   const { userID } = useParams();
   const dispatch = useDispatch();
   const { users } = useSelector(state => state.user);

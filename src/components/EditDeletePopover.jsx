@@ -1,4 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
+import { useLocation } from 'react-router-dom';
 import {
   HStack,
   IconButton,
@@ -35,6 +36,8 @@ function EditDeletePopover({ id, type, desc, postID = '' }) {
   const { deleteStatus } = useSelector(state => state.post);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const dispatch = useDispatch();
+  const { pathname } = useLocation();
+  const currentLocation = pathname.split('/')[1];
   const deleteHandler = async e => {
     e.stopPropagation();
     if (type === 'post') {
@@ -45,9 +48,15 @@ function EditDeletePopover({ id, type, desc, postID = '' }) {
       dispatch(getPostByUserId(currentUser.uid));
     }
     if (type === 'comment') {
-      await dispatch(deleteComment({ commentID: id, postID: postID })).unwrap();
-      dispatch(getAllUsers());
-      dispatch(getSinglePost(postID));
+      await dispatch(
+        deleteComment({
+          commentID: id,
+          postID: postID,
+          currentLocation,
+        })
+      ).unwrap();
+      // dispatch(getAllUsers());
+      // dispatch(getSinglePost(postID));
     }
   };
 

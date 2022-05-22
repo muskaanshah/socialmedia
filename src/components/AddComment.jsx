@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useLocation } from 'react-router-dom';
 import ResizeTextarea from 'react-textarea-autosize';
 import { Button, HStack, Textarea } from '@chakra-ui/react';
 import { addComment, getSinglePost } from '../pages/Home/postSlice';
@@ -10,14 +11,17 @@ function AddComment({ postID }) {
   const [commentInput, setCommentInput] = useState('');
   const { currentUser } = useSelector(state => state.auth);
   const { commentStatus } = useSelector(state => state.post);
+  const { pathname } = useLocation();
+  const currentLocation = pathname.split('/')[1];
   const dispatch = useDispatch();
   const addCommentHandler = async () => {
     await dispatch(
       addComment({
         comment: commentInput,
-        postID: postID,
+        postID,
         uploadDate: getDateTime(new Date()),
         userID: currentUser.uid,
+        currentLocation,
       })
     ).unwrap();
     // dispatch(getAllUsers()).unwrap();
