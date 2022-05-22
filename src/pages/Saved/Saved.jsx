@@ -16,7 +16,7 @@ function Saved() {
   // const [feedPosts, setFeedPosts] = useState([]);
   useEffect(() => {
     dispatch(getFeedPosts({ feedArray: curUser?.bookmarked, currentLocation }));
-  }, [curUser?.bookmarked, dispatch, currentLocation]);
+  }, [curUser?.bookmarked, dispatch]);
   return (
     <Box sx={{ flexGrow: '1' }}>
       <TopBar />

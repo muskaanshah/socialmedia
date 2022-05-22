@@ -28,7 +28,7 @@ function Explore() {
     );
     notFollowing?.forEach(user => feedArray.push(...user.posts));
     dispatch(getFeedPosts({ feedArray, currentLocation }));
-  }, [users, currentUser, dispatch, currentLocation]);
+  }, [users, currentUser, dispatch]);
   return (
     <Box sx={{ flexGrow: '1' }}>
       <TopBar />
