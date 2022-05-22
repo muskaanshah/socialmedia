@@ -239,8 +239,8 @@ export const postSlice = createSlice({
     [addPost.fulfilled]: (state, action) => {
       const curLoc = action.payload.currentLocation;
       //if location is home page
-      // if (curLoc[0] === 'home')
-      state.homePosts = [...state.homePosts, action.payload.postObj];
+      if (curLoc[0] === 'home')
+        state.homePosts = [...state.homePosts, action.payload.postObj];
       //if location is user's profile page
       if (
         curLoc[0] === 'profile' &&
@@ -256,8 +256,10 @@ export const postSlice = createSlice({
       state.deleteStatus = 'fulfilled';
       const curLoc = action.payload.currentLocation[0];
       const filterFunc = post => post.uid !== action.payload.postID;
-      state.homePosts = state.homePosts.filter(filterFunc);
-      state.savedPosts = state.savedPosts.filter(filterFunc);
+      if (curLoc === 'saved' || curLoc === 'home') {
+        state.homePosts = state.homePosts.filter(filterFunc);
+        state.savedPosts = state.savedPosts.filter(filterFunc);
+      }
       //if location is user's profile page
       if (curLoc === 'profile') {
         state.userPosts = state.userPosts.filter(filterFunc);
@@ -291,9 +293,11 @@ export const postSlice = createSlice({
             comm => comm !== action.payload.commentID
           ),
         };
-      state.homePosts = state.homePosts.reduce(reducerFunc, []);
-      state.explorePosts = state.explorePosts.reduce(reducerFunc, []);
-      state.savedPosts = state.savedPosts.reduce(reducerFunc, []);
+      if (curLoc === 'explore' || curLoc === 'home' || curLoc === 'saved') {
+        state.homePosts = state.homePosts.reduce(reducerFunc, []);
+        state.explorePosts = state.explorePosts.reduce(reducerFunc, []);
+        state.savedPosts = state.savedPosts.reduce(reducerFunc, []);
+      }
     },
     [addComment.fulfilled]: (state, action) => {
       const curLoc = action.payload.currentLocation[0];
@@ -317,9 +321,11 @@ export const postSlice = createSlice({
           ...state.singlePost,
           comments: [...state.singlePost.comments, action.payload.uid],
         };
-      state.homePosts = state.homePosts.reduce(reducerFunc, []);
-      state.explorePosts = state.explorePosts.reduce(reducerFunc, []);
-      state.savedPosts = state.savedPosts.reduce(reducerFunc, []);
+      if (curLoc === 'explore' || curLoc === 'home' || curLoc === 'saved') {
+        state.homePosts = state.homePosts.reduce(reducerFunc, []);
+        state.explorePosts = state.explorePosts.reduce(reducerFunc, []);
+        state.savedPosts = state.savedPosts.reduce(reducerFunc, []);
+      }
     },
     [getFeedPosts.fulfilled]: (state, action) => {
       const curLoc = action.payload.currentLocation[0];
