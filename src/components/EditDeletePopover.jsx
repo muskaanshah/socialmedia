@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import {
   HStack,
   IconButton,
@@ -12,16 +12,7 @@ import {
   VStack,
   useDisclosure,
 } from '@chakra-ui/react';
-import {
-  deleteComment,
-  deletePost,
-  getPostByUserId,
-  getSinglePost,
-} from '../pages/Home/postSlice';
-import {
-  getAllUsers,
-  removePostFromCurrentUserPosts,
-} from '../pages/Home/userSlice';
+import { deleteComment, deletePost } from '../pages/Home/postSlice';
 import { EditPostModal } from './EditPostModal';
 
 const functionButtonStyles = {
@@ -42,7 +33,7 @@ function EditDeletePopover({ id, type, desc, postID = '' }) {
   const { pathname } = useLocation();
 
   const currentLocation = pathname.split('/').slice(1);
-  const deleteHandler = async e => {
+  const deleteHandler = e => {
     e.stopPropagation();
     if (type === 'post') {
       dispatch(
@@ -52,20 +43,15 @@ function EditDeletePopover({ id, type, desc, postID = '' }) {
           currentLocation,
         })
       );
-      // dispatch(removePostFromCurrentUserPosts(id));
-      // dispatch(getAllUsers());
-      // dispatch(getPostByUserId(currentUser.uid));
     }
     if (type === 'comment') {
-      await dispatch(
+      dispatch(
         deleteComment({
           commentID: id,
           postID: postID,
           currentLocation,
         })
-      ).unwrap();
-      // dispatch(getAllUsers());
-      // dispatch(getSinglePost(postID));
+      );
     }
   };
 

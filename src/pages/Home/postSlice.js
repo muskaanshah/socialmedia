@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice, current } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import {
   collection,
   deleteDoc,
@@ -71,8 +71,6 @@ export const addComment = createAsyncThunk(
     await updateDoc(postRef, {
       comments: [...posts.comments, commentObj.uid],
     });
-    // const postsDocAfterPostingComment = await getDoc(doc(db, 'posts', postID));
-    // return postsDocAfterPostingComment.data();
     return { commentObj, currentLocation };
   }
 );
@@ -274,8 +272,6 @@ export const postSlice = createSlice({
       }
       // if location is single post
       if (curLoc === 'post')
-        // action.payload.navigate(action.payload.location.state?.isFrom);
-        // action.payload.navigate('/home');
         state.singlePost = { ...state.singlePost, isDeleted: true };
     },
     [editPost.fulfilled]: (state, action) => {

@@ -31,11 +31,7 @@ import {
   removePostFromSaved,
   unlikePost,
 } from '../Home/postSlice';
-import {
-  addPostToBookmarks,
-  getCurrentUserDetails,
-  removePostFromBookmarks,
-} from '../Home/userSlice';
+import { addPostToBookmarks, removePostFromBookmarks } from '../Home/userSlice';
 
 function SinglePost() {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -54,26 +50,24 @@ function SinglePost() {
   const { singlePost } = useSelector(state => state.post);
   const { pathname } = useLocation();
   const currentLocation = pathname.split('/').slice(1);
-  const likeHandler = async () => {
-    await dispatch(
+  const likeHandler = () => {
+    dispatch(
       likePost({
         postID: singlePost.uid,
         currentUserId: currentUser.uid,
         currentLocation,
       })
-    ).unwrap();
-    // dispatch(getSinglePost(postID));
+    );
   };
 
-  const unlikeHandler = async () => {
-    await dispatch(
+  const unlikeHandler = () => {
+    dispatch(
       unlikePost({
         postID: singlePost.uid,
         currentUserId: currentUser.uid,
         currentLocation,
       })
-    ).unwrap();
-    // dispatch(getSinglePost(postID));
+    );
   };
 
   const saveHandler = async () => {
@@ -84,7 +78,6 @@ function SinglePost() {
         currentLocation,
       })
     ).unwrap();
-    // dispatch(getCurrentUserDetails(currentUser.uid));
     dispatch(addPostToBookmarks(singlePost.uid));
   };
 
@@ -96,7 +89,6 @@ function SinglePost() {
         currentLocation,
       })
     ).unwrap();
-    // dispatch(getCurrentUserDetails(currentUser.uid));
     dispatch(removePostFromBookmarks(singlePost.uid));
   };
 

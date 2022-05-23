@@ -3,8 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import ResizeTextarea from 'react-textarea-autosize';
 import { Button, HStack, Textarea } from '@chakra-ui/react';
-import { addComment, getSinglePost } from '../pages/Home/postSlice';
-import { getAllUsers } from '../pages/Home/userSlice';
+import { addComment } from '../pages/Home/postSlice';
 import { getDateTime } from '../utils';
 
 function AddComment({ postID }) {
@@ -24,8 +23,6 @@ function AddComment({ postID }) {
         currentLocation,
       })
     ).unwrap();
-    // dispatch(getAllUsers()).unwrap();
-    // dispatch(getSinglePost(postID));
     setCommentInput('');
   };
   return (

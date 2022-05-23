@@ -1,15 +1,12 @@
 import { useEffect } from 'react';
-import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import { Box, Center, Text } from '@chakra-ui/react';
 import { FeedPost } from '../../components';
-// import { getFeedPosts } from '../../services';
 import { TopBar } from './components/TopBar';
 import { getFeedPosts } from './postSlice';
 
 function Home() {
-  // const [feedPosts, setFeedPosts] = useState([]);
   const { users, curUser } = useSelector(state => state.user);
   const { homePosts } = useSelector(state => state.post);
   const { pathname } = useLocation();
@@ -23,7 +20,7 @@ function Home() {
     );
     curUser?.posts?.forEach(post => feedArray.push(post));
     dispatch(getFeedPosts({ feedArray, currentLocation }));
-  }, [users, curUser, dispatch]);
+  }, [users, curUser]);
   return (
     <Box sx={{ flexGrow: '1' }}>
       <TopBar />

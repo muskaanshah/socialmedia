@@ -7,7 +7,7 @@ import {
   FaRegHeart,
 } from 'react-icons/fa';
 import { useDispatch, useSelector } from 'react-redux';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import {
   Box,
   Center,
@@ -19,15 +19,12 @@ import {
 } from '@chakra-ui/react';
 import {
   addPostToSaved,
-  getPostByUserId,
   likePost,
   removePostFromSaved,
   unlikePost,
 } from '../pages/Home/postSlice';
 import {
   addPostToBookmarks,
-  getAllUsers,
-  getCurrentUserDetails,
   removePostFromBookmarks,
 } from '../pages/Home/userSlice';
 import { getUserDetailsByIdForHeader } from '../services';
@@ -38,7 +35,6 @@ import { ProfileHeader } from './ProfileHeader';
 import { SingleComment } from './SingleComment';
 
 function FeedPost({ post }) {
-  const { userID } = useParams();
   const dispatch = useDispatch();
   const { users } = useSelector(state => state.user);
   const [isBookmarked, setIsBookmarked] = useState(false);
@@ -56,32 +52,25 @@ function FeedPost({ post }) {
   const { pathname } = useLocation();
   const currentLocation = pathname.split('/').slice(1);
   const navigateHandler = () => navigate(`/post/${post.uid}`);
-  // navigate(`/post/${post.uid}`, {
-  //   state: { isFrom: location.pathname },
-  // });
 
-  const likeHandler = async () => {
-    await dispatch(
+  const likeHandler = () => {
+    dispatch(
       likePost({
         postID: post?.uid,
         currentUserId: currentUser.uid,
         currentLocation,
       })
-    ).unwrap();
-    // dispatch(getAllUsers());
-    // dispatch(getPostByUserId(userID));
+    );
   };
 
-  const unlikeHandler = async () => {
-    await dispatch(
+  const unlikeHandler = () => {
+    dispatch(
       unlikePost({
         postID: post?.uid,
         currentUserId: currentUser.uid,
         currentLocation,
       })
-    ).unwrap();
-    // dispatch(getAllUsers());
-    // dispatch(getPostByUserId(userID));
+    );
   };
 
   const saveHandler = async () => {
@@ -92,7 +81,6 @@ function FeedPost({ post }) {
         currentLocation,
       })
     ).unwrap();
-    // dispatch(getCurrentUserDetails(currentUser.uid));
     dispatch(addPostToBookmarks(post?.uid));
   };
 
@@ -104,7 +92,6 @@ function FeedPost({ post }) {
         currentLocation,
       })
     ).unwrap();
-    // dispatch(getCurrentUserDetails(currentUser.uid));
     dispatch(removePostFromBookmarks(post?.uid));
   };
 

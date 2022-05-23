@@ -13,12 +13,7 @@ import {
 } from '@chakra-ui/react';
 import { headerfallback } from '../../../assets';
 import { FollowersList, FollowingList } from '../../../components';
-import {
-  followUser,
-  getAllUsers,
-  getSingleUser,
-  unFollowUser,
-} from '../../Home/userSlice';
+import { followUser, unFollowUser } from '../../Home/userSlice';
 import { EditProfile } from './EditProfile';
 import { SettingsModal } from './SettingsModal';
 
@@ -56,28 +51,24 @@ function ProfileDescription() {
   const { pathname } = useLocation();
   const currentLocation = pathname.split('/').slice(1);
 
-  const unFollowUserHandler = async () => {
-    await dispatch(
+  const unFollowUserHandler = () => {
+    dispatch(
       unFollowUser({
         currentUserID: currentUser?.uid,
         unFollowedUserID: singleUser?.uid,
         currentLocation,
       })
-    ).unwrap();
-    // dispatch(getAllUsers());
-    // dispatch(getSingleUser(singleUser.uid));
+    );
   };
 
-  const followUserHandler = async () => {
-    await dispatch(
+  const followUserHandler = () => {
+    dispatch(
       followUser({
         currentUserID: currentUser?.uid,
         followedUserID: singleUser?.uid,
         currentLocation,
       })
-    ).unwrap();
-    // dispatch(getAllUsers());
-    // dispatch(getSingleUser(singleUser.uid));
+    );
   };
   return (
     <>

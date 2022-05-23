@@ -1,10 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import { Box, Center, Text } from '@chakra-ui/react';
 import { FeedPost } from '../../components';
 import { getFeedPosts } from '../Home/postSlice';
-// import { getFeedPosts } from '../../services';
 import { TopBar } from './components/TopBar';
 
 function Saved() {
@@ -13,10 +12,9 @@ function Saved() {
   const dispatch = useDispatch();
   const { pathname } = useLocation();
   const currentLocation = pathname.split('/').slice(1);
-  // const [feedPosts, setFeedPosts] = useState([]);
   useEffect(() => {
     dispatch(getFeedPosts({ feedArray: curUser?.bookmarked, currentLocation }));
-  }, [curUser?.bookmarked, dispatch]);
+  }, [curUser?.bookmarked]);
   return (
     <Box sx={{ flexGrow: '1' }}>
       <TopBar />

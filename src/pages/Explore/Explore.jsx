@@ -1,15 +1,13 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import { Box, Center, Text } from '@chakra-ui/react';
 import { FeedPost } from '../../components';
 import { getFeedPosts } from '../Home/postSlice';
-// import { getFeedPosts } from '../../services';
 import { getAllUsers } from '../Home/userSlice';
 import { TopBar } from './components/TopBar';
 
 function Explore() {
-  // const [feedPosts, setFeedPosts] = useState([]);
   const { users } = useSelector(state => state.user);
   const { currentUser } = useSelector(state => state.auth);
   const { explorePosts } = useSelector(state => state.post);
@@ -28,7 +26,7 @@ function Explore() {
     );
     notFollowing?.forEach(user => feedArray.push(...user.posts));
     dispatch(getFeedPosts({ feedArray, currentLocation }));
-  }, [users, currentUser, dispatch]);
+  }, [users, currentUser]);
   return (
     <Box sx={{ flexGrow: '1' }}>
       <TopBar />

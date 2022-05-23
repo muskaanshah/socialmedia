@@ -15,8 +15,7 @@ import {
   ModalOverlay,
   Textarea,
 } from '@chakra-ui/react';
-import { editPost, getPostByUserId } from '../pages/Home/postSlice';
-import { getAllUsers } from '../pages/Home/userSlice';
+import { editPost } from '../pages/Home/postSlice';
 
 function EditPostModal({ isOpen, onClose, desc, postID }) {
   const [postDescription, setPostDescription] = useState(desc);
@@ -34,8 +33,6 @@ function EditPostModal({ isOpen, onClose, desc, postID }) {
         currentLocation,
       })
     );
-    // await dispatch(getPostByUserId(currentUser.uid)).unwrap();
-    // dispatch(getAllUsers());
   };
 
   return (

@@ -22,11 +22,8 @@ import {
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 import { v4 as uuid } from 'uuid';
 import { storage } from '../firebase';
-import { addPost, getPostByUserId } from '../pages/Home/postSlice';
-import {
-  addPostToCurrentUserPosts,
-  getAllUsers,
-} from '../pages/Home/userSlice';
+import { addPost } from '../pages/Home/postSlice';
+import { addPostToCurrentUserPosts } from '../pages/Home/userSlice';
 import { getDateTime } from '../utils';
 
 function AddPostModal({ isOpen, onClose }) {
@@ -68,8 +65,6 @@ function AddPostModal({ isOpen, onClose }) {
       })
     );
     dispatch(addPostToCurrentUserPosts(randomId));
-    // await dispatch(getPostByUserId(currentUser.uid)).unwrap();
-    // dispatch(getAllUsers());
   };
 
   useEffect(() => {

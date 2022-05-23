@@ -8,7 +8,7 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import { followUser, getCurrentUserDetails } from '../pages/Home/userSlice';
+import { followUser } from '../pages/Home/userSlice';
 
 function SidebarUserChip({ user }) {
   const { currentUser } = useSelector(state => state.auth);
@@ -39,15 +39,14 @@ function SidebarUserChip({ user }) {
         <Button
           variant="link"
           _focus={{ border: 'none' }}
-          onClick={async () => {
-            await dispatch(
+          onClick={() => {
+            dispatch(
               followUser({
                 currentUserID: currentUser.uid,
                 followedUserID: user.uid,
                 currentLocation,
               })
-            ).unwrap();
-            // dispatch(getCurrentUserDetails(currentUser.uid));
+            );
           }}
         >
           Follow
