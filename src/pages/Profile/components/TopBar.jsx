@@ -11,9 +11,10 @@ import {
 import { AddPostModal } from '../../../components';
 import { TopBarStyles } from '../../../styles/globalStyles';
 
-function TopBar() {
+function TopBar({ userID }) {
   const bgCol = useColorModeValue('blackAlpha.200', 'blackAlpha.500');
   const { singleUser } = useSelector(state => state.user);
+  const { currentUser } = useSelector(state => state.auth);
   const { isOpen, onOpen, onClose } = useDisclosure();
   return (
     <Box bgColor={bgCol} sx={TopBarStyles}>
@@ -24,15 +25,17 @@ function TopBar() {
             {singleUser?.posts?.length} posts
           </Text>
         </VStack>
-        <Button
-          variant="ghost"
-          _focus={{ border: 'none' }}
-          onClick={onOpen}
-          color="inherit"
-          p={0}
-        >
-          <span className="material-icons-outlined">post_add</span>
-        </Button>
+        {userID === currentUser.uid && (
+          <Button
+            variant="ghost"
+            _focus={{ border: 'none' }}
+            onClick={onOpen}
+            color="inherit"
+            p={0}
+          >
+            <span className="material-icons-outlined">post_add</span>
+          </Button>
+        )}
       </HStack>
       <AddPostModal isOpen={isOpen} onClose={onClose} />
     </Box>

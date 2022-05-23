@@ -242,8 +242,8 @@ export const postSlice = createSlice({
     [addPost.fulfilled]: (state, action) => {
       const curLoc = action.payload.currentLocation;
       //if location is home page
-      if (curLoc[0] === 'home')
-        state.homePosts = [...state.homePosts, action.payload.postObj];
+      // if (curLoc[0] === 'home')
+      //   state.homePosts = [...state.homePosts, action.payload.postObj];
       //if location is user's profile page
       if (
         curLoc[0] === 'profile' &&

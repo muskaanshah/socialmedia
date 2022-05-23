@@ -16,7 +16,8 @@ function Home() {
     let feedArray = [];
     users.forEach(
       user =>
-        curUser?.following?.includes(user.uid) && feedArray.push(...user.posts)
+        curUser?.following?.includes(user?.uid) &&
+        feedArray.push(...user?.posts)
     );
     curUser?.posts?.forEach(post => feedArray.push(post));
     dispatch(getFeedPosts({ feedArray, currentLocation }));
@@ -25,7 +26,7 @@ function Home() {
     <Box sx={{ flexGrow: '1' }}>
       <TopBar />
       {homePosts?.length > 0 ? (
-        homePosts.map(post => <FeedPost post={post} key={post.uid} />)
+        homePosts.map(post => <FeedPost post={post} key={post?.uid} />)
       ) : (
         <Center height="70vh">
           <Text>Follow people to see their posts</Text>

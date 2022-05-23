@@ -20,7 +20,7 @@ function Profile() {
 
   return (
     <Box sx={{ flexGrow: '1' }}>
-      <TopBar />
+      <TopBar userID={userID} />
       <ProfileDescription />
       <Divider />
       {userPosts?.length > 0 ? (

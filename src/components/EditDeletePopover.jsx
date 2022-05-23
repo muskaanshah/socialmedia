@@ -13,6 +13,7 @@ import {
   useDisclosure,
 } from '@chakra-ui/react';
 import { deleteComment, deletePost } from '../pages/Home/postSlice';
+import { removePostFromCurrentUserPosts } from '../pages/Home/userSlice';
 import { EditPostModal } from './EditPostModal';
 
 const functionButtonStyles = {
@@ -43,6 +44,7 @@ function EditDeletePopover({ id, type, desc, postID = '' }) {
           currentLocation,
         })
       );
+      dispatch(removePostFromCurrentUserPosts(id));
     }
     if (type === 'comment') {
       dispatch(
