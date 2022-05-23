@@ -24,7 +24,12 @@ import {
   removePostFromSaved,
   unlikePost,
 } from '../pages/Home/postSlice';
-import { getAllUsers, getCurrentUserDetails } from '../pages/Home/userSlice';
+import {
+  addPostToBookmarks,
+  getAllUsers,
+  getCurrentUserDetails,
+  removePostFromBookmarks,
+} from '../pages/Home/userSlice';
 import { getUserDetailsByIdForHeader } from '../services';
 import { AddComment } from './AddComment';
 import { EditDeletePopover } from './EditDeletePopover';
@@ -48,8 +53,8 @@ function FeedPost({ post }) {
     username: '',
   });
   const navigate = useNavigate();
-  const location = useLocation();
-
+  const { pathname } = useLocation();
+  const currentLocation = pathname.split('/').slice(1);
   const navigateHandler = () => navigate(`/post/${post.uid}`);
   // navigate(`/post/${post.uid}`, {
   //   state: { isFrom: location.pathname },
@@ -57,25 +62,38 @@ function FeedPost({ post }) {
 
   const likeHandler = async () => {
     await dispatch(
-      likePost({ postID: post?.uid, currentUserId: currentUser.uid })
+      likePost({
+        postID: post?.uid,
+        currentUserId: currentUser.uid,
+        currentLocation,
+      })
     ).unwrap();
-    dispatch(getAllUsers());
-    dispatch(getPostByUserId(userID));
+    // dispatch(getAllUsers());
+    // dispatch(getPostByUserId(userID));
   };
 
   const unlikeHandler = async () => {
     await dispatch(
-      unlikePost({ postID: post?.uid, currentUserId: currentUser.uid })
+      unlikePost({
+        postID: post?.uid,
+        currentUserId: currentUser.uid,
+        currentLocation,
+      })
     ).unwrap();
-    dispatch(getAllUsers());
-    dispatch(getPostByUserId(userID));
+    // dispatch(getAllUsers());
+    // dispatch(getPostByUserId(userID));
   };
 
   const saveHandler = async () => {
     await dispatch(
-      addPostToSaved({ postID: post?.uid, currentUserId: currentUser.uid })
+      addPostToSaved({
+        postID: post?.uid,
+        currentUserId: currentUser.uid,
+        currentLocation,
+      })
     ).unwrap();
-    dispatch(getCurrentUserDetails(currentUser.uid));
+    // dispatch(getCurrentUserDetails(currentUser.uid));
+    dispatch(addPostToBookmarks(post?.uid));
   };
 
   const unsaveHandler = async () => {
@@ -83,9 +101,11 @@ function FeedPost({ post }) {
       removePostFromSaved({
         postID: post?.uid,
         currentUserId: currentUser.uid,
+        currentLocation,
       })
     ).unwrap();
-    dispatch(getCurrentUserDetails(currentUser.uid));
+    // dispatch(getCurrentUserDetails(currentUser.uid));
+    dispatch(removePostFromBookmarks(post?.uid));
   };
 
   useEffect(() => {

@@ -149,6 +149,14 @@ export const userSlice = createSlice({
         post => post !== action.payload
       );
     },
+    addPostToBookmarks: (state, action) => {
+      state.curUser.bookmarked = [...state.curUser.bookmarked, action.payload];
+    },
+    removePostFromBookmarks: (state, action) => {
+      state.curUser.bookmarked = state.curUser.bookmarked.filter(
+        post => post !== action.payload
+      );
+    },
   },
   extraReducers: {
     [getAllUsers.fulfilled]: (state, action) => {
@@ -230,6 +238,10 @@ export const userSlice = createSlice({
   },
 });
 
-export const { addPostToCurrentUserPosts, removePostFromCurrentUserPosts } =
-  userSlice.actions;
+export const {
+  addPostToCurrentUserPosts,
+  removePostFromCurrentUserPosts,
+  addPostToBookmarks,
+  removePostFromBookmarks,
+} = userSlice.actions;
 export default userSlice.reducer;
