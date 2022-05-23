@@ -18,15 +18,18 @@ const initialState = {
   commentStatus: 'idle',
   singlePost: {},
   deleteStatus: 'idle',
+  homePosts: [],
+  explorePosts: [],
+  savedPosts: [],
 };
 
 export const addPost = createAsyncThunk(
   'post/addPost',
-  async ({ description, photoURL, uploadDate, id }) => {
+  async ({ description, photoURL, uploadDate, id, uid, currentLocation }) => {
     const postObj = {
       userID: id,
       description: description,
-      uid: uuid(),
+      uid: uid,
       likes: [],
       comments: [],
       uploadDate: uploadDate,
@@ -40,20 +43,16 @@ export const addPost = createAsyncThunk(
     const user = usersDoc?.data();
     // Add post to user's posts:
     const userRef = doc(collection(db, 'users'), id);
-    await updateDoc(
-      userRef,
-      {
-        posts: [...user.posts, postObj.uid],
-      },
-      { merge: true }
-    );
-    // return postObj;
+    await updateDoc(userRef, {
+      posts: [...user.posts, postObj.uid],
+    });
+    return { postObj, currentLocation };
   }
 );
 
 export const addComment = createAsyncThunk(
   'post/addComment',
-  async ({ comment, uploadDate, userID, postID }) => {
+  async ({ comment, uploadDate, userID, postID, currentLocation }) => {
     const commentObj = {
       userID: userID,
       comment: comment,
@@ -72,8 +71,7 @@ export const addComment = createAsyncThunk(
     await updateDoc(postRef, {
       comments: [...posts.comments, commentObj.uid],
     });
-    const postsDocAfterPostingComment = await getDoc(doc(db, 'posts', postID));
-    return postsDocAfterPostingComment.data();
+    return { commentObj, currentLocation };
   }
 );
 
@@ -100,55 +98,59 @@ export const getSinglePost = createAsyncThunk(
 
 export const likePost = createAsyncThunk(
   'post/likePost',
-  async ({ postID, currentUserId }) => {
+  async ({ postID, currentUserId, currentLocation }) => {
     const postsDoc = await getDoc(doc(db, 'posts', postID));
     const posts = postsDoc?.data();
     const postRef = doc(collection(db, 'posts'), postID);
     await updateDoc(postRef, {
       likes: [...posts.likes, currentUserId],
     });
+    return { postID, currentUserId, currentLocation };
   }
 );
 
 export const unlikePost = createAsyncThunk(
   'post/unlikePost',
-  async ({ postID, currentUserId }) => {
+  async ({ postID, currentUserId, currentLocation }) => {
     const postsDoc = await getDoc(doc(db, 'posts', postID));
     const posts = postsDoc?.data();
     const postRef = doc(collection(db, 'posts'), postID);
     await updateDoc(postRef, {
       likes: posts.likes.filter(user => user !== currentUserId),
     });
+    return { postID, currentUserId, currentLocation };
   }
 );
 
 export const addPostToSaved = createAsyncThunk(
   'post/addPostToSaved',
-  async ({ postID, currentUserId }) => {
+  async ({ postID, currentUserId, currentLocation }) => {
     const userDocs = await getDoc(doc(db, 'users', currentUserId));
     const user = userDocs?.data();
     const userRef = doc(collection(db, 'users'), currentUserId);
     await updateDoc(userRef, {
       bookmarked: [...user.bookmarked, postID],
     });
+    return { postID, currentUserId, currentLocation };
   }
 );
 
 export const removePostFromSaved = createAsyncThunk(
   'post/removePostFromSaved',
-  async ({ postID, currentUserId }) => {
+  async ({ postID, currentUserId, currentLocation }) => {
     const userDocs = await getDoc(doc(db, 'users', currentUserId));
     const user = userDocs?.data();
     const userRef = doc(collection(db, 'users'), currentUserId);
     await updateDoc(userRef, {
       bookmarked: user.bookmarked.filter(post => post !== postID),
     });
+    return { postID, currentUserId, currentLocation };
   }
 );
 
 export const deletePost = createAsyncThunk(
   'post/deletePost',
-  async ({ postID, currentUserId }) => {
+  async ({ postID, currentUserId, currentLocation }) => {
     await deleteDoc(doc(db, 'posts', postID));
     //delete it from users bookmarks if any
     const q = query(collection(db, 'users'));
@@ -165,22 +167,24 @@ export const deletePost = createAsyncThunk(
     await updateDoc(userRef, {
       posts: user.posts.filter(post => post !== postID),
     });
+    return { postID, currentUserId, currentLocation };
   }
 );
 
 export const editPost = createAsyncThunk(
   'post/editPost',
-  async ({ postID, description }) => {
+  async ({ postID, description, currentLocation }) => {
     const postRef = doc(collection(db, 'posts'), postID);
     await updateDoc(postRef, {
       description: description,
     });
+    return { postID, description, currentLocation };
   }
 );
 
 export const deleteComment = createAsyncThunk(
   'post/deleteComment',
-  async ({ commentID, postID }) => {
+  async ({ commentID, postID, currentLocation }) => {
     await deleteDoc(doc(db, 'comments', commentID));
     //delete it from post's comments
     const postDocs = await getDoc(doc(db, 'posts', postID));
@@ -189,6 +193,26 @@ export const deleteComment = createAsyncThunk(
     await updateDoc(postRef, {
       comments: post.comments.filter(comment => comment !== commentID),
     });
+    return { postID, commentID, currentLocation };
+  }
+);
+
+export const getFeedPosts = createAsyncThunk(
+  'post/getFeedPosts',
+  async ({ feedArray, currentLocation }, thunkAPI) => {
+    let tempArray = [];
+    try {
+      for (let i = 0; i < feedArray.length; i++) {
+        const postDoc = await getDoc(doc(db, 'posts', feedArray[i]));
+        tempArray = [...tempArray, postDoc.data()];
+      }
+      // const tempPosts = [...tempArray].sort((a, b) => {
+      //   return new Date(b.uploadDate) - new Date(a.uploadDate);
+      // });
+      return { tempArray, currentLocation };
+    } catch (err) {
+      return thunkAPI.rejectWithValue(err);
+    }
   }
 );
 
@@ -197,6 +221,12 @@ export const postSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers: {
+    [addComment.pending]: state => {
+      state.commentStatus = 'loading';
+    },
+    [deletePost.pending]: state => {
+      state.deleteStatus = 'loading';
+    },
     [getSinglePost.fulfilled]: (state, action) => {
       state.singlePost = action.payload;
     },
@@ -205,26 +235,197 @@ export const postSlice = createSlice({
       action.payload.forEach(doc => {
         state.userPosts.push(doc.data());
       });
+      state.userPosts = [...state.userPosts].sort((a, b) => {
+        return new Date(b.uploadDate) - new Date(a.uploadDate);
+      });
     },
-    [addComment.pending]: state => {
-      state.commentStatus = 'loading';
+    [addPost.fulfilled]: (state, action) => {
+      const curLoc = action.payload.currentLocation;
+      //if location is home page
+      // if (curLoc[0] === 'home')
+      //   state.homePosts = [...state.homePosts, action.payload.postObj];
+      //if location is user's profile page
+      if (
+        curLoc[0] === 'profile' &&
+        curLoc[1] === action.payload.postObj.userID
+      ) {
+        state.userPosts = [...state.userPosts, action.payload.postObj];
+        state.userPosts = [...state.userPosts].sort((a, b) => {
+          return new Date(b.uploadDate) - new Date(a.uploadDate);
+        });
+      }
     },
-    [deletePost.pending]: state => {
-      state.deleteStatus = 'loading';
-    },
-    [deletePost.fulfilled]: state => {
+    [deletePost.fulfilled]: (state, action) => {
       state.deleteStatus = 'fulfilled';
+      const curLoc = action.payload.currentLocation[0];
+      const filterFunc = post => post.uid !== action.payload.postID;
+      if (curLoc === 'home')
+        state.homePosts = state.homePosts.filter(filterFunc);
+      if (curLoc === 'saved')
+        state.savedPosts = state.savedPosts.filter(filterFunc);
+      //if location is user's profile page
+      if (curLoc === 'profile') {
+        state.userPosts = state.userPosts.filter(filterFunc);
+        state.userPosts = [...state.userPosts].sort((a, b) => {
+          return new Date(b.uploadDate) - new Date(a.uploadDate);
+        });
+      }
+      // if location is single post
+      if (curLoc === 'post')
+        state.singlePost = { ...state.singlePost, isDeleted: true };
+    },
+    [editPost.fulfilled]: (state, action) => {
+      const curLoc = action.payload.currentLocation[0];
+      const reducerFunc = (acc, curr) =>
+        curr.uid === action.payload.postID
+          ? [
+              ...acc,
+              {
+                ...curr,
+                description: action.payload.description,
+              },
+            ]
+          : [...acc, curr];
+      //if action done on user profile page
+      if (curLoc === 'profile')
+        state.userPosts = state.userPosts.reduce(reducerFunc, []);
+      //if action done on singlepost page
+      if (curLoc === 'post')
+        state.singlePost = {
+          ...state.singlePost,
+          description: action.payload.description,
+        };
+      if (curLoc === 'home')
+        state.homePosts = state.homePosts.reduce(reducerFunc, []);
+      if (curLoc === 'saved')
+        state.savedPosts = state.savedPosts.reduce(reducerFunc, []);
+    },
+    [deleteComment.fulfilled]: (state, action) => {
+      const curLoc = action.payload.currentLocation[0];
+      const reducerFunc = (acc, curr) =>
+        curr.uid === action.payload.postID
+          ? [
+              ...acc,
+              {
+                ...curr,
+                comments: curr.comments.filter(
+                  comm => comm !== action.payload.commentID
+                ),
+              },
+            ]
+          : [...acc, curr];
+      //if action done on profile page
+      if (curLoc === 'profile')
+        state.userPosts = state.userPosts.reduce(reducerFunc, []);
+      //if action done on single post page
+      if (curLoc === 'post')
+        state.singlePost = {
+          ...state.singlePost,
+          comments: state.singlePost.comments.filter(
+            comm => comm !== action.payload.commentID
+          ),
+        };
+      if (curLoc === 'home')
+        state.homePosts = state.homePosts.reduce(reducerFunc, []);
+      if (curLoc === 'explore')
+        state.explorePosts = state.explorePosts.reduce(reducerFunc, []);
+      if (curLoc === 'saved')
+        state.savedPosts = state.savedPosts.reduce(reducerFunc, []);
     },
     [addComment.fulfilled]: (state, action) => {
-      const tempUserPosts = state.userPosts.reduce(
-        (acc, curr) =>
-          curr.uid === action.payload.uid
-            ? [...acc, action.payload]
-            : [...acc, curr],
-        []
-      );
-      state.userPosts = tempUserPosts;
+      const curLoc = action.payload.currentLocation[0];
       state.commentStatus = 'fulfilled';
+      const reducerFunc = (acc, curr) =>
+        curr.uid === action.payload.commentObj.postID
+          ? [
+              ...acc,
+              {
+                ...curr,
+                comments: [...curr.comments, action.payload.commentObj.uid],
+              },
+            ]
+          : [...acc, curr];
+      //if action done on user profile page
+      if (curLoc === 'profile')
+        state.userPosts = state.userPosts.reduce(reducerFunc, []);
+      //if action done on singlepost page
+      if (curLoc === 'post')
+        state.singlePost = {
+          ...state.singlePost,
+          comments: [...state.singlePost.comments, action.payload.uid],
+        };
+      if (curLoc === 'home')
+        state.homePosts = state.homePosts.reduce(reducerFunc, []);
+      if (curLoc === 'explore')
+        state.explorePosts = state.explorePosts.reduce(reducerFunc, []);
+      if (curLoc === 'saved')
+        state.savedPosts = state.savedPosts.reduce(reducerFunc, []);
+    },
+    [getFeedPosts.fulfilled]: (state, action) => {
+      const curLoc = action.payload.currentLocation[0];
+      if (curLoc === 'home') state.homePosts = action.payload.tempArray;
+      if (curLoc === 'explore') state.explorePosts = action.payload.tempArray;
+      if (curLoc === 'saved') state.savedPosts = action.payload.tempArray;
+    },
+    [likePost.fulfilled]: (state, action) => {
+      const curLoc = action.payload.currentLocation[0];
+      const reducerFunc = (acc, curr) =>
+        curr.uid === action.payload.postID
+          ? [
+              ...acc,
+              {
+                ...curr,
+                likes: [...curr.likes, action.payload.currentUserId],
+              },
+            ]
+          : [...acc, curr];
+      //if action done on user profile page
+      if (curLoc === 'profile')
+        state.userPosts = state.userPosts.reduce(reducerFunc, []);
+      //if action done on singlepost page
+      if (curLoc === 'post')
+        state.singlePost = {
+          ...state.singlePost,
+          likes: [...state.singlePost.likes, action.payload.currentUserId],
+        };
+      if (curLoc === 'home')
+        state.homePosts = state.homePosts.reduce(reducerFunc, []);
+      if (curLoc === 'saved')
+        state.savedPosts = state.savedPosts.reduce(reducerFunc, []);
+      if (curLoc === 'explore')
+        state.savedPosts = state.explorePosts.reduce(reducerFunc, []);
+    },
+    [unlikePost.fulfilled]: (state, action) => {
+      const curLoc = action.payload.currentLocation[0];
+      const reducerFunc = (acc, curr) =>
+        curr.uid === action.payload.postID
+          ? [
+              ...acc,
+              {
+                ...curr,
+                likes: curr.likes.filter(
+                  user => user !== action.payload.currentUserId
+                ),
+              },
+            ]
+          : [...acc, curr];
+      //if action done on user profile page
+      if (curLoc === 'profile')
+        state.userPosts = state.userPosts.reduce(reducerFunc, []);
+      //if action done on singlepost page
+      if (curLoc === 'post')
+        state.singlePost = {
+          ...state.singlePost,
+          likes: state.singlePost.likes.filter(
+            user => user !== action.payload.currentUserId
+          ),
+        };
+      if (curLoc === 'home')
+        state.homePosts = state.homePosts.reduce(reducerFunc, []);
+      if (curLoc === 'saved')
+        state.savedPosts = state.savedPosts.reduce(reducerFunc, []);
+      if (curLoc === 'explore')
+        state.savedPosts = state.explorePosts.reduce(reducerFunc, []);
     },
   },
 });

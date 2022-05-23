@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { useParams } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import {
   Avatar,
   Box,
@@ -9,28 +9,22 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import {
-  followUser,
-  getSingleUser,
-  unFollowUser,
-} from '../pages/Home/userSlice';
-import { getUserObjectsInArray } from '../services';
+import { followUser, unFollowUser } from '../pages/Home/userSlice';
 
 function UserFollowStack({ user, setUserObjectArray, userList, onClick }) {
   const { currentUser } = useSelector(state => state.auth);
   const { followUnfollowStatus } = useSelector(state => state.user);
   const dispatch = useDispatch();
-  const { userID } = useParams();
-
+  const { pathname } = useLocation();
+  const currentLocation = pathname.split('/').slice(1);
   const unFollowUserHandler = async () => {
     await dispatch(
       unFollowUser({
         currentUserID: currentUser?.uid,
         unFollowedUserID: user?.uid,
+        currentLocation,
       })
     ).unwrap();
-    getUserObjectsInArray(userList, setUserObjectArray);
-    if (userID === currentUser?.uid) dispatch(getSingleUser(userID));
   };
 
   const followUserHandler = async () => {
@@ -38,10 +32,9 @@ function UserFollowStack({ user, setUserObjectArray, userList, onClick }) {
       followUser({
         currentUserID: currentUser?.uid,
         followedUserID: user?.uid,
+        currentLocation,
       })
     ).unwrap();
-    getUserObjectsInArray(userList, setUserObjectArray);
-    if (userID === currentUser?.uid) dispatch(getSingleUser(userID));
   };
   return (
     <HStack justifyContent="space-between" w="full">

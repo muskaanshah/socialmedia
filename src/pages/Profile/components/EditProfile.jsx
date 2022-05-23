@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import {
   Button,
   Modal,
@@ -10,7 +9,6 @@ import {
   ModalOverlay,
   VStack,
 } from '@chakra-ui/react';
-import { getCurrentUserDetails, getSingleUser } from '../../Home/userSlice';
 import { EditHeaderImage } from './EditHeaderImage';
 import { EditOtherDetails } from './EditOtherDetails';
 import { EditProfileImage } from './EditProfileImage';
@@ -21,15 +19,11 @@ const LinkButtonStyles = {
   fontWeight: '400',
 };
 function EditProfile({ isOpen, onClose }) {
-  const { curUser } = useSelector(state => state.user);
-  const dispatch = useDispatch();
   const [headerDiv, setHeaderDiv] = useState(false);
   const [avatarDiv, setAvatarDiv] = useState(false);
   const [otherDetailsDiv, setOtherDetailsDiv] = useState(false);
 
   const onCloseHandler = () => {
-    dispatch(getCurrentUserDetails(curUser.uid));
-    dispatch(getSingleUser(curUser.uid));
     setHeaderDiv(false);
     setAvatarDiv(false);
     setOtherDetailsDiv(false);

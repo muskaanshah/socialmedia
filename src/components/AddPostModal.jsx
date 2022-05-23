@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useLocation } from 'react-router-dom';
 import ResizeTextarea from 'react-textarea-autosize';
 import {
   Avatar,
@@ -19,9 +20,10 @@ import {
   Textarea,
 } from '@chakra-ui/react';
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
+import { v4 as uuid } from 'uuid';
 import { storage } from '../firebase';
-import { addPost, getPostByUserId } from '../pages/Home/postSlice';
-import { getAllUsers } from '../pages/Home/userSlice';
+import { addPost } from '../pages/Home/postSlice';
+import { addPostToCurrentUserPosts } from '../pages/Home/userSlice';
 import { getDateTime } from '../utils';
 
 function AddPostModal({ isOpen, onClose }) {
@@ -32,6 +34,8 @@ function AddPostModal({ isOpen, onClose }) {
   const [postDescription, setPostDescription] = useState('');
   const { currentUser } = useSelector(state => state.auth);
   const dispatch = useDispatch();
+  const { pathname } = useLocation();
+  const currentLocation = pathname.split('/').slice(1);
   const file = useRef();
   const imageChange = e => {
     if (e.target.files && e.target.files.length > 0) {
@@ -49,16 +53,18 @@ function AddPostModal({ isOpen, onClose }) {
     const postRef = ref(storage, `${currentUser.uid}/${img.url.name}`);
     const postSnapshot = await uploadBytes(postRef, img.url);
     const postDownloadURL = await getDownloadURL(postSnapshot.ref);
-    await dispatch(
+    const randomId = uuid();
+    dispatch(
       addPost({
         description: postDescription,
         photoURL: !!img.url ? postDownloadURL : '',
         uploadDate: tempDate,
         id: currentUser.uid,
+        uid: randomId,
+        currentLocation,
       })
-    ).unwrap();
-    await dispatch(getPostByUserId(currentUser.uid)).unwrap();
-    dispatch(getAllUsers());
+    );
+    dispatch(addPostToCurrentUserPosts(randomId));
   };
 
   useEffect(() => {
@@ -128,7 +134,7 @@ function AddPostModal({ isOpen, onClose }) {
             mr={3}
             _focus={{ border: 'none' }}
             onClick={addPostHandler}
-            disabled={!img.url && !postDescription}
+            disabled={!img.url && !postDescription.trim()}
           >
             POST
           </Button>

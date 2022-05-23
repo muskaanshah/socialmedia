@@ -1,4 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
+import { useLocation } from 'react-router-dom';
 import {
   Avatar,
   Box,
@@ -12,12 +13,7 @@ import {
 } from '@chakra-ui/react';
 import { headerfallback } from '../../../assets';
 import { FollowersList, FollowingList } from '../../../components';
-import {
-  followUser,
-  getAllUsers,
-  getSingleUser,
-  unFollowUser,
-} from '../../Home/userSlice';
+import { followUser, unFollowUser } from '../../Home/userSlice';
 import { EditProfile } from './EditProfile';
 import { SettingsModal } from './SettingsModal';
 
@@ -50,29 +46,29 @@ function ProfileDescription() {
     onClose: followingListOnClose,
   } = useDisclosure();
   const { currentUser } = useSelector(state => state.auth);
-  const { singleUser } = useSelector(state => state.user);
+  const { singleUser, curUser } = useSelector(state => state.user);
   const dispatch = useDispatch();
+  const { pathname } = useLocation();
+  const currentLocation = pathname.split('/').slice(1);
 
-  const unFollowUserHandler = async () => {
-    await dispatch(
+  const unFollowUserHandler = () => {
+    dispatch(
       unFollowUser({
         currentUserID: currentUser?.uid,
         unFollowedUserID: singleUser?.uid,
+        currentLocation,
       })
-    ).unwrap();
-    dispatch(getAllUsers());
-    dispatch(getSingleUser(singleUser.uid));
+    );
   };
 
-  const followUserHandler = async () => {
-    await dispatch(
+  const followUserHandler = () => {
+    dispatch(
       followUser({
         currentUserID: currentUser?.uid,
         followedUserID: singleUser?.uid,
+        currentLocation,
       })
-    ).unwrap();
-    dispatch(getAllUsers());
-    dispatch(getSingleUser(singleUser.uid));
+    );
   };
   return (
     <>
@@ -125,7 +121,7 @@ function ProfileDescription() {
                 </HStack>
               ) : (
                 <>
-                  {singleUser?.followers?.includes(currentUser?.uid) ? (
+                  {singleUser?.followers?.includes(curUser?.uid) ? (
                     <Button
                       sx={buttonStyles}
                       variant="outline"

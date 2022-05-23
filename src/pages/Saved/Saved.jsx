@@ -1,22 +1,25 @@
-import { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useLocation } from 'react-router-dom';
 import { Box, Center, Text } from '@chakra-ui/react';
 import { FeedPost } from '../../components';
-import { getFeedPosts } from '../../services';
+import { getFeedPosts } from '../Home/postSlice';
 import { TopBar } from './components/TopBar';
 
 function Saved() {
   const { curUser } = useSelector(state => state.user);
-  const [feedPosts, setFeedPosts] = useState([]);
+  const { savedPosts } = useSelector(state => state.post);
+  const dispatch = useDispatch();
+  const { pathname } = useLocation();
+  const currentLocation = pathname.split('/').slice(1);
   useEffect(() => {
-    curUser?.bookmarked?.length > 0 &&
-      getFeedPosts(curUser?.bookmarked, setFeedPosts);
+    dispatch(getFeedPosts({ feedArray: curUser?.bookmarked, currentLocation }));
   }, [curUser?.bookmarked]);
   return (
     <Box sx={{ flexGrow: '1' }}>
       <TopBar />
-      {feedPosts.length > 0 ? (
-        feedPosts.map(post => <FeedPost post={post} key={post.uid} />)
+      {savedPosts?.length > 0 ? (
+        savedPosts.map(post => <FeedPost post={post} key={post.uid} />)
       ) : (
         <Center height="70vh">
           <Text>Save posts to visit them later</Text>

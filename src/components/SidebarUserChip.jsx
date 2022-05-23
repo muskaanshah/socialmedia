@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import {
   Avatar,
   Button,
@@ -8,13 +8,15 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import { followUser, getCurrentUserDetails } from '../pages/Home/userSlice';
+import { followUser } from '../pages/Home/userSlice';
 
 function SidebarUserChip({ user }) {
   const { currentUser } = useSelector(state => state.auth);
   const { followUnfollowStatus } = useSelector(state => state.user);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { pathname } = useLocation();
+  const currentLocation = pathname.split('/').slice(1);
   return (
     <HStack justifyContent="space-between" w="full">
       <HStack
@@ -37,14 +39,14 @@ function SidebarUserChip({ user }) {
         <Button
           variant="link"
           _focus={{ border: 'none' }}
-          onClick={async () => {
-            await dispatch(
+          onClick={() => {
+            dispatch(
               followUser({
                 currentUserID: currentUser.uid,
                 followedUserID: user.uid,
+                currentLocation,
               })
-            ).unwrap();
-            dispatch(getCurrentUserDetails(currentUser.uid));
+            );
           }}
         >
           Follow

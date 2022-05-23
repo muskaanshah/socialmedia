@@ -1,11 +1,4 @@
-import {
-  collection,
-  doc,
-  getDoc,
-  getDocs,
-  query,
-  where,
-} from 'firebase/firestore';
+import { collection, doc, getDoc } from 'firebase/firestore';
 import { db } from '../firebase';
 
 const getUserDetailsByIdForHeader = async (id, setUserDetails) => {
@@ -40,11 +33,8 @@ const getUserObjectsInArray = async (idArray, setUserObjectArray) => {
   let tempArray = [];
   try {
     for (let i = 0; i < idArray.length; i++) {
-      const q = query(collection(db, 'users'), where('uid', '==', idArray[i]));
-      const querySnapshot = await getDocs(q);
-      querySnapshot.forEach(doc => {
-        tempArray = [...tempArray, doc.data()];
-      });
+      const userDoc = await getDoc(doc(collection(db, 'users'), idArray[i]));
+      tempArray = [...tempArray, userDoc.data()];
     }
     setUserObjectArray(tempArray);
   } catch (err) {

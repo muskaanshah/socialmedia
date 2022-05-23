@@ -1,4 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
+import { useLocation } from 'react-router-dom';
 import {
   HStack,
   IconButton,
@@ -11,13 +12,8 @@ import {
   VStack,
   useDisclosure,
 } from '@chakra-ui/react';
-import {
-  deleteComment,
-  deletePost,
-  getPostByUserId,
-  getSinglePost,
-} from '../pages/Home/postSlice';
-import { getAllUsers } from '../pages/Home/userSlice';
+import { deleteComment, deletePost } from '../pages/Home/postSlice';
+import { removePostFromCurrentUserPosts } from '../pages/Home/userSlice';
 import { EditPostModal } from './EditPostModal';
 
 const functionButtonStyles = {
@@ -35,18 +31,29 @@ function EditDeletePopover({ id, type, desc, postID = '' }) {
   const { deleteStatus } = useSelector(state => state.post);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const dispatch = useDispatch();
-  const deleteHandler = async () => {
+  const { pathname } = useLocation();
+
+  const currentLocation = pathname.split('/').slice(1);
+  const deleteHandler = e => {
+    e.stopPropagation();
     if (type === 'post') {
-      await dispatch(
-        deletePost({ postID: id, currentUserId: currentUser.uid })
-      ).unwrap();
-      dispatch(getAllUsers());
-      dispatch(getPostByUserId(currentUser.uid));
+      dispatch(
+        deletePost({
+          postID: id,
+          currentUserId: currentUser.uid,
+          currentLocation,
+        })
+      );
+      dispatch(removePostFromCurrentUserPosts(id));
     }
     if (type === 'comment') {
-      await dispatch(deleteComment({ commentID: id, postID: postID })).unwrap();
-      dispatch(getAllUsers());
-      dispatch(getSinglePost(postID));
+      dispatch(
+        deleteComment({
+          commentID: id,
+          postID: postID,
+          currentLocation,
+        })
+      );
     }
   };
 
@@ -70,7 +77,13 @@ function EditDeletePopover({ id, type, desc, postID = '' }) {
           <PopoverBody px="0">
             <VStack spacing="0">
               {type === 'post' && (
-                <HStack sx={functionButtonStyles} onClick={onOpen}>
+                <HStack
+                  sx={functionButtonStyles}
+                  onClick={e => {
+                    onOpen();
+                    e.stopPropagation();
+                  }}
+                >
                   <span className="material-icons-outlined">edit</span>
                   <Text fontSize="1rem">Edit</Text>
                 </HStack>

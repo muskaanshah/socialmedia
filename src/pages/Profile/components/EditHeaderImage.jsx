@@ -19,7 +19,7 @@ import {
 import { updateHeaderImage } from '../../Home/userSlice';
 
 function EditHeaderImage({ setHeaderDiv }) {
-  const { curUser } = useSelector(state => state.user);
+  const { curUser, headerStatus } = useSelector(state => state.user);
   const [bannerImg, setBannerImg] = useState({
     image: curUser.headerImage,
     URL: curUser.headerImage,
@@ -73,21 +73,34 @@ function EditHeaderImage({ setHeaderDiv }) {
         </Center>
       </Box>
       <HStack className="mt-1" w="full" justifyContent="center">
-        <Button
-          type="submit"
-          variant="link"
-          sx={LinkButtonStyles}
-          onClick={headerSaveHandler}
-        >
-          Save
-        </Button>
-        <Button
-          variant="link"
-          sx={LinkButtonStyles}
-          onClick={() => setHeaderDiv(false)}
-        >
-          Cancel
-        </Button>
+        {headerStatus === 'loading' ? (
+          <Button
+            isLoading
+            loadingText="Saving"
+            variant="outline"
+            _focus={{ border: 'none' }}
+          >
+            Saving
+          </Button>
+        ) : (
+          <>
+            <Button
+              type="submit"
+              variant="link"
+              sx={LinkButtonStyles}
+              onClick={headerSaveHandler}
+            >
+              Save
+            </Button>
+            <Button
+              variant="link"
+              sx={LinkButtonStyles}
+              onClick={() => setHeaderDiv(false)}
+            >
+              Cancel
+            </Button>
+          </>
+        )}
       </HStack>
     </>
   );
