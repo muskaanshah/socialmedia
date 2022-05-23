@@ -329,9 +329,13 @@ export const postSlice = createSlice({
             comm => comm !== action.payload.commentID
           ),
         };
-      if (curLoc === 'explore' || curLoc === 'home' || curLoc === 'saved') {
+      if (curLoc === 'home') {
         state.homePosts = state.homePosts.reduce(reducerFunc, []);
+      }
+      if (curLoc === 'explore') {
         state.explorePosts = state.explorePosts.reduce(reducerFunc, []);
+      }
+      if (curLoc === 'saved') {
         state.savedPosts = state.savedPosts.reduce(reducerFunc, []);
       }
     },
