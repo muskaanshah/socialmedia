@@ -32,6 +32,16 @@ function Signin() {
     dispatch(signInUser(userDetails));
   };
 
+  const demoLoginHandler = e => {
+    e.preventDefault();
+    dispatch(
+      signInUser({
+        email: 'test123@gmail.com',
+        password: 'test123',
+      })
+    );
+  };
+
   return (
     <Box position={'relative'}>
       <Container
@@ -105,6 +115,30 @@ function Signin() {
                 }}
               >
                 Login
+              </Button>
+            )}
+            {status === 'loading' ? (
+              <Button
+                isLoading
+                loadingText="Loading"
+                sx={submitButtonStyles}
+                spinnerPlacement="start"
+              >
+                Submit
+              </Button>
+            ) : (
+              <Button
+                onClick={demoLoginHandler}
+                fontFamily={'heading'}
+                sx={submitButtonStyles}
+                _hover={{
+                  boxShadow: 'xl',
+                }}
+                _active={{
+                  boxShadow: 'xl',
+                }}
+              >
+                Demo login
               </Button>
             )}
           </Box>
