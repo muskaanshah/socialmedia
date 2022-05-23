@@ -88,73 +88,91 @@ function SinglePost() {
 
   useEffect(() => {
     setIsLiked(singlePost?.likes?.find(userID => userID === currentUser.uid));
-    setIsBookmarked(curUser?.bookmarked?.includes(singlePost.uid));
-  }, [currentUser.uid, singlePost.likes, curUser?.bookmarked, singlePost.uid]);
+    setIsBookmarked(curUser?.bookmarked?.includes(singlePost?.uid));
+  }, [
+    currentUser.uid,
+    singlePost?.likes,
+    curUser?.bookmarked,
+    singlePost?.uid,
+    singlePost?.isDeleted,
+  ]);
 
   return (
     <Box maxW="full" p={4} mx={{ base: 'auto', sm: 8 }}>
-      <HStack w="full">
-        <ProfileHeader userDetails={userDetails} />
-        {singlePost.userID === currentUser.uid && (
-          <EditDeletePopover
-            id={singlePost.uid}
-            type="post"
-            desc={singlePost.description}
-          />
-        )}
-      </HStack>
-      <Text my={4}>{singlePost.description}</Text>
-      {singlePost.photo && (
-        <Center>
-          <Image
-            src={singlePost.photo}
-            alt="post"
-            my={4}
-            w={{ base: 'full', md: 'auto' }}
-            maxH={{ base: 'auto', md: '500px' }}
-          />
+      {singlePost?.isDeleted === true ? (
+        <Center h="50vh">
+          <Text>Post deleted</Text>
         </Center>
-      )}
-      <Text color="gray.500" fontSize="xs">
-        {singlePost.uploadDate}
-      </Text>
-      <HStack w="full" my={4}>
-        <HStack spacing={6} grow={1} w="full">
-          <Box as="span" cursor="Pointer">
-            {isLiked ? (
-              <FaHeart size="1.5em" onClick={unlikeHandler} />
-            ) : (
-              <FaRegHeart size="1.5em" onClick={likeHandler} />
+      ) : (
+        <>
+          <HStack w="full">
+            <ProfileHeader userDetails={userDetails} />
+            {singlePost.userID === currentUser.uid && (
+              <EditDeletePopover
+                id={singlePost.uid}
+                type="post"
+                desc={singlePost.description}
+              />
             )}
-          </Box>
-          <Box as="span" cursor="Pointer">
-            <FaRegComment size="1.5em" />
-          </Box>
-        </HStack>
-        <Box as="span" cursor="Pointer">
-          {isBookmarked ? (
-            <FaBookmark size="1.5em" onClick={unsaveHandler} />
-          ) : (
-            <FaRegBookmark size="1.5em" onClick={saveHandler} />
+          </HStack>
+          <Text my={4}>{singlePost.description}</Text>
+          {singlePost.photo && (
+            <Center>
+              <Image
+                src={singlePost.photo}
+                alt="post"
+                my={4}
+                w={{ base: 'full', md: 'auto' }}
+                maxH={{ base: 'auto', md: '500px' }}
+              />
+            </Center>
           )}
-        </Box>
-      </HStack>
-      {singlePost?.likes?.length > 0 && (
-        <Text my={2} onClick={onOpen} cursor="pointer">
-          {`${singlePost?.likes?.length} ${
-            singlePost?.likes?.length === 1 ? 'like' : 'likes'
-          }`}
-        </Text>
+          <Text color="gray.500" fontSize="xs">
+            {singlePost.uploadDate}
+          </Text>
+          <HStack w="full" my={4}>
+            <HStack spacing={6} grow={1} w="full">
+              <Box as="span" cursor="Pointer">
+                {isLiked ? (
+                  <FaHeart size="1.5em" onClick={unlikeHandler} />
+                ) : (
+                  <FaRegHeart size="1.5em" onClick={likeHandler} />
+                )}
+              </Box>
+              <Box as="span" cursor="Pointer">
+                <FaRegComment size="1.5em" />
+              </Box>
+            </HStack>
+            <Box as="span" cursor="Pointer">
+              {isBookmarked ? (
+                <FaBookmark size="1.5em" onClick={unsaveHandler} />
+              ) : (
+                <FaRegBookmark size="1.5em" onClick={saveHandler} />
+              )}
+            </Box>
+          </HStack>
+          {singlePost?.likes?.length > 0 && (
+            <Text my={2} onClick={onOpen} cursor="pointer">
+              {`${singlePost?.likes?.length} ${
+                singlePost?.likes?.length === 1 ? 'like' : 'likes'
+              }`}
+            </Text>
+          )}
+          {singlePost?.comments?.map(comment => (
+            <SingleComment
+              comment={comment}
+              key={comment}
+              postID={singlePost.uid}
+            />
+          ))}
+          <AddComment postID={postID} />
+          <LikesModal
+            isOpen={isOpen}
+            onClose={onClose}
+            likes={singlePost.likes}
+          />
+        </>
       )}
-      {singlePost?.comments?.map(comment => (
-        <SingleComment
-          comment={comment}
-          key={comment}
-          postID={singlePost.uid}
-        />
-      ))}
-      <AddComment postID={postID} />
-      <LikesModal isOpen={isOpen} onClose={onClose} likes={singlePost.likes} />
     </Box>
   );
 }

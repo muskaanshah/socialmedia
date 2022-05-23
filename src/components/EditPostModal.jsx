@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useLocation } from 'react-router-dom';
 import ResizeTextarea from 'react-textarea-autosize';
 import {
   Avatar,
@@ -20,18 +21,21 @@ import { getAllUsers } from '../pages/Home/userSlice';
 function EditPostModal({ isOpen, onClose, desc, postID }) {
   const [postDescription, setPostDescription] = useState(desc);
   const { currentUser } = useSelector(state => state.auth);
+  const { pathname } = useLocation();
+  const currentLocation = pathname.split('/').slice(1);
   const dispatch = useDispatch();
 
   const editPostHandler = async () => {
     onClose();
-    await dispatch(
+    dispatch(
       editPost({
         description: postDescription,
         postID: postID,
+        currentLocation,
       })
-    ).unwrap();
-    await dispatch(getPostByUserId(currentUser.uid)).unwrap();
-    dispatch(getAllUsers());
+    );
+    // await dispatch(getPostByUserId(currentUser.uid)).unwrap();
+    // dispatch(getAllUsers());
   };
 
   return (

@@ -7,7 +7,7 @@ import {
   FaRegHeart,
 } from 'react-icons/fa';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import {
   Box,
   Center,
@@ -48,6 +48,12 @@ function FeedPost({ post }) {
     username: '',
   });
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const navigateHandler = () => navigate(`/post/${post.uid}`);
+  // navigate(`/post/${post.uid}`, {
+  //   state: { isFrom: location.pathname },
+  // });
 
   const likeHandler = async () => {
     await dispatch(
@@ -126,11 +132,7 @@ function FeedPost({ post }) {
                 <FaRegHeart size="1.5em" onClick={likeHandler} />
               )}
             </Box>
-            <Box
-              as="span"
-              cursor="Pointer"
-              onClick={() => navigate(`/post/${post.uid}`)}
-            >
+            <Box as="span" cursor="Pointer" onClick={navigateHandler}>
               <FaRegComment size="1.5em" />
             </Box>
           </HStack>
@@ -149,7 +151,7 @@ function FeedPost({ post }) {
             }`}
           </Text>
         )}
-        <Box cursor="Pointer" onClick={() => navigate(`/post/${post.uid}`)}>
+        <Box cursor="Pointer" onClick={navigateHandler}>
           {post?.comments?.length > 1 && (
             <Text
               color={'gray.500'}

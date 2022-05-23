@@ -148,7 +148,7 @@ export const removePostFromSaved = createAsyncThunk(
 
 export const deletePost = createAsyncThunk(
   'post/deletePost',
-  async ({ postID, currentUserId, currentLocation }) => {
+  async ({ postID, currentUserId, currentLocation, navigate }) => {
     await deleteDoc(doc(db, 'posts', postID));
     //delete it from users bookmarks if any
     const q = query(collection(db, 'users'));
@@ -165,17 +165,18 @@ export const deletePost = createAsyncThunk(
     await updateDoc(userRef, {
       posts: user.posts.filter(post => post !== postID),
     });
-    return { postID, currentUserId, currentLocation };
+    return { postID, currentUserId, currentLocation, navigate };
   }
 );
 
 export const editPost = createAsyncThunk(
   'post/editPost',
-  async ({ postID, description }) => {
+  async ({ postID, description, currentLocation }) => {
     const postRef = doc(collection(db, 'posts'), postID);
     await updateDoc(postRef, {
       description: description,
     });
+    return { postID, description, currentLocation };
   }
 );
 
@@ -256,8 +257,10 @@ export const postSlice = createSlice({
       state.deleteStatus = 'fulfilled';
       const curLoc = action.payload.currentLocation[0];
       const filterFunc = post => post.uid !== action.payload.postID;
-      if (curLoc === 'saved' || curLoc === 'home') {
+      if (curLoc === 'home') {
         state.homePosts = state.homePosts.filter(filterFunc);
+      }
+      if (curLoc === 'saved') {
         state.savedPosts = state.savedPosts.filter(filterFunc);
       }
       //if location is user's profile page
@@ -266,6 +269,39 @@ export const postSlice = createSlice({
         state.userPosts = [...state.userPosts].sort((a, b) => {
           return new Date(b.uploadDate) - new Date(a.uploadDate);
         });
+      }
+      // if location is single post
+      if (curLoc === 'post')
+        // action.payload.navigate(action.payload.location.state?.isFrom);
+        // action.payload.navigate('/home');
+        state.singlePost = { ...state.singlePost, isDeleted: true };
+    },
+    [editPost.fulfilled]: (state, action) => {
+      const curLoc = action.payload.currentLocation[0];
+      const reducerFunc = (acc, curr) =>
+        curr.uid === action.payload.postID
+          ? [
+              ...acc,
+              {
+                ...curr,
+                description: action.payload.description,
+              },
+            ]
+          : [...acc, curr];
+      //if action done on user profile page
+      if (curLoc === 'profile')
+        state.userPosts = state.userPosts.reduce(reducerFunc, []);
+      //if action done on singlepost page
+      if (curLoc === 'post')
+        state.singlePost = {
+          ...state.singlePost,
+          description: action.payload.description,
+        };
+      if (curLoc === 'home') {
+        state.homePosts = state.homePosts.reduce(reducerFunc, []);
+      }
+      if (curLoc === 'saved') {
+        state.savedPosts = state.savedPosts.reduce(reducerFunc, []);
       }
     },
     [deleteComment.fulfilled]: (state, action) => {
@@ -321,9 +357,13 @@ export const postSlice = createSlice({
           ...state.singlePost,
           comments: [...state.singlePost.comments, action.payload.uid],
         };
-      if (curLoc === 'explore' || curLoc === 'home' || curLoc === 'saved') {
+      if (curLoc === 'home') {
         state.homePosts = state.homePosts.reduce(reducerFunc, []);
+      }
+      if (curLoc === 'explore') {
         state.explorePosts = state.explorePosts.reduce(reducerFunc, []);
+      }
+      if (curLoc === 'saved') {
         state.savedPosts = state.savedPosts.reduce(reducerFunc, []);
       }
     },
