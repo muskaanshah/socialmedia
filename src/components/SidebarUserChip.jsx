@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import {
   Avatar,
   Button,
@@ -15,6 +15,8 @@ function SidebarUserChip({ user }) {
   const { followUnfollowStatus } = useSelector(state => state.user);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { pathname } = useLocation();
+  const currentLocation = pathname.split('/').slice(1);
   return (
     <HStack justifyContent="space-between" w="full">
       <HStack
@@ -42,9 +44,10 @@ function SidebarUserChip({ user }) {
               followUser({
                 currentUserID: currentUser.uid,
                 followedUserID: user.uid,
+                currentLocation,
               })
             ).unwrap();
-            dispatch(getCurrentUserDetails(currentUser.uid));
+            // dispatch(getCurrentUserDetails(currentUser.uid));
           }}
         >
           Follow

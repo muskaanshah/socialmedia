@@ -89,7 +89,7 @@ export const updateOtherDetails = createAsyncThunk(
 
 export const followUser = createAsyncThunk(
   'user/followUser',
-  async ({ currentUserID, followedUserID }, thunkAPI) => {
+  async ({ currentUserID, followedUserID, currentLocation }, thunkAPI) => {
     try {
       const currentUserDocs = await getDoc(doc(db, 'users', currentUserID));
       const currentUser = currentUserDocs?.data();
@@ -105,7 +105,7 @@ export const followUser = createAsyncThunk(
       await updateDoc(followedUserRef, {
         followers: [...followedUser.followers, currentUserID],
       });
-      return followedUserID;
+      return { followedUserID, currentLocation };
     } catch (error) {
       return thunkAPI.rejectWithValue(error);
     }
@@ -114,7 +114,7 @@ export const followUser = createAsyncThunk(
 
 export const unFollowUser = createAsyncThunk(
   'user/unFollowUser',
-  async ({ currentUserID, unFollowedUserID }, thunkAPI) => {
+  async ({ currentUserID, unFollowedUserID, currentLocation }, thunkAPI) => {
     try {
       const currentUserDocs = await getDoc(doc(db, 'users', currentUserID));
       const currentUser = currentUserDocs?.data();
@@ -130,7 +130,7 @@ export const unFollowUser = createAsyncThunk(
       await updateDoc(followedUserRef, {
         followers: followedUser.followers.filter(id => id !== currentUserID),
       });
-      return unFollowedUserID;
+      return { unFollowedUserID, currentLocation };
     } catch (error) {
       return thunkAPI.rejectWithValue(error);
     }
@@ -176,39 +176,45 @@ export const userSlice = createSlice({
     },
     [followUser.fulfilled]: (state, action) => {
       state.followUnfollowStatus = 'fulfilled';
+      console.log(action.payload.currentLocation);
+
       // actions done according to if the following unfollowing is done on the logged in user's profile page
-      if (state.curUser.uid === state.singleUser.uid) {
-        state.singleUser.following = [
-          ...state.singleUser.following,
-          action.payload,
-        ];
-      } else {
-        state.singleUser.followers = [
-          ...state.singleUser.followers,
-          state.curUser.uid,
-        ];
+      if (action.payload.currentLocation[0] === 'post') {
+        if (state.curUser.uid === state.singleUser.uid) {
+          state.singleUser.following = [
+            ...state.singleUser.following,
+            action.payload.followedUserID,
+          ];
+        } else {
+          state.singleUser.followers = [
+            ...state.singleUser.followers,
+            state.curUser.uid,
+          ];
+        }
       }
-      state.curUser.following = [...state.curUser.following, action.payload];
-      console.log(current(state.singleUser));
-      console.log(current(state.curUser));
+      state.curUser.following = [
+        ...state.curUser.following,
+        action.payload.followedUserID,
+      ];
     },
     [unFollowUser.pending]: state => {
       state.followUnfollowStatus = 'loading';
     },
     [unFollowUser.fulfilled]: (state, action) => {
+      console.log(action.payload.currentLocation);
       state.followUnfollowStatus = 'fulfilled';
       // actions done according to if the following unfollowing is done on the logged in user's profile page
       if (state.curUser.uid === state.singleUser.uid) {
         state.singleUser.following = state.singleUser.following.filter(
-          user => user !== action.payload
+          user => user !== action.payload.unFollowedUserID
         );
-      } else {
+      } else if (state.curUser.uid !== state.singleUser.uid) {
         state.singleUser.followers = state.singleUser.followers.filter(
           user => user !== state.curUser.uid
         );
       }
       state.curUser.following = state.curUser.following.filter(
-        user => user !== action.payload
+        user => user !== action.payload.unFollowedUserID
       );
       console.log(current(state.singleUser));
       console.log(current(state.curUser));

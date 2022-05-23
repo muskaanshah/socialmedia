@@ -1,4 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
+import { useLocation } from 'react-router-dom';
 import {
   Avatar,
   Box,
@@ -52,12 +53,15 @@ function ProfileDescription() {
   const { currentUser } = useSelector(state => state.auth);
   const { singleUser, curUser } = useSelector(state => state.user);
   const dispatch = useDispatch();
+  const { pathname } = useLocation();
+  const currentLocation = pathname.split('/').slice(1);
 
   const unFollowUserHandler = async () => {
     await dispatch(
       unFollowUser({
         currentUserID: currentUser?.uid,
         unFollowedUserID: singleUser?.uid,
+        currentLocation,
       })
     ).unwrap();
     // dispatch(getAllUsers());
@@ -69,6 +73,7 @@ function ProfileDescription() {
       followUser({
         currentUserID: currentUser?.uid,
         followedUserID: singleUser?.uid,
+        currentLocation,
       })
     ).unwrap();
     // dispatch(getAllUsers());
