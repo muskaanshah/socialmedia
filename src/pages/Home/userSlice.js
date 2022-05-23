@@ -176,8 +176,6 @@ export const userSlice = createSlice({
     },
     [followUser.fulfilled]: (state, action) => {
       state.followUnfollowStatus = 'fulfilled';
-      console.log(action.payload.currentLocation);
-
       // actions done according to if the following unfollowing is done on the logged in user's profile page
       if (action.payload.currentLocation[0] === 'post') {
         if (state.curUser.uid === state.singleUser.uid) {
@@ -201,23 +199,22 @@ export const userSlice = createSlice({
       state.followUnfollowStatus = 'loading';
     },
     [unFollowUser.fulfilled]: (state, action) => {
-      console.log(action.payload.currentLocation);
       state.followUnfollowStatus = 'fulfilled';
       // actions done according to if the following unfollowing is done on the logged in user's profile page
-      if (state.curUser.uid === state.singleUser.uid) {
-        state.singleUser.following = state.singleUser.following.filter(
-          user => user !== action.payload.unFollowedUserID
-        );
-      } else if (state.curUser.uid !== state.singleUser.uid) {
-        state.singleUser.followers = state.singleUser.followers.filter(
-          user => user !== state.curUser.uid
-        );
+      if (action.payload.currentLocation[0] === 'post') {
+        if (state.curUser.uid === state.singleUser.uid) {
+          state.singleUser.following = state.singleUser.following.filter(
+            user => user !== action.payload.unFollowedUserID
+          );
+        } else {
+          state.singleUser.followers = state.singleUser.followers.filter(
+            user => user !== state.curUser.uid
+          );
+        }
       }
       state.curUser.following = state.curUser.following.filter(
         user => user !== action.payload.unFollowedUserID
       );
-      console.log(current(state.singleUser));
-      console.log(current(state.curUser));
     },
     [updateOtherDetails.fulfilled]: (state, action) => {
       state.singleUser.name = action.payload.name;
