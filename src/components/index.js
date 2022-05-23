@@ -13,3 +13,4 @@ export { FollowingList } from './FollowingList';
 export { SidebarUserChip } from './SidebarUserChip';
 export { EditDeletePopover } from './EditDeletePopover';
 export { EditPostModal } from './EditPostModal';
+export { Search } from './Search';

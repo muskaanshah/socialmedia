@@ -1,11 +1,5 @@
-import {
-  Box,
-  Input,
-  InputGroup,
-  InputLeftElement,
-  Text,
-  useColorModeValue,
-} from '@chakra-ui/react';
+import { Box, Text, useColorModeValue } from '@chakra-ui/react';
+import { Search } from '../../../components';
 import { TopBarStyles } from '../../../styles/globalStyles';
 
 function TopBar() {
@@ -16,13 +10,7 @@ function TopBar() {
         Explore
       </Text>
       <Box mx={{ base: 4, sm: 8 }} display={{ base: 'block', md: 'none' }}>
-        <InputGroup>
-          <InputLeftElement
-            pointerEvents="none"
-            children={<span className="material-icons-outlined">search</span>}
-          />
-          <Input variant="filled" placeholder="Search" />
-        </InputGroup>
+        <Search />
       </Box>
     </Box>
   );

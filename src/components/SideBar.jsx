@@ -1,13 +1,6 @@
 import { useSelector } from 'react-redux';
-import {
-  Box,
-  Divider,
-  Input,
-  InputGroup,
-  InputLeftElement,
-  Text,
-  VStack,
-} from '@chakra-ui/react';
+import { Box, Divider, Text, VStack } from '@chakra-ui/react';
+import { Search } from './Search';
 import { SidebarUserChip } from './SidebarUserChip';
 
 function SideBar() {
@@ -25,14 +18,7 @@ function SideBar() {
     >
       <Divider orientation="vertical" />
       <VStack align="flex-start" spacing={6} w="full" pt={4}>
-        <InputGroup>
-          <InputLeftElement
-            pointerEvents="none"
-            cursor="pointer"
-            children={<span className="material-icons-outlined">search</span>}
-          />
-          <Input variant="filled" placeholder="Search" />
-        </InputGroup>
+        <Search />
         <Text fontWeight="500">Suggested for you</Text>
         {users
           .filter(

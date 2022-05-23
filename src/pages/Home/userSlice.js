@@ -158,6 +158,9 @@ export const userSlice = createSlice({
         post => post !== action.payload
       );
     },
+    setSearchText: (state, action) => {
+      state.searchText = action.payload;
+    },
   },
   extraReducers: {
     [getAllUsers.fulfilled]: (state, action) => {
@@ -247,5 +250,6 @@ export const {
   removePostFromCurrentUserPosts,
   addPostToBookmarks,
   removePostFromBookmarks,
+  setSearchText,
 } = userSlice.actions;
 export default userSlice.reducer;
