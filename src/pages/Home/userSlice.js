@@ -16,6 +16,7 @@ const initialState = {
   followUnfollowStatus: 'idle',
   headerStatus: 'idle',
   avatarStatus: 'idle',
+  searchText: '',
 };
 
 export const getAllUsers = createAsyncThunk('user/getAllUsers', async () => {

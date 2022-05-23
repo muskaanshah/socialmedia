@@ -1,5 +1,5 @@
 import { useSelector } from 'react-redux';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
 import {
   Avatar,
   Box,
@@ -18,8 +18,20 @@ import { AddPostModal } from './AddPostModal';
 
 function Drawer() {
   const logoColor = useColorModeValue('blue.500', 'blue.200');
+  const hoverColor = useColorModeValue('blackAlpha.300', 'whiteAlpha.300');
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { curUser } = useSelector(state => state.user);
+  const { pathname } = useLocation();
+  const curLoc = pathname.split('/')[1];
+  const drawerLinks = {
+    _hover: {
+      backgroundColor: hoverColor,
+      textDecoration: 'none',
+    },
+    _focus: { outline: 'none' },
+    w: 'full',
+    borderRadius: '4',
+  };
   return (
     <Box
       bg="inherit"
@@ -31,7 +43,7 @@ function Drawer() {
       maxH="100vh"
     >
       <VStack justifyContent="space-between" w="full" py={4}>
-        <VStack align="flex-start" spacing={6} w="full" pr="8">
+        <VStack align="flex-start" spacing="2" w="full" pr="8">
           <NavLink to="/home">
             <HStack>
               <Image
@@ -48,36 +60,45 @@ function Drawer() {
           <Link
             as={NavLink}
             to="/home"
-            _hover={{ color: logoColor, textDecoration: 'none' }}
-            _focus={{ outline: 'none' }}
-            _activeLink={{ color: logoColor, fontWeight: 'bold' }}
+            sx={drawerLinks}
+            _activeLink={{ fontWeight: 'bold' }}
           >
-            <HStack>
-              <span className="material-icons-outlined">home</span>
+            <HStack p="2">
+              {curLoc === 'home' ? (
+                <span className="material-icons">home</span>
+              ) : (
+                <span className="material-icons-outlined">home</span>
+              )}
               <Text fontSize="1rem">Home</Text>
             </HStack>
           </Link>
           <Link
             as={NavLink}
             to="/explore"
-            _hover={{ color: logoColor, textDecoration: 'none' }}
-            _focus={{ outline: 'none' }}
-            _activeLink={{ color: logoColor, fontWeight: 'bold' }}
+            sx={drawerLinks}
+            _activeLink={{ fontWeight: 'bold' }}
           >
-            <HStack>
-              <span className="material-icons-outlined">explore</span>
+            <HStack p="2">
+              {curLoc === 'explore' ? (
+                <span className="material-icons">explore</span>
+              ) : (
+                <span className="material-icons-outlined">explore</span>
+              )}
               <Text fontSize="1rem">Explore</Text>
             </HStack>
           </Link>
           <Link
             as={NavLink}
             to="/saved"
-            _hover={{ color: logoColor, textDecoration: 'none' }}
-            _focus={{ outline: 'none' }}
-            _activeLink={{ color: logoColor, fontWeight: 'bold' }}
+            sx={drawerLinks}
+            _activeLink={{ fontWeight: 'bold' }}
           >
-            <HStack>
-              <span className="material-icons-outlined">bookmark_border</span>
+            <HStack p="2">
+              {curLoc === 'saved' ? (
+                <span className="material-icons">bookmark</span>
+              ) : (
+                <span className="material-icons-outlined">bookmark_border</span>
+              )}
               <Text fontSize="1rem">Saved</Text>
             </HStack>
           </Link>
@@ -85,12 +106,14 @@ function Drawer() {
           {/* <Link
             as={NavLink}
             to="/notifications"
-            _hover={{ color: logoColor, textDecoration: 'none' }}
-            _focus={{ outline: 'none' }}
-            _activeLink={{ color: logoColor, fontWeight: 'bold' }}
+            sx={drawerLinks}
+            _activeLink={{ fontWeight: 'bold' }}
           >
-            <HStack>
-              <span className="material-icons-outlined">notifications</span>
+            <HStack p="2">
+            {curLoc === "notifications" ? <span className="material-icons">
+notifications
+</span> :
+              <span className="material-icons-outlined">notifications</span>}
               <Text fontSize="1rem">Notifications</Text>
             </HStack>
           </Link> */}

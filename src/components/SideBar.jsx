@@ -28,6 +28,7 @@ function SideBar() {
         <InputGroup>
           <InputLeftElement
             pointerEvents="none"
+            cursor="pointer"
             children={<span className="material-icons-outlined">search</span>}
           />
           <Input variant="filled" placeholder="Search" />
