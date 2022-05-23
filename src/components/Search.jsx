@@ -44,7 +44,7 @@ function Search() {
         />
         <Input
           variant="filled"
-          placeholder="Search"
+          placeholder="Search by username"
           value={searchText}
           onChange={e => dispatch(setSearchText(e.target.value))}
         />
