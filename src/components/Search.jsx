@@ -72,6 +72,7 @@ function Search() {
                 .filter((_, index) => index < 10)
                 .map(user => (
                   <HStack
+                    key={user.uid}
                     cursor="pointer"
                     px="2"
                     py="1"
