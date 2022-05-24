@@ -31,7 +31,9 @@ function Explore() {
     <Box sx={{ flexGrow: '1' }}>
       <TopBar />
       {explorePosts?.length > 0 ? (
-        explorePosts.map(post => <FeedPost post={post} key={post.uid} />)
+        [...explorePosts]
+          .sort((a, b) => new Date(b.uploadDate) - new Date(a.uploadDate))
+          .map(post => <FeedPost post={post} key={post.uid} />)
       ) : (
         <Center height="70vh">
           <Text>Oops, we dont have new content to show</Text>

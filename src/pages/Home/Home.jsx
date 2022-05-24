@@ -26,7 +26,9 @@ function Home() {
     <Box sx={{ flexGrow: '1' }}>
       <TopBar />
       {homePosts?.length > 0 ? (
-        homePosts.map(post => <FeedPost post={post} key={post?.uid} />)
+        [...homePosts]
+          .sort((a, b) => new Date(b.uploadDate) - new Date(a.uploadDate))
+          .map(post => <FeedPost post={post} key={post?.uid} />)
       ) : (
         <Center height="70vh">
           <Text>Follow people to see their posts</Text>

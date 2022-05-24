@@ -24,7 +24,9 @@ function Profile() {
       <ProfileDescription />
       <Divider />
       {userPosts?.length > 0 ? (
-        userPosts.map(post => <FeedPost post={post} key={post.uid} />)
+        [...userPosts]
+          .sort((a, b) => new Date(b.uploadDate) - new Date(a.uploadDate))
+          .map(post => <FeedPost post={post} key={post.uid} />)
       ) : (
         <Center height="20vh">
           <Text>No posts to show</Text>
