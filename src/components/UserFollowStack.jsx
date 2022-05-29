@@ -13,6 +13,7 @@ import { followUser, unFollowUser } from '../pages/Home/userSlice';
 
 function UserFollowStack({ user, setUserObjectArray, userList, onClick }) {
   const { currentUser } = useSelector(state => state.auth);
+  const { curUser } = useSelector(state => state.user);
   const { followUnfollowStatus } = useSelector(state => state.user);
   const dispatch = useDispatch();
   const { pathname } = useLocation();
@@ -55,7 +56,7 @@ function UserFollowStack({ user, setUserObjectArray, userList, onClick }) {
             <Box />
           ) : (
             <>
-              {user?.followers?.includes(currentUser?.uid) ? (
+              {curUser?.following?.includes(user?.uid) ? (
                 <Button
                   variant="link"
                   _focus={{ border: 'none' }}
