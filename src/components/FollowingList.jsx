@@ -22,7 +22,7 @@ function FollowingList({ isOpen, onClose, following }) {
     return () => {
       setUserObjectArray([]);
     };
-  }, [following]);
+  }, []);
   return (
     <Modal isOpen={isOpen} onClose={onClose} scrollBehavior="inside">
       <ModalOverlay />

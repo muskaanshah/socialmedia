@@ -21,7 +21,7 @@ function FollowersList({ isOpen, onClose, followers }) {
     return () => {
       setUserObjectArray([]);
     };
-  }, [followers]);
+  }, []);
   const navigate = useNavigate();
   return (
     <Modal isOpen={isOpen} onClose={onClose} scrollBehavior="inside">
