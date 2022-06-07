@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import {
   Modal,
   ModalBody,
@@ -22,7 +22,7 @@ function FollowingList({ isOpen, onClose, following }) {
     return () => {
       setUserObjectArray([]);
     };
-  }, []);
+  }, [following]);
   return (
     <Modal isOpen={isOpen} onClose={onClose} scrollBehavior="inside">
       <ModalOverlay />

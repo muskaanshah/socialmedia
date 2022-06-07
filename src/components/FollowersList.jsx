@@ -14,6 +14,7 @@ import { getUserObjectsInArray } from '../services';
 import { UserFollowStack } from './UserFollowStack';
 
 function FollowersList({ isOpen, onClose, followers }) {
+  console.log(followers);
   const [userObjectArray, setUserObjectArray] = useState([]);
   useEffect(() => {
     followers?.length > 0 &&
@@ -21,7 +22,8 @@ function FollowersList({ isOpen, onClose, followers }) {
     return () => {
       setUserObjectArray([]);
     };
-  }, []);
+  }, [followers]);
+  console.log('obj', userObjectArray);
   const navigate = useNavigate();
   return (
     <Modal isOpen={isOpen} onClose={onClose} scrollBehavior="inside">
